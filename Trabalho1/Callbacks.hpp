@@ -47,5 +47,9 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 
 // Botão que adiciona um novo elemento
 extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
+
+	// pega valores
+	//cria novo objeto
+	//adiciona objeto na display file
 	update_Surface();
 }

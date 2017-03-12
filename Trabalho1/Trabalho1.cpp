@@ -36,20 +36,20 @@ int main(int argc, char *argv[]){
 	windowSupDir->y = 10;
 	
 	Coordenada* c = new Coordenada();
-	c->x = 300;
-	c->setY(100);
+	c->x = 10;
+	c->setY(10);
 	
 	Coordenada* c2 = new Coordenada();
-	c2->x = 200;
-	c2->y = 500;
+	c2->x = 20;
+	c2->y = 30;
 	
 	Coordenada* c3 = new Coordenada();
-	c2->x = 400;
-	c2->y = 200;
+	c3->x = 400;
+	c3->y = 200;
 	
 	Coordenada* c4 = new Coordenada();
-	c2->x = 250;
-	c2->y = 541.5;
+	c4->x = 250;
+	c4->y = 541.5;
 	
 	
 	Ponto* p = new Ponto(c);
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 	
 	// Display File
 	displayFile = new ListaEnc<ElementoGrafico*>();
-	displayFile->adiciona(pol);
+	displayFile->adiciona(r);
 	
 	// Window
 	Window *window;
@@ -92,6 +92,14 @@ int main(int argc, char *argv[]){
 	gtk_main ();
 	
 	return 0;
+}
+
+double transformaViewportX(double xW, double xWMin, double xWMax, double xVPMax, double xVPMin) {
+	return ( ( (xW - xWMin)/(xWMax - xWMin) ) * (xVPMax - xVPMin) );
+}
+
+double transformaViewportY(double yW, double yWMin, double yWMax, double yVPMax, double yVPMin) {
+	return ( ( 1 - ( (yW - yWMin)/(yWMax - yWMin) ) ) * (yVPMax - yVPMin) );
 }
 
 void desenhaElemento(ElementoGrafico *elem) {	
