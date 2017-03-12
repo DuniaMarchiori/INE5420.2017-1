@@ -36,12 +36,20 @@ int main(int argc, char *argv[]){
 	windowSupDir->y = 10;
 	
 	Coordenada* c = new Coordenada();
-	c->x = 5;
-	c->setY(6);
+	c->x = 300;
+	c->setY(100);
 	
 	Coordenada* c2 = new Coordenada();
-	c2->x = 7;
-	c2->y = 8;
+	c2->x = 200;
+	c2->y = 500;
+	
+	Coordenada* c3 = new Coordenada();
+	c2->x = 400;
+	c2->y = 200;
+	
+	Coordenada* c4 = new Coordenada();
+	c2->x = 250;
+	c2->y = 541.5;
 	
 	
 	Ponto* p = new Ponto(c);
@@ -52,10 +60,13 @@ int main(int argc, char *argv[]){
 	
 	Poligono* pol = new Poligono();
 	pol->adicionarCoordenada(c);
+	pol->adicionarCoordenada(c2);
+	pol->adicionarCoordenada(c3);
+	pol->adicionarCoordenada(c4);
 	
 	// Display File
-	displayFile = new ListaEnc<ElementoGrafico*>(); // Fiz baseado no Poligono.hpp, mas não teria que ser ListaEnc<ElementoGrafico*>() ?
-	displayFile->adiciona(p);
+	displayFile = new ListaEnc<ElementoGrafico*>();
+	displayFile->adiciona(pol);
 	
 	// Window
 	Window *window;
@@ -83,15 +94,55 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-static void update_Surface () {
-	Elemento<ElementoGrafico> *elementoLista = displayFile->primeiroElemento();
-	while (elementoLista != NULL) {
-		// Desenha esse elemento
-		
-		elementoLista = elementoLista->getProximo();
+void desenhaElemento(ElementoGrafico *elem) {	
+	cairo_t *cr;
+	cr = cairo_create (surface);
+	
+	// Desenha o elemento de acordo com seu tipo
+	switch (elem->getTipo()) {
+		case PONTO:
+			// FAZER
+			break;
+			
+		case RETA:
+			{
+				Reta* r = static_cast<Reta*> (elem);
+
+				cairo_move_to(cr, r->getPontoInicial()->x, r->getPontoInicial()->y);
+				cairo_line_to(cr, r->getPontoFinal()->x, r->getPontoFinal()->y);
+				break;
+			}
+			
+		case POLIGONO:
+			{
+				Poligono* p = static_cast<Poligono*> (elem);
+				ListaEnc<Coordenada*> *lista = p->getLista();
+				Elemento<Coordenada*> *elementoCoord = lista->getHead();
+				Coordenada* coord = elementoCoord->getInfo();
+
+				cairo_move_to(cr, coord->x, coord->y);
+				elementoCoord = elementoCoord->getProximo();
+				while (elementoCoord != NULL) {
+					coord = elementoCoord->getInfo();
+					cairo_line_to(cr, coord->x, coord->y);
+					elementoCoord = elementoCoord->getProximo();
+				}
+				cairo_close_path(cr);
+				break;
+			}
 	}
 	
-	
+	cairo_stroke(cr);
+	gtk_widget_queue_draw (window_Main);
+}
+
+static void update_Surface () {
+	Elemento<ElementoGrafico*> *elementoLista = displayFile->getHead();
+	while (elementoLista != NULL) {
+		// Desenha esse elemento
+		desenhaElemento(elementoLista->getInfo());
+		elementoLista = elementoLista->getProximo();
+	}	
 }
 
 static void clear_surface (){

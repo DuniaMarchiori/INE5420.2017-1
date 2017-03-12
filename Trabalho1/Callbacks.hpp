@@ -14,6 +14,7 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
 	gtk_widget_show(window_NovoElemento);
 }
 
+//--------------------------------------------------------
 // Métodos da viewport
 
 // Método configure-event
@@ -41,3 +42,10 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 	return FALSE;
 }
 
+//--------------------------------------------------------
+// Métodos da janela de novo elemento
+
+// Botão que adiciona um novo elemento
+extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
+	update_Surface();
+}

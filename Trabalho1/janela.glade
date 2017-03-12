@@ -1231,6 +1231,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <signal name="clicked" handler="NovoElmnt_Adicionar_clicked_cb" swapped="no"/>
               </object>
             </child>
           </object>

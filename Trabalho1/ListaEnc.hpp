@@ -294,6 +294,10 @@ class ListaEnc {
 	T primeiroElemento() {
 	    return head->getInfo();
 	}
+	
+	Elemento<T>* getHead() {
+		return head;
+	}
 
  private:
 	Elemento<T>* head; /*!< Guarda o primeiro elemento da lista */
