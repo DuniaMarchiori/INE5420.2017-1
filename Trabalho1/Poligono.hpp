@@ -2,25 +2,25 @@
 #define POLIGONO_HPP
 
 #include "ElementoGrafico.hpp"
-#include "Ponto.hpp"
+#include "Coordenada.hpp"
 #include "ListaEnc.hpp"
 
 class Poligono: public ElementoGrafico {
 	
 private:
-	ListaEnc<Ponto*> *lista;
+	ListaEnc<Coordenada*> *lista;
 	
 public:
 	Poligono() {
-		lista = new ListaEnc<Ponto*>;
+		lista = new ListaEnc<Coordenada*>;
 		setTipo(POLIGONO);
 	}
 	
-	void adicionarPonto(Ponto* p) {
+	void adicionarCoordenada(Coordenada* p) {
 		lista->adiciona(p);
 	}
 	
-	ListaEnc<Ponto*>* getLista() {
+	ListaEnc<Coordenada*>* getLista() {
 		return lista;
 	}
 };

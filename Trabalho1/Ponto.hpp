@@ -7,21 +7,20 @@
 class Ponto: public ElementoGrafico {
 	
 private:
-	Coordenada coord;
+	Coordenada* coord;
 	
 public:
-	Ponto(double x, double y) {
-		setCoordenada(x,y);
+	Ponto(Coordenada* c) {
+		setCoordenada(c);
 		setTipo(PONTO);
 	}
 	
-	Coordenada getCoordenada() {
+	Coordenada* getCoordenada() {
 		return coord;
 	}
 	
-	void setCoordenada(double x, double y) {
-		coord.x = x;
-		coord.y = y;
+	void setCoordenada(Coordenada* c) {
+		coord = c;
 	}
 };
 

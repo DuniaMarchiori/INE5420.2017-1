@@ -2,33 +2,33 @@
 #define RETA_HPP
 
 #include "ElementoGrafico.hpp"
-#include "Ponto.hpp"
+#include "Coordenada.hpp"
 
 class Reta: public ElementoGrafico {
 	
 private:
-	Ponto *pontoInicial, *pontoFinal;
+	Coordenada *pontoInicial, *pontoFinal;
 	
 public:
-	Reta(Ponto* pInicial, Ponto* pFinal) {
+	Reta(Coordenada* pInicial, Coordenada* pFinal) {
 		pontoInicial = pInicial;
 		pontoFinal = pFinal;
 		setTipo(RETA);
 	}
 	
-	Ponto* getPontoInicial() {
+	Coordenada* getPontoInicial() {
 		return pontoInicial;
 	}
 	
-	void setPontoInicial(Ponto* p) {
+	void setPontoInicial(Coordenada* p) {
 		pontoInicial = p;
 	}
 	
-	Ponto* getPontoFinal() {
+	Coordenada* getPontoFinal() {
 		return pontoFinal;
 	}
 	
-	void setPontoFinal(Ponto* p) {
+	void setPontoFinal(Coordenada* p) {
 		pontoFinal = p;
 	}
 };
