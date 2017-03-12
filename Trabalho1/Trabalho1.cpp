@@ -44,12 +44,12 @@ int main(int argc, char *argv[]){
 	c2->y = 30;
 	
 	Coordenada* c3 = new Coordenada();
-	c3->x = 400;
-	c3->y = 200;
+	c3->x = 40;
+	c3->y = 20;
 	
 	Coordenada* c4 = new Coordenada();
-	c4->x = 250;
-	c4->y = 541.5;
+	c4->x = 25;
+	c4->y = 54;
 	
 	
 	Ponto* p = new Ponto(c);
@@ -57,6 +57,7 @@ int main(int argc, char *argv[]){
 	
 	
 	Reta* r = new Reta(c, c2);
+	Reta* r2 = new Reta(c3, c4);
 	
 	Poligono* pol = new Poligono();
 	pol->adicionarCoordenada(c);
@@ -67,6 +68,7 @@ int main(int argc, char *argv[]){
 	// Display File
 	displayFile = new ListaEnc<ElementoGrafico*>();
 	displayFile->adiciona(r);
+	displayFile->adiciona(r2);
 	
 	// Window
 	Window *window;
@@ -102,6 +104,33 @@ double transformaViewportY(double yW, double yWMin, double yWMax, double yVPMax,
 	return ( ( 1 - ( (yW - yWMin)/(yWMax - yWMin) ) ) * (yVPMax - yVPMin) );
 }
 
+void desenhaPonto(cairo_t* c, ElementoGrafico *elem){
+
+} //FAZER
+
+void desenhaReta(cairo_t* c, ElementoGrafico *elem) {
+	Reta* r = static_cast<Reta*> (elem);
+
+	cairo_move_to(c, r->getPontoInicial()->x, r->getPontoInicial()->y);
+	cairo_line_to(c, r->getPontoFinal()->x, r->getPontoFinal()->y);
+}
+
+void desenhaPoligono(cairo_t* c, ElementoGrafico *elem) {
+	Poligono* p = static_cast<Poligono*> (elem);
+	ListaEnc<Coordenada*> *lista = p->getLista();
+	Elemento<Coordenada*> *elementoCoord = lista->getHead();
+	Coordenada* coord = elementoCoord->getInfo();
+
+	cairo_move_to(c, coord->x, coord->y);
+	elementoCoord = elementoCoord->getProximo();
+	while (elementoCoord != NULL) {
+		coord = elementoCoord->getInfo();
+		cairo_line_to(c, coord->x, coord->y);
+		elementoCoord = elementoCoord->getProximo();
+	}
+	cairo_close_path(c);
+}
+
 void desenhaElemento(ElementoGrafico *elem) {	
 	cairo_t *cr;
 	cr = cairo_create (surface);
@@ -109,35 +138,16 @@ void desenhaElemento(ElementoGrafico *elem) {
 	// Desenha o elemento de acordo com seu tipo
 	switch (elem->getTipo()) {
 		case PONTO:
-			// FAZER
+			desenhaPonto(cr, elem);
 			break;
 			
 		case RETA:
-			{
-				Reta* r = static_cast<Reta*> (elem);
-
-				cairo_move_to(cr, r->getPontoInicial()->x, r->getPontoInicial()->y);
-				cairo_line_to(cr, r->getPontoFinal()->x, r->getPontoFinal()->y);
-				break;
-			}
+			desenhaReta(cr, elem);
+			break;
 			
 		case POLIGONO:
-			{
-				Poligono* p = static_cast<Poligono*> (elem);
-				ListaEnc<Coordenada*> *lista = p->getLista();
-				Elemento<Coordenada*> *elementoCoord = lista->getHead();
-				Coordenada* coord = elementoCoord->getInfo();
-
-				cairo_move_to(cr, coord->x, coord->y);
-				elementoCoord = elementoCoord->getProximo();
-				while (elementoCoord != NULL) {
-					coord = elementoCoord->getInfo();
-					cairo_line_to(cr, coord->x, coord->y);
-					elementoCoord = elementoCoord->getProximo();
-				}
-				cairo_close_path(cr);
-				break;
-			}
+			desenhaPoligono(cr, elem);
+			break;
 	}
 	
 	cairo_stroke(cr);
