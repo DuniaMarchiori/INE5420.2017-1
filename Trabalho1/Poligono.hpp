@@ -12,7 +12,7 @@ private:
 	
 public:
 	Poligono() {
-		lista = new ListaEnc<Coordenada*>;
+		lista = new ListaEnc<Coordenada*>();
 		setTipo(POLIGONO);
 	}
 	

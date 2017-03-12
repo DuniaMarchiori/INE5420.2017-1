@@ -500,6 +500,8 @@
                         <property name="margin_right">5</property>
                         <property name="margin_top">5</property>
                         <property name="margin_bottom">5</property>
+                        <signal name="configure-event" handler="Viewport_DrawingArea_configure_event_cb" swapped="no"/>
+                        <signal name="draw" handler="Viewport_DrawingArea_draw_cb" swapped="no"/>
                       </object>
                     </child>
                   </object>

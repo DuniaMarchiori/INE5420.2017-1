@@ -24,5 +24,6 @@ public:
 	void setPontoSuperiorDireito(Coordenada* p) {
 		superiorDireito = p;
 	}	
-}
+};
+
 #endif
