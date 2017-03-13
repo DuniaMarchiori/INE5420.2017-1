@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <iostream>
 #include <vector>
+#include <math.h>
 
 #include "Ponto.hpp"
 #include "Reta.hpp"
@@ -72,7 +73,7 @@ int main(int argc, char *argv[]){
 	
 	// Display File
 	displayFile = new ListaEnc<ElementoGrafico*>();
-	displayFile->adiciona(r);
+	displayFile->adiciona(p);
 	displayFile->adiciona(r2);
 	displayFile->adiciona(r3);
 	
@@ -111,8 +112,12 @@ double transformaViewportY(double yW, double yWMin, double yWMax, double yVPMax,
 }
 
 void desenhaPonto(cairo_t* c, ElementoGrafico *elem){
-
-} //FAZER
+	Ponto* p = static_cast<Ponto*> (elem);
+	//Seria apenas um pixel, mas é feito um círculo ao redor do ponto para ficar visível.
+	cairo_move_to(c, p->getCoordenada()->x, p->getCoordenada()->y);
+	cairo_arc(c,p->getCoordenada()->x, p->getCoordenada()->y, 1.5, 0.0, 2*M_PI);
+	cairo_fill(c);
+}
 
 void desenhaReta(cairo_t* c, ElementoGrafico *elem) {
 	Reta* r = static_cast<Reta*> (elem);
