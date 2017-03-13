@@ -26,8 +26,7 @@ GtkEntry *textoPontoX, *textoPontoY, *textoNomeElemento;
 
 ListaEnc<ElementoGrafico*> *displayFile;
 
-template <typename T>
-void addToListBox(GtkWidget* ListBox, string nome, T* Objeto);
+void addToListBox(GtkWidget* ListBox, string nome);
 //Coordenada* getViewportMin ();
 //Coordenada* getViewportMax ();
 
@@ -104,7 +103,7 @@ int main(int argc, char *argv[]){
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
 	*/
 	
-	addToListBox(elmnt_List, "Reta Locona");
+	addToListBox(elmnt_List, "Reta_1");
 	
 	gtk_builder_connect_signals(gtkBuilder, NULL);
 	gtk_widget_show_all(window_Main);
