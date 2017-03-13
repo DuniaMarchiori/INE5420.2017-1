@@ -104,6 +104,7 @@ int main(int argc, char *argv[]){
 	*/
 	
 	
+	addToListBox(elmnt_List, "Reta_0");
 	addToListBox(elmnt_List, "Reta_1");
 	
 	gtk_builder_connect_signals(gtkBuilder, NULL);

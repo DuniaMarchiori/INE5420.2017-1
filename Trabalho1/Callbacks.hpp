@@ -14,6 +14,16 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
 	gtk_widget_show(window_NovoElemento);
 }
 
+//  Método do botão de deletar elemento.
+extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
+	GtkListBoxRow* row = gtk_list_box_get_selected_row ((GtkListBox*) elmnt_List);
+	if (row != NULL) {
+		int index = gtk_list_box_row_get_index(row);
+		gtk_container_remove((GtkContainer*) elmnt_List, (GtkWidget*) row);
+		displayFile->retiraDaPosicao(index);
+	}
+}
+
 //--------------------------------------------------------
 // Métodos da viewport
 
