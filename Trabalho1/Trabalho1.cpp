@@ -23,6 +23,9 @@ GtkWidget *window_NovoElemento;
 
 ListaEnc<ElementoGrafico*> *displayFile;
 
+Coordenada* getViewportMin ();
+Coordenada* getViewportMax ();
+
 // Main de testes básicos
 int main(int argc, char *argv[]){
 	
@@ -59,6 +62,8 @@ int main(int argc, char *argv[]){
 	Reta* r = new Reta(c, c2);
 	Reta* r2 = new Reta(c3, c4);
 	
+	Reta* r3 = new Reta(getViewportMin(), getViewportMax());
+	
 	Poligono* pol = new Poligono();
 	pol->adicionarCoordenada(c);
 	pol->adicionarCoordenada(c2);
@@ -69,6 +74,7 @@ int main(int argc, char *argv[]){
 	displayFile = new ListaEnc<ElementoGrafico*>();
 	displayFile->adiciona(r);
 	displayFile->adiciona(r2);
+	displayFile->adiciona(r3);
 	
 	// Window
 	Window *window;
@@ -154,13 +160,29 @@ void desenhaElemento(ElementoGrafico *elem) {
 	gtk_widget_queue_draw (window_Main);
 }
 
-static void update_Surface () {
+void update_Surface () {
 	Elemento<ElementoGrafico*> *elementoLista = displayFile->getHead();
 	while (elementoLista != NULL) {
 		// Desenha esse elemento
 		desenhaElemento(elementoLista->getInfo());
 		elementoLista = elementoLista->getProximo();
 	}	
+}
+
+Coordenada* getViewportMin () {
+	Coordenada* viewportMin;
+	viewportMin->x = 0;
+	viewportMin->y = 0;
+	return viewportMin;
+}
+
+Coordenada* getViewportMax () {
+	Coordenada* viewportMax;
+	
+	viewportMax->x = 10; // Aqui teriamos que pegar o width da viewport
+	viewportMax->y = 10; // Aqui teriamos que pegar o height da viewport
+	
+	return viewportMax;
 }
 
 static void clear_surface (){
