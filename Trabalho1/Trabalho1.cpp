@@ -103,6 +103,7 @@ int main(int argc, char *argv[]){
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
 	*/
 	
+	
 	addToListBox(elmnt_List, "Reta_1");
 	
 	gtk_builder_connect_signals(gtkBuilder, NULL);
