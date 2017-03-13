@@ -12,8 +12,9 @@ private:
 	
 public:
 	//! Construtor
-	Poligono() {
+	Poligono(string nome) {
 		lista = new ListaEnc<Coordenada*>();
+		setNome(nome);
 		setTipo(POLIGONO);
 	}
 	

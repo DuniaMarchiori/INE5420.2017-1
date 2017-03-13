@@ -14,8 +14,9 @@ public:
 	/*!
 		/param c é a coordenada do ponto.
 	*/
-	Ponto(Coordenada* c) {
+	Ponto(string nome, Coordenada* c) {
 		setCoordenada(c);
+		setNome(nome);
 		setTipo(PONTO);
 	}
 	

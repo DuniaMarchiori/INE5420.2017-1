@@ -15,9 +15,10 @@ public:
 		/param pInicial é a coordenada do ponto inicial da reta.
 		/param pFinal é a coordenada do ponto final da reta.
 	*/
-	Reta(Coordenada* pInicial, Coordenada* pFinal) {
+	Reta(string nome, Coordenada* pInicial, Coordenada* pFinal) {
 		pontoInicial = pInicial;
 		pontoFinal = pFinal;
+		setNome(nome);
 		setTipo(RETA);
 	}
 	

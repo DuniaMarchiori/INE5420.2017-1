@@ -22,10 +22,12 @@ GtkWidget *pos_Txt_Fator, *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_
 GtkWidget *viewport_DrawingArea;
 GtkWidget *window_NovoElemento;
 
+GtkEntry *textoPontoX, *textoPontoY, *textoNomeElemento;
+
 ListaEnc<ElementoGrafico*> *displayFile;
 
-Coordenada* getViewportMin ();
-Coordenada* getViewportMax ();
+//Coordenada* getViewportMin ();
+//Coordenada* getViewportMax ();
 
 // Main de testes básicos
 int main(int argc, char *argv[]){
@@ -56,16 +58,13 @@ int main(int argc, char *argv[]){
 	c4->y = 54;
 	
 	
-	Ponto* p = new Ponto(c);
-	p->setNome("a");
+	Ponto* p = new Ponto("ponto1", c);
+		
+	Reta* r = new Reta("reta1", c, c2);
+	Reta* r2 = new Reta("reta2", c3, c4);
+	//Reta* r3 = new Reta("reta3", getViewportMin(), getViewportMax());
 	
-	
-	Reta* r = new Reta(c, c2);
-	Reta* r2 = new Reta(c3, c4);
-	
-	Reta* r3 = new Reta(getViewportMin(), getViewportMax());
-	
-	Poligono* pol = new Poligono();
+	Poligono* pol = new Poligono("poligono1");
 	pol->adicionarCoordenada(c);
 	pol->adicionarCoordenada(c2);
 	pol->adicionarCoordenada(c3);
@@ -75,7 +74,7 @@ int main(int argc, char *argv[]){
 	displayFile = new ListaEnc<ElementoGrafico*>();
 	displayFile->adiciona(p);
 	displayFile->adiciona(r2);
-	displayFile->adiciona(r3);
+	//displayFile->adiciona(r3);
 	
 	// Window
 	Window *window;
@@ -92,6 +91,10 @@ int main(int argc, char *argv[]){
 	window_Main = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_Main"));
 	window_NovoElemento = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_NovoElmnt"));
 	viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
+
+	textoNomeElemento = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Nome"));
+	textoPontoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_X"));
+	textoPontoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_Y"));
 	/*
 	g_signal_connect (viewport_DrawingArea, "draw", G_CALLBACK (viewport_DrawingArea_draw_cb), NULL);
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
@@ -165,7 +168,7 @@ void desenhaElemento(ElementoGrafico *elem) {
 	gtk_widget_queue_draw (window_Main);
 }
 
-void update_Surface () {
+static void update_Surface () {
 	Elemento<ElementoGrafico*> *elementoLista = displayFile->getHead();
 	while (elementoLista != NULL) {
 		// Desenha esse elemento
