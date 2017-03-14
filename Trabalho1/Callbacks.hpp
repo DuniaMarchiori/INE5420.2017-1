@@ -21,6 +21,62 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	update_Surface();
 }
 
+//  Método do botão de mover a window para Cima.
+extern "C" G_MODULE_EXPORT void Pos_Btn_Cima_clicked_cb(){
+	double fator = 0;
+	
+	try {
+		fator = stod(gtk_entry_get_text((GtkEntry*) pos_Txt_Fator));
+	} catch (const invalid_argument& e) {
+		return;
+	}
+	
+	window->moverWindow(0,fator);
+	update_Surface();
+}
+
+//  Método do botão de mover a window para Esquerda.
+extern "C" G_MODULE_EXPORT void Pos_Btn_Esq_clicked_cb(){
+	double fator = 0;
+	
+	try {
+		fator = stod(gtk_entry_get_text((GtkEntry*) pos_Txt_Fator));
+	} catch (const invalid_argument& e) {
+		return;
+	}
+	
+	window->moverWindow(-fator,0);
+	update_Surface();
+}
+
+//  Método do botão de mover a window para Direita.
+extern "C" G_MODULE_EXPORT void Pos_Btn_Dir_clicked_cb(){
+	double fator = 0;
+	
+	try {
+		fator = stod(gtk_entry_get_text((GtkEntry*) pos_Txt_Fator));
+	} catch (const invalid_argument& e) {
+		return;
+	}
+	
+	window->moverWindow(fator,0);
+	update_Surface();
+}
+
+//  Método do botão de mover a window para Baixo.
+extern "C" G_MODULE_EXPORT void Pos_Btn_Baixo_clicked_cb(){
+	double fator = 0;
+	
+	try {
+		fator = stod(gtk_entry_get_text((GtkEntry*) pos_Txt_Fator));
+	} catch (const invalid_argument& e) {
+		return;
+	}
+	
+	window->moverWindow(0,-fator);
+	update_Surface();
+}
+
 //--------------------------------------------------------
 // Métodos da viewport
 

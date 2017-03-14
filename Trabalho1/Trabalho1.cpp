@@ -11,12 +11,15 @@
 
 using namespace std;
 
+// Relacionados à interface
 static cairo_surface_t *surface = NULL;
 GtkWidget *window_Main;
 
 GtkWidget *elmnt_List, *elmnt_Btn_Novo, *elmnt_Btn_Del;
 
 GtkWidget *pos_Txt_Fator, *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_Dir;
+
+GtkWidget *zoom_Txt_Fator, *zoom_Btn_Menos, *zoom_Btn_Mais;
 
 GtkWidget *viewport_DrawingArea;
 GtkWidget *window_NovoElemento;
@@ -28,6 +31,8 @@ GtkWidget *poligono_Btn_Add, *poligono_Btn_Del, *poligono_Listbox;
 
 GtkNotebook *notebook;
 
+// Relacionados ao sistema
+Window *window;
 ListaEnc<ElementoGrafico*> *displayFile;
 ListaEnc<Coordenada*> *listaCoordsPoligono;
 
@@ -38,15 +43,7 @@ void addToListBox(GtkWidget* ListBox, string nome);
 // Main de testes básicos
 int main(int argc, char *argv[]){
 	
-	// Objetos para teste
-	Coordenada* windowInfEsq = new Coordenada();
-	windowInfEsq->x = 0;
-	windowInfEsq->y = 0;
-	
-	Coordenada* windowSupDir = new Coordenada();
-	windowSupDir->x = 10;
-	windowSupDir->y = 10;
-	
+	// Objetos para teste	
 	Coordenada* c = new Coordenada();
 	c->x = 10;
 	c->setY(10);
@@ -86,10 +83,16 @@ int main(int argc, char *argv[]){
 	listaCoordsPoligono = new ListaEnc<Coordenada*>();
 
 	// Window
-	Window *window;
-	window->setPontoInferiorEsquerdo(windowInfEsq);
-	window->setPontoSuperiorDireito(windowSupDir);
+	Coordenada* windowInfEsq = new Coordenada();
+	windowInfEsq->x = 0;
+	windowInfEsq->y = 0;
 	
+	Coordenada* windowSupDir = new Coordenada();
+	windowSupDir->x = 10;
+	windowSupDir->y = 10;
+	
+	window = new Window(windowInfEsq, windowSupDir);
+	//
 
 	GtkBuilder  *gtkBuilder;
 	gtk_init(&argc, &argv);
@@ -98,11 +101,17 @@ int main(int argc, char *argv[]){
 	gtk_builder_add_from_file(gtkBuilder, "janela.glade", NULL);
 
 	window_Main = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_Main"));
-	window_NovoElemento = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_NovoElmnt"));
-	viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
 	
 	elmnt_List = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_List"));
-		
+	
+	pos_Txt_Fator = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Pos_Txt_Fator"));
+	
+	zoom_Txt_Fator = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Zoom_Txt_Fator"));
+	
+	viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
+
+	window_NovoElemento = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_NovoElmnt"));
+	
 	textoNomeElemento = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Nome"));
 	textoPontoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_X"));
 	textoPontoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_Y"));
@@ -136,6 +145,14 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
+Coordenada* transformaViewport(Coordenada* ponto, Coordenada* wMin, Coordenada* wMax, Coordenada* vpMin, Coordenada* vpMax) {
+	Coordenada* transformada;
+	transformada->x = ( ( (ponto-> x - wMin->x)/(wMax->x - wMin->x) ) * (vpMax->x - vpMin->x) );
+	transformada->y = ( ( 1 - ( (ponto->y - wMin->y)/(wMax->y - wMin->y) ) ) * (vpMax->y - vpMin->y) );
+	return transformada;
+}
+
+/*
 double transformaViewportX(double xW, double xWMin, double xWMax, double xVPMax, double xVPMin) {
 	return ( ( (xW - xWMin)/(xWMax - xWMin) ) * (xVPMax - xVPMin) );
 }
@@ -143,6 +160,7 @@ double transformaViewportX(double xW, double xWMin, double xWMax, double xVPMax,
 double transformaViewportY(double yW, double yWMin, double yWMax, double yVPMax, double yVPMin) {
 	return ( ( 1 - ( (yW - yWMin)/(yWMax - yWMin) ) ) * (yVPMax - yVPMin) );
 }
+*/
 
 void desenhaPonto(cairo_t* c, ElementoGrafico *elem){
 	Ponto* p = static_cast<Ponto*> (elem);
@@ -252,8 +270,8 @@ Coordenada* getViewportMin () {
 Coordenada* getViewportMax () {
 	Coordenada* viewportMax;
 	
-	viewportMax->x = 10; // Aqui teriamos que pegar o width da viewport
-	viewportMax->y = 10; // Aqui teriamos que pegar o height da viewport
+	viewportMax->x = gtk_widget_get_allocated_width(viewport_DrawingArea);
+	viewportMax->y = gtk_widget_get_allocated_height(viewport_DrawingArea);
 	
 	return viewportMax;
 }

@@ -226,7 +226,6 @@
                                                     <property name="margin_left">5</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="margin_top">5</property>
-                                                    <signal name="clicked" handler="Pos_Btn_Cima_clicked_cb" swapped="no"/>
                                                   </object>
                                                 </child>
                                               </object>
@@ -253,7 +252,6 @@
                                                         <property name="can_focus">True</property>
                                                         <property name="receives_default">True</property>
                                                         <property name="margin_left">5</property>
-                                                        <signal name="clicked" handler="Pos_Btn_Esq_clicked_cb" swapped="no"/>
                                                       </object>
                                                     </child>
                                                   </object>
@@ -276,7 +274,6 @@
                                                         <property name="can_focus">True</property>
                                                         <property name="receives_default">True</property>
                                                         <property name="margin_right">5</property>
-                                                        <signal name="clicked" handler="Pos_Btn_Dir_clicked_cb" swapped="no"/>
                                                       </object>
                                                     </child>
                                                   </object>
@@ -308,7 +305,6 @@
                                                     <property name="margin_left">5</property>
                                                     <property name="margin_right">5</property>
                                                     <property name="margin_bottom">5</property>
-                                                    <signal name="clicked" handler="Pos_Btn_Baixo_clicked_cb" swapped="no"/>
                                                   </object>
                                                 </child>
                                               </object>
@@ -411,7 +407,6 @@
                                                         <property name="receives_default">True</property>
                                                         <property name="margin_top">5</property>
                                                         <property name="margin_bottom">5</property>
-                                                        <signal name="clicked" handler="Zoom_Btn_Menos_clicked_cb" swapped="no"/>
                                                       </object>
                                                     </child>
                                                   </object>
@@ -436,7 +431,6 @@
                                                         <property name="margin_top">5</property>
                                                         <property name="margin_bottom">5</property>
                                                         <property name="image_position">top</property>
-                                                        <signal name="clicked" handler="Zoom_Btn_Mais_clicked_cb" swapped="no"/>
                                                       </object>
                                                     </child>
                                                   </object>
