@@ -30,6 +30,7 @@ GtkNotebook *notebook;
 
 ListaEnc<ElementoGrafico*> *displayFile;
 
+void addToListBox(GtkWidget* ListBox, string nome);
 //Coordenada* getViewportMin ();
 //Coordenada* getViewportMax ();
 
@@ -95,7 +96,9 @@ int main(int argc, char *argv[]){
 	window_Main = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_Main"));
 	window_NovoElemento = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_NovoElmnt"));
 	viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
-
+	
+	elmnt_List = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_List"));
+		
 	textoNomeElemento = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Nome"));
 	textoPontoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_X"));
 	textoPontoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_Y"));
@@ -117,8 +120,13 @@ int main(int argc, char *argv[]){
 	g_signal_connect (viewport_DrawingArea, "draw", G_CALLBACK (viewport_DrawingArea_draw_cb), NULL);
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
 	*/
+	
+	
+	addToListBox(elmnt_List, "Reta_0");
+	addToListBox(elmnt_List, "Reta_1");
+	
 	gtk_builder_connect_signals(gtkBuilder, NULL);
-	gtk_widget_show(window_Main);
+	gtk_widget_show_all(window_Main);
 	gtk_main ();
 	
 	return 0;
@@ -184,6 +192,12 @@ void desenhaElemento(ElementoGrafico *elem) {
 	
 	cairo_stroke(cr);
 	gtk_widget_queue_draw (window_Main);
+}
+
+void addToListBox(GtkWidget* ListBox, string nome) {
+	GtkWidget* row = gtk_list_box_row_new();
+	GtkWidget* label = gtk_label_new(nome.c_str());
+	gtk_container_add((GtkContainer*) ListBox, label);
 }
 
 static void update_Surface () {
