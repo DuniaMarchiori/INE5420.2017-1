@@ -120,11 +120,11 @@ int main(int argc, char *argv[]){
 
 	poligono_Listbox = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Pol"));
 	notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
+
 	/*
 	g_signal_connect (viewport_DrawingArea, "draw", G_CALLBACK (viewport_DrawingArea_draw_cb), NULL);
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
 	*/
-	
 	
 	addToListBox(elmnt_List, "Reta_0");
 	addToListBox(elmnt_List, "Reta_1");
@@ -211,7 +211,19 @@ void addToListBox(GtkWidget* listBox, string nome) {
 	gtk_widget_show_all(listBox);
 }
 
+static void clear_surface (){
+  cairo_t *cr;
+
+  cr = cairo_create (surface);
+
+  cairo_set_source_rgb (cr, 1, 1, 1);
+  cairo_paint (cr);
+
+  cairo_destroy (cr);
+}
+
 static void update_Surface () {
+	clear_surface();
 	Elemento<ElementoGrafico*> *elementoLista = displayFile->getHead();
 	while (elementoLista != NULL) {
 		// Desenha esse elemento
@@ -246,15 +258,29 @@ Coordenada* getViewportMax () {
 	return viewportMax;
 }
 
-static void clear_surface (){
-  cairo_t *cr;
+void limparTextoNomeNovoElmnt() {
+	gtk_entry_set_text(textoNomeElemento, "");
+}
 
-  cr = cairo_create (surface);
+void limparTextoNovoPonto() {
+	limparTextoNomeNovoElmnt();
+	gtk_entry_set_text(textoPontoX, "");
+	gtk_entry_set_text(textoPontoY, "");
+}
 
-  cairo_set_source_rgb (cr, 1, 1, 1);
-  cairo_paint (cr);
+void limparTextoNovaReta() {
+	limparTextoNomeNovoElmnt();
+	gtk_entry_set_text(textoRetaInicialX, "");
+	gtk_entry_set_text(textoRetaInicialY, "");
+	gtk_entry_set_text(textoRetaFinalX, "");
+	gtk_entry_set_text(textoRetaFinalY, "");
+}
 
-  cairo_destroy (cr);
+void limparTextoNovoPoligono() {
+	limparTextoNomeNovoElmnt();
+	gtk_entry_set_text(textoPoligonoX, "");
+	gtk_entry_set_text(textoPoligonoY, "");
+	//limpar list box
 }
 
 void inserirNovoPonto(string nome) {
@@ -280,7 +306,10 @@ void inserirNovoPonto(string nome) {
 		Ponto *p = new Ponto(nome, c);
 		// Adiciona objeto na display file
 		displayFile->adiciona(p);
+		addToListBox(elmnt_List, nome);
+		limparTextoNovoPonto();
 	} else {
+		cout << "ponto sem coord" << endl;
 		//mensagem de ERRO
 	}
 }
@@ -315,6 +344,8 @@ void inserirNovaReta(string nome) {
 		Reta *r = new Reta(nome, cI, cF);
 		// Adiciona objeto na display file
 		displayFile->adiciona(r);
+		addToListBox(elmnt_List, nome);
+		limparTextoNovaReta();
 	} else {
 		//mensagem de erro
 	}
@@ -343,15 +374,23 @@ string inserirCoordListaEnc() {
 		listaCoordsPoligono->adiciona(c);
 		return "(" + polX + "," + polY + ")";
 	} else {
+		cout << "coord pol vazia" << endl;
 		//mensagem de erro
 	}
-	//return "";
+	return "";
 }
 
 void inserirNovoPoligono(string nome) {
-	Poligono *pol = new Poligono(nome, listaCoordsPoligono);
-	displayFile->adiciona(pol);
-	listaCoordsPoligono = new ListaEnc<Coordenada*>();
+	if ( !(listaCoordsPoligono->listaVazia()) ) {
+		Poligono *pol = new Poligono(nome, listaCoordsPoligono);
+		displayFile->adiciona(pol);
+		addToListBox(elmnt_List, nome);
+		listaCoordsPoligono = new ListaEnc<Coordenada*>();
+		limparTextoNovoPoligono();
+	} else {
+		cout << "poligono sem coord" << endl;
+		// erro de não há coordenadas no polígono
+	}
 }
 
 void inserirNovoElemento() {
@@ -365,7 +404,7 @@ void inserirNovoElemento() {
 		switch (gtk_notebook_get_current_page(notebook)) {
 			case 0:
 				// A page 0 corresponde à aba de Ponto
-				inserirNovoPonto(nome);
+				inserirNovoPonto(nome);	
 				break;
 			case 1:
 				// A page 1 corresponde à aba de Reta
@@ -376,11 +415,23 @@ void inserirNovoElemento() {
 				inserirNovoPoligono(nome);
 				break;
 		}
-		addToListBox(elmnt_List, nome);
 	} else {
 		//mensagem de erro
 		cout << "sem nome" << endl;
 	}
 }
 
+// método para uso em testes
+void exibeDisplayFile() {
+	Elemento<ElementoGrafico*> *elementoCoord = displayFile->getHead();
+	ElementoGrafico* e = elementoCoord->getInfo();
+	cout << "primeiro:" + e->getNome() << endl;
+
+	elementoCoord = elementoCoord->getProximo();
+	while (elementoCoord != NULL) {
+		e = elementoCoord->getInfo();
+		cout << e->getNome() << endl;
+		elementoCoord = elementoCoord->getProximo();
+	}
+}
 #include "Callbacks.hpp"

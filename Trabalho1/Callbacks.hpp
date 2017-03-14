@@ -18,6 +18,7 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
 //  Método do botão de deletar elemento.
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	displayFile->retiraDaPosicao(getIndexElementoDeletado(elmnt_List));
+	update_Surface();
 }
 
 //--------------------------------------------------------
