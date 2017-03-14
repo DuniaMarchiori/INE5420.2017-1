@@ -204,17 +204,20 @@ void desenhaPoligono(cairo_t* c, ElementoGrafico *elem) {
 	ListaEnc<Coordenada*> *lista = p->getLista();
 	Elemento<Coordenada*> *elementoCoord = lista->getHead();
 	Coordenada* coord = elementoCoord->getInfo();
+	
+	Coordenada* transformada = transformaViewport(coord, window, getViewportMin(), getViewportMax());
 
-	cairo_move_to(c, coord->x, coord->y);
+	cairo_move_to(c, transformada->x, transformada->y);
 	elementoCoord = elementoCoord->getProximo();
 	if (elementoCoord == NULL) {
 		// Quando há só uma coordenada, desenha um ponto
-		cairo_arc(c,coord->x, coord->y, 1.5, 0.0, 2*M_PI);
+		cairo_arc(c,transformada->x, transformada->y, 1.5, 0.0, 2*M_PI);
 		cairo_fill(c);
 	} else {
 		while (elementoCoord != NULL) {
 			coord = elementoCoord->getInfo();
-			cairo_line_to(c, coord->x, coord->y);
+			transformada = transformaViewport(coord, window, getViewportMin(), getViewportMax());
+			cairo_line_to(c, transformada->x, transformada->y);
 			elementoCoord = elementoCoord->getProximo();
 		}
 	}
