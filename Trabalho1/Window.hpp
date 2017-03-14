@@ -36,6 +36,14 @@ public:
 		superiorDireito->x += fatX;
 		superiorDireito->y += fatY;
 	}
+	
+	void zoom(double fator) {
+		double quant = fator/2;
+		inferiorEsquerdo->x += quant;
+		inferiorEsquerdo->y += quant;
+		superiorDireito->x -= quant;
+		superiorDireito->y -= quant;
+	}
 };
 
 #endif

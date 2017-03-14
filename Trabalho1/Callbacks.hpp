@@ -77,6 +77,34 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Baixo_clicked_cb(){
 	update_Surface();
 }
 
+//  Método do botão de mover a window para Baixo.
+extern "C" G_MODULE_EXPORT void Zoom_Btn_Menos_clicked_cb(){
+	double fator = 0;
+	
+	try {
+		fator = stod(gtk_entry_get_text((GtkEntry*) zoom_Txt_Fator));
+	} catch (const invalid_argument& e) {
+		return;
+	}
+	
+	window->zoom(-fator);
+	update_Surface();
+}
+
+//  Método do botão de mover a window para Baixo.
+extern "C" G_MODULE_EXPORT void Zoom_Btn_Mais_clicked_cb(){
+	double fator = 0;
+	
+	try {
+		fator = stod(gtk_entry_get_text((GtkEntry*) zoom_Txt_Fator));
+	} catch (const invalid_argument& e) {
+		return;
+	}
+	
+	window->zoom(fator);
+	update_Surface();
+}
+
 //--------------------------------------------------------
 // Métodos da viewport
 
