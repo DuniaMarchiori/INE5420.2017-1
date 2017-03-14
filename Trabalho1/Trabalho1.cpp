@@ -75,8 +75,8 @@ int main(int argc, char *argv[]){
 	
 	// Display File
 	displayFile = new ListaEnc<ElementoGrafico*>();
-	displayFile->adiciona(p);
-	displayFile->adiciona(r2);
+	//displayFile->adiciona(p);
+	//displayFile->adiciona(r2);
 	//displayFile->adiciona(r3);
 	
 	//-------------------------------------------------------
@@ -135,8 +135,8 @@ int main(int argc, char *argv[]){
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
 	*/
 	
-	addToListBox(elmnt_List, "Reta_0");
-	addToListBox(elmnt_List, "Reta_1");
+	//addToListBox(elmnt_List, "Reta_0");
+	//addToListBox(elmnt_List, "Reta_1");
 	
 	gtk_builder_connect_signals(gtkBuilder, NULL);
 	gtk_widget_show_all(window_Main);
@@ -145,9 +145,11 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-Coordenada* transformaViewport(Coordenada* ponto, Coordenada* wMin, Coordenada* wMax, Coordenada* vpMin, Coordenada* vpMax) {
-	Coordenada* transformada;
-	transformada->x = ( ( (ponto-> x - wMin->x)/(wMax->x - wMin->x) ) * (vpMax->x - vpMin->x) );
+Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMin, Coordenada* vpMax) {
+	Coordenada* transformada = new Coordenada();
+	Coordenada* wMin = wind->getPontoInferiorEsquerdo();
+	Coordenada* wMax = wind->getPontoSuperiorDireito();
+	transformada->x = ( ( (ponto->x - wMin->x)/(wMax->x - wMin->x) ) * (vpMax->x - vpMin->x) );
 	transformada->y = ( ( 1 - ( (ponto->y - wMin->y)/(wMax->y - wMin->y) ) ) * (vpMax->y - vpMin->y) );
 	return transformada;
 }
@@ -162,19 +164,39 @@ double transformaViewportY(double yW, double yWMin, double yWMax, double yVPMax,
 }
 */
 
+Coordenada* getViewportMin () {
+	Coordenada* viewportMin = new Coordenada();;
+	viewportMin->x = 0;
+	viewportMin->y = 0;
+	return viewportMin;
+}
+
+Coordenada* getViewportMax () {
+	Coordenada* viewportMax = new Coordenada();
+
+	viewportMax->x = gtk_widget_get_allocated_width(viewport_DrawingArea);
+	viewportMax->y = gtk_widget_get_allocated_height(viewport_DrawingArea);
+
+	return viewportMax;
+}
+
 void desenhaPonto(cairo_t* c, ElementoGrafico *elem){
 	Ponto* p = static_cast<Ponto*> (elem);
+	Coordenada* transformada = transformaViewport(p->getCoordenada(), window, getViewportMin(), getViewportMax());
 	//Seria apenas um pixel, mas é feito um círculo ao redor do ponto para ficar visível.
-	cairo_move_to(c, p->getCoordenada()->x, p->getCoordenada()->y);
-	cairo_arc(c,p->getCoordenada()->x, p->getCoordenada()->y, 1.5, 0.0, 2*M_PI);
+	cairo_move_to(c, transformada->x, transformada->y);
+	cairo_arc(c,transformada->x, transformada->y, 1.5, 0.0, 2*M_PI);
 	cairo_fill(c);
 }
 
 void desenhaReta(cairo_t* c, ElementoGrafico *elem) {
 	Reta* r = static_cast<Reta*> (elem);
+	
+	Coordenada* transformadaPInicial = transformaViewport(r->getPontoInicial(), window, getViewportMin(), getViewportMax());
+	Coordenada* transformadaPFinal = transformaViewport(r->getPontoFinal(), window, getViewportMin(), getViewportMax());
 
-	cairo_move_to(c, r->getPontoInicial()->x, r->getPontoInicial()->y);
-	cairo_line_to(c, r->getPontoFinal()->x, r->getPontoFinal()->y);
+	cairo_move_to(c, transformadaPInicial->x, transformadaPInicial->y);
+	cairo_line_to(c, transformadaPFinal->x, transformadaPFinal->y);
 }
 
 void desenhaPoligono(cairo_t* c, ElementoGrafico *elem) {
@@ -247,7 +269,7 @@ static void update_Surface () {
 		// Desenha esse elemento
 		desenhaElemento(elementoLista->getInfo());
 		elementoLista = elementoLista->getProximo();
-	}	
+	}
 }
 
 // list é a listbox que queremos deletar o elemento
@@ -258,22 +280,6 @@ int getIndexElementoDeletado(GtkWidget* list) {
 		gtk_container_remove((GtkContainer*) list, (GtkWidget*) row);
 		return index;
 	}
-}
-
-Coordenada* getViewportMin () {
-	Coordenada* viewportMin;
-	viewportMin->x = 0;
-	viewportMin->y = 0;
-	return viewportMin;
-}
-
-Coordenada* getViewportMax () {
-	Coordenada* viewportMax;
-	
-	viewportMax->x = gtk_widget_get_allocated_width(viewport_DrawingArea);
-	viewportMax->y = gtk_widget_get_allocated_height(viewport_DrawingArea);
-	
-	return viewportMax;
 }
 
 void limparTextoNomeNovoElmnt() {
