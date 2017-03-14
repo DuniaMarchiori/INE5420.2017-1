@@ -11,6 +11,7 @@ extern "C" G_MODULE_EXPORT void Window_Main_destroy_cb(){
 
 //  Método do botão de novo elemento.
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
+	listaCoordsPoligono = new ListaEnc<Coordenada*>();
 	gtk_widget_show(window_NovoElemento);
 }
 
@@ -67,4 +68,8 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Add_clicked_cb() {
 // Botão que deleta uma coordenada do poligono
 extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Del_clicked_cb(){
 	listaCoordsPoligono->retiraDaPosicao(getIndexElementoDeletado(poligono_Listbox));
+}
+
+extern "C" G_MODULE_EXPORT void Window_NovoElmnt_destroy_cb(){
+	free(listaCoordsPoligono);
 }

@@ -82,6 +82,9 @@ int main(int argc, char *argv[]){
 	displayFile->adiciona(r2);
 	//displayFile->adiciona(r3);
 	
+	//-------------------------------------------------------
+	listaCoordsPoligono = new ListaEnc<Coordenada*>();
+
 	// Window
 	Window *window;
 	window->setPontoInferiorEsquerdo(windowInfEsq);
@@ -164,10 +167,16 @@ void desenhaPoligono(cairo_t* c, ElementoGrafico *elem) {
 
 	cairo_move_to(c, coord->x, coord->y);
 	elementoCoord = elementoCoord->getProximo();
-	while (elementoCoord != NULL) {
-		coord = elementoCoord->getInfo();
-		cairo_line_to(c, coord->x, coord->y);
-		elementoCoord = elementoCoord->getProximo();
+	if (elementoCoord == NULL) {
+		// Quando há só uma coordenada, desenha um ponto
+		cairo_arc(c,coord->x, coord->y, 1.5, 0.0, 2*M_PI);
+		cairo_fill(c);
+	} else {
+		while (elementoCoord != NULL) {
+			coord = elementoCoord->getInfo();
+			cairo_line_to(c, coord->x, coord->y);
+			elementoCoord = elementoCoord->getProximo();
+		}
 	}
 	cairo_close_path(c);
 }
@@ -331,6 +340,7 @@ string inserirCoordListaEnc() {
 			cout << "catch de texto no campo numérico" << endl;
 			return "";
 		}
+		listaCoordsPoligono->adiciona(c);
 		return "(" + polX + "," + polY + ")";
 	} else {
 		//mensagem de erro
@@ -341,6 +351,7 @@ string inserirCoordListaEnc() {
 void inserirNovoPoligono(string nome) {
 	Poligono *pol = new Poligono(nome, listaCoordsPoligono);
 	displayFile->adiciona(pol);
+	listaCoordsPoligono = new ListaEnc<Coordenada*>();
 }
 
 void inserirNovoElemento() {
@@ -368,6 +379,7 @@ void inserirNovoElemento() {
 		addToListBox(elmnt_List, nome);
 	} else {
 		//mensagem de erro
+		cout << "sem nome" << endl;
 	}
 }
 
