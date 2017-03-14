@@ -307,18 +307,12 @@ void limparTextoNovoPoligono() {
 	limparTextoNomeNovoElmnt();
 	gtk_entry_set_text(textoPoligonoX, "");
 	gtk_entry_set_text(textoPoligonoY, "");
-	//limpar list box
-	/*
-	GList* linhas = gtk_container_get_children((GtkContainer*) poligono_Listbox);
-	GList* elemento = g_list_first(linhas);
-	GList* auxiliar = elemento;
-
-	while (elemento != NULL) {
-		gtk_container_remove((GtkContainer*) poligono_Listbox, (GtkWidget*) elemento);
-		elemento = g_list_next(auxiliar);
-		auxiliar = elemento;
+	// Limpa a listBox
+	GtkListBoxRow* row = gtk_list_box_get_row_at_index ((GtkListBox*) poligono_Listbox, 0);
+	while (row != NULL) {
+		gtk_container_remove((GtkContainer*) poligono_Listbox, (GtkWidget*) row);
+		row = gtk_list_box_get_row_at_index ((GtkListBox*) poligono_Listbox, 0);
 	}
-	*/
 }
 
 void inserirNovoPonto(string nome) {
