@@ -7,7 +7,6 @@
 #include "Reta.hpp"
 #include "Poligono.hpp"
 #include "Window.hpp"
-
 #include "Coordenada.hpp"
 
 using namespace std;
@@ -22,7 +21,12 @@ GtkWidget *pos_Txt_Fator, *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_
 GtkWidget *viewport_DrawingArea;
 GtkWidget *window_NovoElemento;
 
-GtkEntry *textoPontoX, *textoPontoY, *textoNomeElemento;
+GtkEntry *textoNomeElemento, *textoPontoX, *textoPontoY, *textoRetaInicialX, *textoRetaInicialY, 
+		*textoRetaFinalX, *textoRetaFinalY, *textoPoligonoX, *textoPoligonoY;
+
+GtkWidget *poligono_Btn_Add, *poligono_Btn_Del, *poligono_Listbox;
+
+GtkNotebook *notebook;
 
 ListaEnc<ElementoGrafico*> *displayFile;
 
@@ -95,6 +99,20 @@ int main(int argc, char *argv[]){
 	textoNomeElemento = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Nome"));
 	textoPontoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_X"));
 	textoPontoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_Y"));
+	textoRetaInicialX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_X1"));
+	textoRetaInicialY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_Y1"));
+	textoRetaFinalX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_X2"));
+	textoRetaFinalY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_Y2"));
+	textoPoligonoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_X"));
+	textoPoligonoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Y"));
+
+	/*
+	NovoElmnt_Pol_Add
+	NovoElmnt_Pol_Del
+	NovoElmnt_Listbox_Pol
+	*/
+
+	notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
 	/*
 	g_signal_connect (viewport_DrawingArea, "draw", G_CALLBACK (viewport_DrawingArea_draw_cb), NULL);
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
@@ -202,6 +220,101 @@ static void clear_surface (){
   cairo_paint (cr);
 
   cairo_destroy (cr);
+}
+
+void inserirNovoPonto(string nome) {
+	// Pega coordenadas
+	string coordX = gtk_entry_get_text(textoPontoX);
+	string coordY = gtk_entry_get_text(textoPontoY);
+
+	/// Se os campos de coordenada não estão em branco
+	if ( !(coordX.empty()) && !(coordY.empty()) ) {
+		// Cria novo objeto
+		Coordenada* c = new Coordenada();
+		// Verifica se os campos são números
+		try {
+			// stod = string to double
+			c->setX(stod(coordX));
+			c->setY(stod(coordY));
+		} catch (const invalid_argument& e) {
+			// Mensagem de erro
+			cout << "catch de texto no campo numérico" << endl;
+			return;
+		}
+
+		Ponto *p = new Ponto(nome, c);
+		// Adiciona objeto na display file
+		displayFile->adiciona(p);
+	} else {
+		//mensagem de ERRO
+	}
+}
+
+void inserirNovaReta(string nome) {
+	// Pega coordenadas
+	string coordIniX = gtk_entry_get_text(textoRetaInicialX);
+	string coordIniY = gtk_entry_get_text(textoRetaInicialY);
+	string coordFinX = gtk_entry_get_text(textoRetaFinalX);
+	string coordFinY = gtk_entry_get_text(textoRetaFinalY);
+
+	/// Se os campos de coordenada não estão em branco
+	if ( !(coordIniX.empty()) && !(coordIniY.empty()) && !(coordFinX.empty()) && !(coordFinY.empty()) ) { 
+		// Cria novo objeto
+		Coordenada* cI = new Coordenada();
+		Coordenada* cF = new Coordenada();
+
+		// Verifica se os campos são números
+		try {
+			// stod = string to double
+			cI->setX(stod(coordIniX));
+			cI->setY(stod(coordIniY));
+
+			cF->setX(stod(coordFinX));
+			cF->setY(stod(coordFinY));
+		} catch (const invalid_argument& e) {
+			// Mensagem de erro
+			cout << "catch de texto no campo numérico" << endl;
+			return;
+		}
+
+		Reta *r = new Reta(nome, cI, cF);
+		// Adiciona objeto na display file
+		displayFile->adiciona(r);
+	} else {
+		//mensagem de erro
+	}
+	
+}
+
+void inserirNovoPoligono(string nome) {
+	
+}
+
+void inserirNovoElemento() {
+
+	// Pega o nome do elemento
+	string nome = gtk_entry_get_text(textoNomeElemento);
+
+	// Se o campo de nome não está em branco
+	if ( !(nome.empty()) ) {	
+		// Verifica que tipo de figura está sendo inserida (as páginas do notebook são as abas da janela de novo elemento)
+		switch (gtk_notebook_get_current_page(notebook)) {
+			case 0:
+				// A page 0 corresponde à aba de Ponto
+				inserirNovoPonto(nome);
+				break;
+			case 1:
+				// A page 1 corresponde à aba de Reta
+				inserirNovaReta(nome);
+				break;
+			case 2:
+				// A page 2 corresponde à aba de Polígono
+				inserirNovoPoligono(nome);
+				break;
+		}
+	} else {
+		//mensagem de erro
+	}
 }
 
 #include "Callbacks.hpp"

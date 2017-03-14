@@ -47,25 +47,7 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 
 // Botão que adiciona um novo elemento
 extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
-	// TODO verificação de campos nulos ou não-numéricos
-	// TODO diferentes inserções para Retas e Poligonos
-
-	// teste inicial pro método de inserir
-	// Pega nome (mesmo comando para todos os desenhos)
-	string nome = gtk_entry_get_text(textoNomeElemento);
-
-	// Ponto simples ------------------
-	// pega valores
-	string numx = gtk_entry_get_text(textoPontoX);
-	string numy = gtk_entry_get_text(textoPontoY);
-	//cria novo objeto
-	Coordenada* c = new Coordenada();
-	c->setX(stod(numx));
-	c->setY(stod(numy));
-	Ponto *p = new Ponto(nome, c);
-	//adiciona objeto na display file
-	displayFile->adiciona(p);
 	
-
+	inserirNovoElemento();
 	update_Surface();
 }
