@@ -49,14 +49,27 @@
                                 <property name="can_focus">False</property>
                                 <property name="orientation">vertical</property>
                                 <child>
-                                  <object class="GtkViewport" id="viewport1">
-                                    <property name="height_request">100</property>
+                                  <object class="GtkScrolledWindow" id="scrolledwindow1">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="margin_left">5</property>
+                                    <property name="margin_right">5</property>
+                                    <property name="margin_top">5</property>
+                                    <property name="margin_bottom">5</property>
+                                    <property name="hscrollbar_policy">never</property>
+                                    <property name="vscrollbar_policy">always</property>
+                                    <property name="shadow_type">in</property>
                                     <child>
-                                      <object class="GtkListBox" id="Elmnt_List">
+                                      <object class="GtkViewport" id="viewport1">
+                                        <property name="height_request">100</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
+                                        <child>
+                                          <object class="GtkListBox" id="Elmnt_List">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
@@ -94,6 +107,7 @@
                                     <property name="margin_right">5</property>
                                     <property name="margin_top">5</property>
                                     <property name="margin_bottom">5</property>
+                                    <signal name="clicked" handler="Elmnt_Btn_Del_clicked_cb" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1158,17 +1172,34 @@
                     <property name="shadow_type">in</property>
                     <child>
                       <object class="GtkAlignment" id="alignment11">
+                        <property name="height_request">200</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="left_padding">12</property>
+                        <property name="margin_left">100</property>
+                        <property name="margin_right">100</property>
+                        <property name="margin_top">5</property>
+                        <property name="margin_bottom">5</property>
                         <child>
-                          <object class="GtkListBox" id="NovoElmnt_Listbox_Pol">
+                          <object class="GtkScrolledWindow" id="scrolledwindow2">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_left">5</property>
-                            <property name="margin_right">5</property>
-                            <property name="margin_top">5</property>
-                            <property name="margin_bottom">5</property>
+                            <property name="can_focus">True</property>
+                            <property name="hscrollbar_policy">never</property>
+                            <property name="vscrollbar_policy">always</property>
+                            <property name="shadow_type">in</property>
+                            <child>
+                              <object class="GtkViewport" id="viewport2">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <child>
+                                  <object class="GtkListBox" id="NovoElmnt_Listbox_Pol">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_top">5</property>
+                                    <property name="margin_bottom">5</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>

@@ -195,10 +195,11 @@ void desenhaElemento(ElementoGrafico *elem) {
 	gtk_widget_queue_draw (window_Main);
 }
 
-void addToListBox(GtkWidget* ListBox, string nome) {
+void addToListBox(GtkWidget* listBox, string nome) {
 	GtkWidget* row = gtk_list_box_row_new();
 	GtkWidget* label = gtk_label_new(nome.c_str());
-	gtk_container_add((GtkContainer*) ListBox, label);
+	gtk_container_add((GtkContainer*) listBox, label);
+	gtk_widget_show_all(listBox);
 }
 
 static void update_Surface () {
