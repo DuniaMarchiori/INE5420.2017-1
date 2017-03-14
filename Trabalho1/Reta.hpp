@@ -12,6 +12,7 @@ private:
 public:
 	//! Construtor
 	/*!
+		/param nome é o nome da reta
 		/param pInicial é a coordenada do ponto inicial da reta.
 		/param pFinal é a coordenada do ponto final da reta.
 	*/

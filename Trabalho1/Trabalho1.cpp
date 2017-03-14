@@ -29,6 +29,7 @@ GtkWidget *poligono_Btn_Add, *poligono_Btn_Del, *poligono_Listbox;
 GtkNotebook *notebook;
 
 ListaEnc<ElementoGrafico*> *displayFile;
+ListaEnc<Coordenada*> *listaCoordsPoligono;
 
 void addToListBox(GtkWidget* ListBox, string nome);
 //Coordenada* getViewportMin ();
@@ -107,14 +108,14 @@ int main(int argc, char *argv[]){
 	textoRetaFinalX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_X2"));
 	textoRetaFinalY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_Y2"));
 	textoPoligonoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_X"));
-	textoPoligonoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Y"));
+	textoPoligonoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Y"));
 
 	/*
 	NovoElmnt_Pol_Add
 	NovoElmnt_Pol_Del
-	NovoElmnt_Listbox_Pol
 	*/
 
+	poligono_Listbox = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Pol"));
 	notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
 	/*
 	g_signal_connect (viewport_DrawingArea, "draw", G_CALLBACK (viewport_DrawingArea_draw_cb), NULL);
@@ -209,6 +210,16 @@ static void update_Surface () {
 	}	
 }
 
+// list é a listbox que queremos deletar o elemento
+int getIndexElementoDeletado(GtkWidget* list) {
+	GtkListBoxRow* row = gtk_list_box_get_selected_row ((GtkListBox*) list);
+	if (row != NULL) {
+		int index = gtk_list_box_row_get_index(row);
+		gtk_container_remove((GtkContainer*) list, (GtkWidget*) row);
+		return index;
+	}
+}
+
 Coordenada* getViewportMin () {
 	Coordenada* viewportMin;
 	viewportMin->x = 0;
@@ -300,8 +311,35 @@ void inserirNovaReta(string nome) {
 	
 }
 
+string inserirCoordListaEnc() {
+	// Pega coordenadas
+	string polX = gtk_entry_get_text(textoPoligonoX);
+	string polY = gtk_entry_get_text(textoPoligonoY);
+
+	/// Se os campos de coordenada não estão em branco
+	if ( !(polX.empty()) && !(polY.empty()) ) {
+		// Cria novo objeto
+		Coordenada* c = new Coordenada();
+		// Verifica se os campos são números
+		try {
+			// stod = string to double
+			c->setX(stod(polX));
+			c->setY(stod(polY));
+		} catch (const invalid_argument& e) {
+			// Mensagem de erro
+			cout << "catch de texto no campo numérico" << endl;
+			return "";
+		}
+		return "(" + polX + "," + polY + ")";
+	} else {
+		//mensagem de erro
+	}
+	//return "";
+}
+
 void inserirNovoPoligono(string nome) {
-	
+	Poligono *pol = new Poligono(nome, listaCoordsPoligono);
+	displayFile->adiciona(pol);
 }
 
 void inserirNovoElemento() {
@@ -326,6 +364,7 @@ void inserirNovoElemento() {
 				inserirNovoPoligono(nome);
 				break;
 		}
+		addToListBox(elmnt_List, nome);
 	} else {
 		//mensagem de erro
 	}

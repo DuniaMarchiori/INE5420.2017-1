@@ -12,6 +12,7 @@ private:
 public:
 	//! Construtor
 	/*!
+		/param nome é o nome do ponto
 		/param c é a coordenada do ponto.
 	*/
 	Ponto(string nome, Coordenada* c) {

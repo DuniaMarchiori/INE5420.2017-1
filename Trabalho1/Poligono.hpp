@@ -12,8 +12,22 @@ private:
 	
 public:
 	//! Construtor
+	/*
+		/param nome é o nome do polígono
+	*/
 	Poligono(string nome) {
 		lista = new ListaEnc<Coordenada*>();
+		setNome(nome);
+		setTipo(POLIGONO);
+	}
+
+	//! Construtor
+	/*
+		/param nome é o nome do polígono
+		/param novaLista é a lista de coordenadas do polígono
+	*/
+	Poligono(string nome, ListaEnc<Coordenada*> *novaLista) {
+		setLista(novaLista);
 		setNome(nome);
 		setTipo(POLIGONO);
 	}
@@ -25,6 +39,14 @@ public:
     */
 	void adicionarCoordenada(Coordenada* p) {
 		lista->adiciona(p);
+	}
+
+	//! Método que modifica a lista de coordenadas do polígono
+    /*!
+        /param novaLista é a lista de coordenadas a ser adicionada.
+    */
+	void setLista(ListaEnc<Coordenada*> *novaLista) {
+		lista = novaLista;
 	}
 	
 	//! Método que retorna a lista de coordenadas do polígono

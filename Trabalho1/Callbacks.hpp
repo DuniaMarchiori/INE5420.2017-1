@@ -16,12 +16,7 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
 
 //  Método do botão de deletar elemento.
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
-	GtkListBoxRow* row = gtk_list_box_get_selected_row ((GtkListBox*) elmnt_List);
-	if (row != NULL) {
-		int index = gtk_list_box_row_get_index(row);
-		gtk_container_remove((GtkContainer*) elmnt_List, (GtkWidget*) row);
-		displayFile->retiraDaPosicao(index);
-	}
+	displayFile->retiraDaPosicao(getIndexElementoDeletado(elmnt_List));
 }
 
 //--------------------------------------------------------
@@ -57,7 +52,19 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 
 // Botão que adiciona um novo elemento
 extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
-	
 	inserirNovoElemento();
 	update_Surface();
+}
+
+// Botão que adiciona uma nova coordenada no poligono
+extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Add_clicked_cb() {
+	string c = inserirCoordListaEnc();
+	if ( !(c.empty()) )  {
+		addToListBox(poligono_Listbox, c);
+	}
+}
+
+// Botão que deleta uma coordenada do poligono
+extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Del_clicked_cb(){
+	listaCoordsPoligono->retiraDaPosicao(getIndexElementoDeletado(poligono_Listbox));
 }
