@@ -20,6 +20,8 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	displayFile->retiraDaPosicao(getIndexElementoDeletado(elmnt_List));
 	update_Surface();
 	inserirTextoConsole("Elemento excluído.");
+	// apenas para testes
+	exibeDisplayFile();
 }
 
 //  Método do botão de mover a window para Cima.
