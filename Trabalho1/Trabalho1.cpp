@@ -193,7 +193,6 @@ void desenhaPonto(cairo_t* c, ElementoGrafico *elem){
 	cairo_move_to(c, transformada->x, transformada->y);
 	cairo_arc(c,transformada->x, transformada->y, 1.5, 0.0, 2*M_PI);
 	cairo_fill(c);
-	inserirTextoConsole("Ponto desenhado.");
 }
 
 void desenhaReta(cairo_t* c, ElementoGrafico *elem) {
@@ -204,7 +203,6 @@ void desenhaReta(cairo_t* c, ElementoGrafico *elem) {
 
 	cairo_move_to(c, transformadaPInicial->x, transformadaPInicial->y);
 	cairo_line_to(c, transformadaPFinal->x, transformadaPFinal->y);
-	inserirTextoConsole("Reta desenhada.");
 }
 
 void desenhaPoligono(cairo_t* c, ElementoGrafico *elem) {
@@ -230,7 +228,6 @@ void desenhaPoligono(cairo_t* c, ElementoGrafico *elem) {
 		}
 	}
 	cairo_close_path(c);
-	inserirTextoConsole("Polígono desenhado.");
 }
 
 void desenhaElemento(ElementoGrafico *elem) {	
