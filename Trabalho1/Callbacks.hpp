@@ -130,6 +130,7 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_configure_event_cb (Gtk
 												gtk_widget_get_allocated_height (widget));
 
 	clear_surface ();
+	update_Surface();
 	return TRUE;
 }
 

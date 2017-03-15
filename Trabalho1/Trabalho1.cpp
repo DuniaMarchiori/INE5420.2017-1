@@ -148,7 +148,7 @@ void inserirTextoConsole(const gchar *texto) {
     //gtk_text_buffer_insert (buffer, &iter, texto, -1);
 
     // -1 indica que é para adicionar o texto todo
-    gtk_text_buffer_insert_at_cursor (buffer, texto, -1);
+    gtk_text_buffer_insert_at_cursor (buffer, g_strconcat(texto, "\n", NULL), -1);
 }
 
 Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMin, Coordenada* vpMax) {
