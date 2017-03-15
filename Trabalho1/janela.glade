@@ -617,7 +617,7 @@
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="destroy_with_parent">True</property>
-    <signal name="destroy" handler="Window_NovoElmnt_destroy_cb" swapped="no"/>
+    <signal name="hide" handler="Window_NovoElmnt_hide_cb" swapped="no"/>
     <child>
       <object class="GtkBox" id="box12">
         <property name="visible">True</property>
