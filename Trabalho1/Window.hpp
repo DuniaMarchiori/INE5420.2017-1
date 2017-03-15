@@ -43,6 +43,16 @@ public:
 		inferiorEsquerdo->y += quant;
 		superiorDireito->x -= quant;
 		superiorDireito->y -= quant;
+		
+		if (inferiorEsquerdo->x > superiorDireito-> x) {
+			inferiorEsquerdo->x = 0;
+			superiorDireito->x = 0;
+		}
+		
+		if (inferiorEsquerdo->y > superiorDireito-> y) {
+			inferiorEsquerdo->y = 0;
+			superiorDireito->y = 0;
+		}
 	}
 };
 

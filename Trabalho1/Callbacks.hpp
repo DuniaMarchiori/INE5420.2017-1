@@ -163,6 +163,11 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Del_clicked_cb(){
 	listaCoordsPoligono->retiraDaPosicao(getIndexElementoDeletado(poligono_Listbox));
 }
 
-extern "C" G_MODULE_EXPORT void Window_NovoElmnt_destroy_cb(){
+extern "C" G_MODULE_EXPORT void Window_NovoElmnt_hide_cb(){
+	limparTextoNomeNovoElmnt();
+	limparTextoNovoPonto();
+	limparTextoNovaReta();
+	limparTextoNovoPoligono();
+	gtk_notebook_set_current_page(notebook, 0);
 	free(listaCoordsPoligono);
 }
