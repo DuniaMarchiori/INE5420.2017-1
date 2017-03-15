@@ -9,6 +9,12 @@ extern "C" G_MODULE_EXPORT void Window_Main_destroy_cb(){
 
 //  Métodos do menu de Elementos.
 
+
+// Quando alguma linha da lista de elementos é selecionada, o botão de deletar é ativado
+extern "C" G_MODULE_EXPORT void Elmnt_List_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
+	gtk_widget_set_sensitive (elmnt_Btn_Del, TRUE);	
+}
+
 //  Método do botão de novo elemento.
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
 	listaCoordsPoligono = new ListaEnc<Coordenada*>();
@@ -21,8 +27,7 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	update_Surface();
 	update_Surface();
 	inserirTextoConsole("Elemento excluído.");
-	// apenas para testes
-	exibeDisplayFile();
+	gtk_widget_set_sensitive (elmnt_Btn_Del, FALSE);	
 }
 
 //  Método do botão de mover a window para Cima.
@@ -130,8 +135,8 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_configure_event_cb (Gtk
 												gtk_widget_get_allocated_width (widget),
 												gtk_widget_get_allocated_height (widget));
 
-	clear_surface ();
 	update_Surface();
+	
 	return TRUE;
 }
 
@@ -144,6 +149,7 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 	return FALSE;
 }
 
+
 //--------------------------------------------------------
 // Métodos da janela de novo elemento
 
@@ -151,7 +157,6 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
 	inserirNovoElemento();
 	update_Surface();
-	inserirTextoConsole("Novo elemento adicionado.");
 }
 
 // Botão que adiciona uma nova coordenada no poligono
@@ -159,12 +164,23 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Add_clicked_cb() {
 	string c = inserirCoordListaEnc();
 	if ( !(c.empty()) )  {
 		addToListBox(poligono_Listbox, c);
+		gtk_entry_set_text(textoPoligonoX, "");
+		gtk_entry_set_text(textoPoligonoY, "");
+		// Dá foco à caixa de texto X
+		gtk_widget_grab_focus((GtkWidget*) textoPoligonoX);
 	}
 }
 
 // Botão que deleta uma coordenada do poligono
 extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Del_clicked_cb(){
 	listaCoordsPoligono->retiraDaPosicao(getIndexElementoDeletado(poligono_Listbox));
+	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE);	
+}
+
+// Quando alguma linha da lista de coordenadas é selecionada, o botão de deletar é ativado
+extern "C" G_MODULE_EXPORT void NovoElmnt_Listbox_Pol_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
+
+	gtk_widget_set_sensitive (poligono_Btn_Del, TRUE);	
 }
 
 extern "C" G_MODULE_EXPORT void Window_NovoElmnt_hide_cb(){

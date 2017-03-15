@@ -68,6 +68,7 @@
                                           <object class="GtkListBox" id="Elmnt_List">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
+                                            <signal name="row-selected" handler="Elmnt_List_row_selected_cb" swapped="no"/>
                                           </object>
                                         </child>
                                       </object>
@@ -1219,6 +1220,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_top">5</property>
                                     <property name="margin_bottom">5</property>
+                                    <signal name="row-selected" handler="NovoElmnt_Listbox_Pol_row_selected_cb" swapped="no"/>
                                   </object>
                                 </child>
                               </object>
