@@ -339,8 +339,7 @@ void inserirNovoPonto(string nome) {
 			c->setX(stod(coordX));
 			c->setY(stod(coordY));
 		} catch (const invalid_argument& e) {
-			// Mensagem de erro
-			cout << "catch de texto no campo numérico" << endl;
+			inserirTextoConsole("ERRO: coordenadas devem ser valores numéricos.");
 			return;
 		}
 
@@ -350,8 +349,7 @@ void inserirNovoPonto(string nome) {
 		addToListBox(elmnt_List, nome);
 		limparTextoNovoPonto();
 	} else {
-		cout << "ponto sem coord" << endl;
-		//mensagem de ERRO
+		inserirTextoConsole("ERRO: não é possível inserir ponto sem valor X ou Y.");
 	}
 }
 
@@ -377,8 +375,7 @@ void inserirNovaReta(string nome) {
 			cF->setX(stod(coordFinX));
 			cF->setY(stod(coordFinY));
 		} catch (const invalid_argument& e) {
-			// Mensagem de erro
-			cout << "catch de texto no campo numérico" << endl;
+			inserirTextoConsole("ERRO: coordenadas devem ser valores numéricos.");
 			return;
 		}
 
@@ -388,7 +385,7 @@ void inserirNovaReta(string nome) {
 		addToListBox(elmnt_List, nome);
 		limparTextoNovaReta();
 	} else {
-		//mensagem de erro
+		inserirTextoConsole("ERRO: não é possível inserir reta sem dois pares de coordenadas.");
 	}
 	
 }
@@ -408,15 +405,13 @@ string inserirCoordListaEnc() {
 			c->setX(stod(polX));
 			c->setY(stod(polY));
 		} catch (const invalid_argument& e) {
-			// Mensagem de erro
-			cout << "catch de texto no campo numérico" << endl;
+			inserirTextoConsole("ERRO: coordenadas devem ser valores numéricos.");
 			return "";
 		}
 		listaCoordsPoligono->adiciona(c);
 		return "(" + polX + "," + polY + ")";
 	} else {
-		cout << "coord pol vazia" << endl;
-		//mensagem de erro
+		inserirTextoConsole("ERRO: não é possível inserir coordenada sem valor X ou Y.");
 	}
 	return "";
 }
@@ -429,8 +424,7 @@ void inserirNovoPoligono(string nome) {
 		listaCoordsPoligono = new ListaEnc<Coordenada*>();
 		limparTextoNovoPoligono();
 	} else {
-		cout << "poligono sem coord" << endl;
-		// erro de não há coordenadas no polígono
+		inserirTextoConsole("ERRO: não é possível inserir polígono sem coordenadas.");
 	}
 }
 
@@ -457,8 +451,7 @@ void inserirNovoElemento() {
 				break;
 		}
 	} else {
-		//mensagem de erro
-		cout << "sem nome" << endl;
+		inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
 	}
 }
 
