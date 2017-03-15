@@ -153,7 +153,7 @@ class ListaEnc {
 	    if (listaVazia()) throw -1;
 	    if (pos > size) throw -1;
 	    if (pos == 0) {
-	        retiraDoInicio();
+	        return retiraDoInicio();
 	    } else {
 	        Elemento<T>* anterior = head;
 	        for (int i = 0; i < pos - 1; i++) {
