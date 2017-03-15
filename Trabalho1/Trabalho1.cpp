@@ -284,6 +284,7 @@ int getIndexElementoDeletado(GtkWidget* list) {
 		gtk_container_remove((GtkContainer*) list, (GtkWidget*) row);
 		return index;
 	}
+	return 0;
 }
 
 void limparTextoNomeNovoElmnt() {
@@ -467,4 +468,5 @@ void exibeDisplayFile() {
 		elementoCoord = elementoCoord->getProximo();
 	}
 }
+
 #include "Callbacks.hpp"
