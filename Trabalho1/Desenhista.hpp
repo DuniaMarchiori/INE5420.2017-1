@@ -4,6 +4,8 @@
 #ifndef DESENHISTA_HPP
 #define DESENHISTA_HPP
 
+static cairo_surface_t *surface = NULL;
+
 class Desenhista {
 
 private:

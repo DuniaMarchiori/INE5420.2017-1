@@ -14,7 +14,7 @@
 using namespace std;
 
 // Relacionados à interface
-static cairo_surface_t *surface = NULL;
+//static cairo_surface_t *surface = NULL;
 GtkWidget *window_Main;
 
 GtkWidget *elmnt_List, *elmnt_Btn_Novo, *elmnt_Btn_Del;
@@ -106,13 +106,13 @@ int main(int argc, char *argv[]){
 	g_signal_connect (viewport_DrawingArea, "draw", G_CALLBACK (viewport_DrawingArea_draw_cb), NULL);
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
 	*/
+
+	desenhista = new Desenhista();
+	view = new Viewport(gtkBuilder);
 	
 	gtk_builder_connect_signals(gtkBuilder, NULL);
 	gtk_widget_show_all(window_Main);
 	gtk_main ();
-
-	desenhista = new Desenhista();
-	view = new Viewport(gtkBuilder);
 	
 	return 0;
 }
