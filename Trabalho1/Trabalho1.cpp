@@ -10,6 +10,8 @@
 #include "Coordenada.hpp"
 #include "Desenhista.hpp"
 #include "Viewport.hpp"
+#include "Console.hpp"
+#include "DisplayFile.hpp"
 
 using namespace std;
 
@@ -17,7 +19,8 @@ using namespace std;
 //static cairo_surface_t *surface = NULL;
 GtkWidget *window_Main;
 
-GtkWidget *elmnt_List, *elmnt_Btn_Novo, *elmnt_Btn_Del;
+GtkListBox *elmnt_List;
+GtkWidget *elmnt_Btn_Novo, *elmnt_Btn_Del;
 
 GtkWidget *pos_Txt_Fator, *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_Dir;
 
@@ -32,24 +35,24 @@ GtkEntry *textoNomeElemento, *textoPontoX, *textoPontoY, *textoRetaInicialX, *te
 GtkWidget *poligono_Btn_Add, *poligono_Btn_Del, *poligono_Listbox;
 
 GtkNotebook *notebook;
-GtkTextView* console;
+GtkTextView* consoleWidget;
 GtkTextBuffer *buffer;
 
 // Relacionados ao sistema
 Window *window;
-ListaEnc<ElementoGrafico*> *displayFile;
 ListaEnc<Coordenada*> *listaCoordsPoligono;
+
+DisplayFile* displayFile;
 
 Desenhista* desenhista;
 Viewport* view;
 
-int main(int argc, char *argv[]){
-	
-	// Display File
-	displayFile = new ListaEnc<ElementoGrafico*>();
-	
-	listaCoordsPoligono = new ListaEnc<Coordenada*>();
+Console* console;
 
+int main(int argc, char *argv[]){
+		
+	listaCoordsPoligono = new ListaEnc<Coordenada*>();
+	
 	// Window
 	Coordenada* windowInfEsq = new Coordenada();
 	windowInfEsq->x = 0;
@@ -69,7 +72,7 @@ int main(int argc, char *argv[]){
 
 	window_Main = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_Main"));
 	
-	elmnt_List = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_List"));
+	elmnt_List = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_List"));
 	elmnt_Btn_Del = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_Btn_Del"));
 	// Esse botão começa desativado
 	gtk_widget_set_sensitive (elmnt_Btn_Del, FALSE);
@@ -99,16 +102,19 @@ int main(int argc, char *argv[]){
 	// Esse botão começa desativado
 	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE);
 
-	console = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
-	buffer = gtk_text_view_get_buffer (console);
+	consoleWidget = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
 
 	/*
 	g_signal_connect (viewport_DrawingArea, "draw", G_CALLBACK (viewport_DrawingArea_draw_cb), NULL);
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
 	*/
-
+	
+	displayFile = new DisplayFile(elmnt_List);
+	
 	desenhista = new Desenhista();
 	view = new Viewport(gtkBuilder);
+	
+	console = new Console(consoleWidget);
 	
 	gtk_builder_connect_signals(gtkBuilder, NULL);
 	gtk_widget_show_all(window_Main);
@@ -117,6 +123,7 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
+/*
 void inserirTextoConsole(const gchar *texto) {
 	// -1 indica que é para adicionar o texto todo
 	GtkTextIter* iter = new GtkTextIter();
@@ -126,6 +133,7 @@ void inserirTextoConsole(const gchar *texto) {
     gtk_text_buffer_get_end_iter(buffer, iter);
     gtk_text_view_scroll_to_iter(console, iter, 0.0, TRUE, 0.5, 1);
 }
+*/
 
 /*Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMin, Coordenada* vpMax) {
 	Coordenada* transformada = new Coordenada();
@@ -297,7 +305,7 @@ void limparTextoNovoPoligono() {
 		row = gtk_list_box_get_row_at_index ((GtkListBox*) poligono_Listbox, 0);
 	}
 }
-
+/*
 void inserirNovoPonto(string nome) {
 	// Pega coordenadas
 	string coordX = gtk_entry_get_text(textoPontoX);
@@ -405,6 +413,7 @@ void inserirNovoElemento() {
 		inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
 	}
 }
+*/
 
 string inserirCoordListaEnc() {
 	// Pega coordenadas
@@ -421,18 +430,19 @@ string inserirCoordListaEnc() {
 			c->setX(stod(polX));
 			c->setY(stod(polY));
 		} catch (const invalid_argument& e) {
-			inserirTextoConsole("ERRO: coordenadas devem ser valores numéricos.");
+			console->inserirTexto("ERRO: coordenadas devem ser valores numéricos.");
 			return "";
 		}
 		listaCoordsPoligono->adiciona(c);
 		return "(" + polX + "," + polY + ")";
 	} else {
-		inserirTextoConsole("ERRO: não é possível inserir coordenada sem valor X ou Y.");
+		console->inserirTexto("ERRO: não é possível inserir coordenada sem valor X ou Y.");
 	}
 	return "";
 }
 
 // método para uso em testes
+/*
 void exibeDisplayFile() {
 	Elemento<ElementoGrafico*> *elementoCoord = displayFile->getHead();
 
@@ -450,5 +460,6 @@ void exibeDisplayFile() {
 		cout << "lista vazia" << endl;
 	}
 }
+*/
 
 #include "Callbacks.hpp"

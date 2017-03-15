@@ -23,9 +23,9 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
 
 //  Método do botão de deletar elemento.
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
-	displayFile->retiraDaPosicao(getIndexElementoDeletado(elmnt_List));
+	displayFile->deletarElemento();
 	update_Surface();
-	inserirTextoConsole("Elemento excluído.");
+	console->inserirTexto("Elemento excluído.");
 	gtk_widget_set_sensitive (elmnt_Btn_Del, FALSE);	
 }
 
@@ -41,7 +41,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Cima_clicked_cb(){
 	
 	window->moverWindow(0,fator);
 	update_Surface();
-	inserirTextoConsole("Movimentação para cima.");
+	console->inserirTexto("Movimentação para cima.");
 }
 
 //  Método do botão de mover a window para Esquerda.
@@ -56,7 +56,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Esq_clicked_cb(){
 	
 	window->moverWindow(-fator,0);
 	update_Surface();
-	inserirTextoConsole("Movimentação para a esquerda.");
+	console->inserirTexto("Movimentação para a esquerda.");
 }
 
 //  Método do botão de mover a window para Direita.
@@ -71,7 +71,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Dir_clicked_cb(){
 	
 	window->moverWindow(fator,0);
 	update_Surface();
-	inserirTextoConsole("Movimentação para a direita.");
+	console->inserirTexto("Movimentação para a direita.");
 }
 
 //  Método do botão de mover a window para Baixo.
@@ -86,7 +86,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Baixo_clicked_cb(){
 	
 	window->moverWindow(0,-fator);
 	update_Surface();
-	inserirTextoConsole("Movimentação para baixo.");
+	console->inserirTexto("Movimentação para baixo.");
 }
 
 //  Método do botão de menor zoom.
@@ -101,7 +101,7 @@ extern "C" G_MODULE_EXPORT void Zoom_Btn_Menos_clicked_cb(){
 	
 	window->zoom(-fator);
 	update_Surface();
-	inserirTextoConsole("Menos zoom.");
+	console->inserirTexto("Menos zoom.");
 }
 
 //  Método do botão de mais zoom.
@@ -116,7 +116,7 @@ extern "C" G_MODULE_EXPORT void Zoom_Btn_Mais_clicked_cb(){
 	
 	window->zoom(fator);
 	update_Surface();
-	inserirTextoConsole("Mais zoom.");
+	console->inserirTexto("Mais zoom.");
 }
 
 //--------------------------------------------------------
@@ -157,7 +157,58 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 
 // Botão que adiciona um novo elemento
 extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
-	inserirNovoElemento();
+	string nome = gtk_entry_get_text(textoNomeElemento);
+	switch (gtk_notebook_get_current_page(notebook)) {
+		case 0: {
+			// A page 0 corresponde à aba de Ponto
+			string coordX = gtk_entry_get_text(textoPontoX);
+			string coordY = gtk_entry_get_text(textoPontoY);
+			int resultado = displayFile->inserirNovoPonto(nome, coordX, coordY);
+			if(resultado == 1) {
+				limparTextoNovoPonto();
+				console->inserirTexto("Novo ponto adicionado.");
+			} else if(resultado == -1) {
+				console->inserirTexto("ERRO: não é possível inserir elemento sem nome.");
+			} else if(resultado == -2) {
+				console->inserirTexto("ERRO: coordenadas devem ser valores numéricos.");
+			} else if(resultado == -3) {
+				console->inserirTexto("ERRO: não é possível inserir ponto sem valor X ou Y.");
+			}
+			break;
+			}
+		case 1: {
+			// A page 1 corresponde à aba de Reta
+			string coordIniX = gtk_entry_get_text(textoRetaInicialX);
+			string coordIniY = gtk_entry_get_text(textoRetaInicialY);
+			string coordFinX = gtk_entry_get_text(textoRetaFinalX);
+			string coordFinY = gtk_entry_get_text(textoRetaFinalY);
+			int resultado = displayFile->inserirNovaReta(nome, coordIniX, coordIniY, coordFinX, coordFinY);
+			if(resultado == 1) {
+				limparTextoNovaReta();
+				console->inserirTexto("Nova reta adicionada.");
+			} else if(resultado == -1) {
+				console->inserirTexto("ERRO: não é possível inserir elemento sem nome.");
+			} else if(resultado == -2) {
+				console->inserirTexto("ERRO: coordenadas devem ser valores numéricos.");
+			} else if(resultado == -3) {
+				console->inserirTexto("ERRO: não é possível inserir reta sem dois pares de coordenadas.");
+			}
+			break;
+			}
+		case 2: {
+			// A page 2 corresponde à aba de Polígono
+			int resultado = displayFile->inserirNovoPoligono(nome, listaCoordsPoligono);
+			if(resultado == 1) {
+				limparTextoNovoPoligono();
+				console->inserirTexto("Novo poligono adicionado.");
+			} else if(resultado == -1) {
+				console->inserirTexto("ERRO: não é possível inserir elemento sem nome.");
+			} else if(resultado == -3) {
+				console->inserirTexto("ERRO: não é possível inserir polígono sem coordenadas.");
+			}
+			break;
+			}
+	}
 	update_Surface();
 }
 
