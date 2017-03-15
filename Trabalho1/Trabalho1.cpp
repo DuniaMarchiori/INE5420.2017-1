@@ -65,6 +65,9 @@ int main(int argc, char *argv[]){
 	window_Main = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_Main"));
 	
 	elmnt_List = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_List"));
+	elmnt_Btn_Del = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_Btn_Del"));
+	// Esse botão começa desativado
+	gtk_widget_set_sensitive (elmnt_Btn_Del, FALSE);
 	
 	pos_Txt_Fator = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Pos_Txt_Fator"));
 	
@@ -87,6 +90,9 @@ int main(int argc, char *argv[]){
 
 	poligono_Listbox = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Pol"));
 	notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
+	poligono_Btn_Del = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Del"));
+	// Esse botão começa desativado
+	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE);
 
 	console = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
 	buffer = gtk_text_view_get_buffer (console);
@@ -105,7 +111,12 @@ int main(int argc, char *argv[]){
 
 void inserirTextoConsole(const gchar *texto) {
 	// -1 indica que é para adicionar o texto todo
+	GtkTextIter* iter = new GtkTextIter();
+
     gtk_text_buffer_insert_at_cursor (buffer, g_strconcat(texto, "\n", NULL), -1);
+    //gtk_text_buffer_get_iter_at_line(buffer, iter, gtk_text_buffer_get_line_count(buffer));
+    gtk_text_buffer_get_end_iter(buffer, iter);
+    gtk_text_view_scroll_to_iter(console, iter, 0.0, TRUE, 0.5, 1);
 }
 
 Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMin, Coordenada* vpMax) {
@@ -303,6 +314,7 @@ void inserirNovoPonto(string nome) {
 		displayFile->adiciona(p);
 		addToListBox(elmnt_List, nome);
 		limparTextoNovoPonto();
+		inserirTextoConsole("Novo ponto adicionado.");
 	} else {
 		inserirTextoConsole("ERRO: não é possível inserir ponto sem valor X ou Y.");
 	}
@@ -339,6 +351,7 @@ void inserirNovaReta(string nome) {
 		displayFile->adiciona(r);
 		addToListBox(elmnt_List, nome);
 		limparTextoNovaReta();
+		inserirTextoConsole("Nova reta adicionada.");
 	} else {
 		inserirTextoConsole("ERRO: não é possível inserir reta sem dois pares de coordenadas.");
 	}
@@ -352,6 +365,7 @@ void inserirNovoPoligono(string nome) {
 		addToListBox(elmnt_List, nome);
 		listaCoordsPoligono = new ListaEnc<Coordenada*>();
 		limparTextoNovoPoligono();
+		inserirTextoConsole("Novo polígono adicionado.");
 	} else {
 		inserirTextoConsole("ERRO: não é possível inserir polígono sem coordenadas.");
 	}
@@ -369,17 +383,14 @@ void inserirNovoElemento() {
 			case 0:
 				// A page 0 corresponde à aba de Ponto
 				inserirNovoPonto(nome);
-				inserirTextoConsole("Novo ponto adicionado.");
 				break;
 			case 1:
 				// A page 1 corresponde à aba de Reta
 				inserirNovaReta(nome);
-				inserirTextoConsole("Nova reta adicionada.");
 				break;
 			case 2:
 				// A page 2 corresponde à aba de Polígono
 				inserirNovoPoligono(nome);
-				inserirTextoConsole("Novo polígono adicionado.");
 				break;
 		}
 	} else {
