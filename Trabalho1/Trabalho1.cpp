@@ -459,14 +459,19 @@ void inserirNovoElemento() {
 // método para uso em testes
 void exibeDisplayFile() {
 	Elemento<ElementoGrafico*> *elementoCoord = displayFile->getHead();
-	ElementoGrafico* e = elementoCoord->getInfo();
-	cout << "primeiro:" + e->getNome() << endl;
 
-	elementoCoord = elementoCoord->getProximo();
-	while (elementoCoord != NULL) {
-		e = elementoCoord->getInfo();
-		cout << e->getNome() << endl;
+	if (elementoCoord != NULL) {
+		ElementoGrafico* e = elementoCoord->getInfo();
+		cout << "primeiro:" + e->getNome() << endl;
+
 		elementoCoord = elementoCoord->getProximo();
+		while (elementoCoord != NULL) {
+			e = elementoCoord->getInfo();
+			cout << e->getNome() << endl;
+			elementoCoord = elementoCoord->getProximo();
+		}
+	} else {
+		cout << "lista vazia" << endl;
 	}
 }
 
