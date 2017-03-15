@@ -19,6 +19,7 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	displayFile->retiraDaPosicao(getIndexElementoDeletado(elmnt_List));
 	update_Surface();
+	inserirTextoConsole("Elemento excluído.");
 }
 
 //  Método do botão de mover a window para Cima.
@@ -33,6 +34,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Cima_clicked_cb(){
 	
 	window->moverWindow(0,fator);
 	update_Surface();
+	inserirTextoConsole("Movimentação para cima.");
 }
 
 //  Método do botão de mover a window para Esquerda.
@@ -47,6 +49,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Esq_clicked_cb(){
 	
 	window->moverWindow(-fator,0);
 	update_Surface();
+	inserirTextoConsole("Movimentação para a esquerda.");
 }
 
 //  Método do botão de mover a window para Direita.
@@ -61,6 +64,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Dir_clicked_cb(){
 	
 	window->moverWindow(fator,0);
 	update_Surface();
+	inserirTextoConsole("Movimentação para a direita.");
 }
 
 //  Método do botão de mover a window para Baixo.
@@ -75,9 +79,10 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Baixo_clicked_cb(){
 	
 	window->moverWindow(0,-fator);
 	update_Surface();
+	inserirTextoConsole("Movimentação para baixo.");
 }
 
-//  Método do botão de mover a window para Baixo.
+//  Método do botão de menor zoom.
 extern "C" G_MODULE_EXPORT void Zoom_Btn_Menos_clicked_cb(){
 	double fator = 0;
 	
@@ -89,9 +94,10 @@ extern "C" G_MODULE_EXPORT void Zoom_Btn_Menos_clicked_cb(){
 	
 	window->zoom(-fator);
 	update_Surface();
+	inserirTextoConsole("Menos zoom.");
 }
 
-//  Método do botão de mover a window para Baixo.
+//  Método do botão de mais zoom.
 extern "C" G_MODULE_EXPORT void Zoom_Btn_Mais_clicked_cb(){
 	double fator = 0;
 	
@@ -103,6 +109,7 @@ extern "C" G_MODULE_EXPORT void Zoom_Btn_Mais_clicked_cb(){
 	
 	window->zoom(fator);
 	update_Surface();
+	inserirTextoConsole("Mais zoom.");
 }
 
 //--------------------------------------------------------
@@ -140,6 +147,7 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
 	inserirNovoElemento();
 	update_Surface();
+	inserirTextoConsole("Novo elemento adicionado.");
 }
 
 // Botão que adiciona uma nova coordenada no poligono

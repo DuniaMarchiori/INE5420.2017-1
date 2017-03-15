@@ -30,13 +30,15 @@ GtkEntry *textoNomeElemento, *textoPontoX, *textoPontoY, *textoRetaInicialX, *te
 GtkWidget *poligono_Btn_Add, *poligono_Btn_Del, *poligono_Listbox;
 
 GtkNotebook *notebook;
+GtkTextView* console;
+GtkTextBuffer *buffer;
 
 // Relacionados ao sistema
 Window *window;
 ListaEnc<ElementoGrafico*> *displayFile;
 ListaEnc<Coordenada*> *listaCoordsPoligono;
 
-void addToListBox(GtkWidget* ListBox, string nome);
+//void addToListBox(GtkWidget* ListBox, string nome);
 //Coordenada* getViewportMin ();
 //Coordenada* getViewportMax ();
 
@@ -44,7 +46,7 @@ void addToListBox(GtkWidget* ListBox, string nome);
 int main(int argc, char *argv[]){
 	
 	// Objetos para teste	
-	Coordenada* c = new Coordenada();
+	/*Coordenada* c = new Coordenada();
 	c->x = 10;
 	c->setY(10);
 	
@@ -64,20 +66,17 @@ int main(int argc, char *argv[]){
 	Ponto* p = new Ponto("ponto1", c);
 		
 	Reta* r = new Reta("reta1", c, c2);
-	Reta* r2 = new Reta("reta2", c3, c4);
+	Reta* r2 = new Reta("reta2", c3, c4);*/
 	//Reta* r3 = new Reta("reta3", getViewportMin(), getViewportMax());
 	
-	Poligono* pol = new Poligono("poligono1");
-	pol->adicionarCoordenada(c);
+	//Poligono* pol = new Poligono("poligono1");
+	/*pol->adicionarCoordenada(c);
 	pol->adicionarCoordenada(c2);
 	pol->adicionarCoordenada(c3);
-	pol->adicionarCoordenada(c4);
+	pol->adicionarCoordenada(c4);*/
 	
 	// Display File
 	displayFile = new ListaEnc<ElementoGrafico*>();
-	//displayFile->adiciona(p);
-	//displayFile->adiciona(r2);
-	//displayFile->adiciona(r3);
 	
 	//-------------------------------------------------------
 	listaCoordsPoligono = new ListaEnc<Coordenada*>();
@@ -123,27 +122,33 @@ int main(int argc, char *argv[]){
 	textoPoligonoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_X"));
 	textoPoligonoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Y"));
 
-	/*
-	NovoElmnt_Pol_Add
-	NovoElmnt_Pol_Del
-	*/
-
 	poligono_Listbox = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Pol"));
 	notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
+
+	console = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
+	buffer = gtk_text_view_get_buffer (console);
 
 	/*
 	g_signal_connect (viewport_DrawingArea, "draw", G_CALLBACK (viewport_DrawingArea_draw_cb), NULL);
 	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
 	*/
 	
-	//addToListBox(elmnt_List, "Reta_0");
-	//addToListBox(elmnt_List, "Reta_1");
-	
 	gtk_builder_connect_signals(gtkBuilder, NULL);
 	gtk_widget_show_all(window_Main);
 	gtk_main ();
 	
 	return 0;
+}
+
+void inserirTextoConsole(const gchar *texto) {
+	//GtkTextMark *mark;
+    //GtkTextIter iter;
+    //mark = gtk_text_buffer_get_insert (buffer);
+    //gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
+    //gtk_text_buffer_insert (buffer, &iter, texto, -1);
+
+    // -1 indica que é para adicionar o texto todo
+    gtk_text_buffer_insert_at_cursor (buffer, texto, -1);
 }
 
 Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMin, Coordenada* vpMax) {
@@ -188,6 +193,7 @@ void desenhaPonto(cairo_t* c, ElementoGrafico *elem){
 	cairo_move_to(c, transformada->x, transformada->y);
 	cairo_arc(c,transformada->x, transformada->y, 1.5, 0.0, 2*M_PI);
 	cairo_fill(c);
+	inserirTextoConsole("Ponto desenhado.");
 }
 
 void desenhaReta(cairo_t* c, ElementoGrafico *elem) {
@@ -198,6 +204,7 @@ void desenhaReta(cairo_t* c, ElementoGrafico *elem) {
 
 	cairo_move_to(c, transformadaPInicial->x, transformadaPInicial->y);
 	cairo_line_to(c, transformadaPFinal->x, transformadaPFinal->y);
+	inserirTextoConsole("Reta desenhada.");
 }
 
 void desenhaPoligono(cairo_t* c, ElementoGrafico *elem) {
@@ -223,6 +230,7 @@ void desenhaPoligono(cairo_t* c, ElementoGrafico *elem) {
 		}
 	}
 	cairo_close_path(c);
+	inserirTextoConsole("Polígono desenhado.");
 }
 
 void desenhaElemento(ElementoGrafico *elem) {	
@@ -332,8 +340,7 @@ void inserirNovoPonto(string nome) {
 			c->setX(stod(coordX));
 			c->setY(stod(coordY));
 		} catch (const invalid_argument& e) {
-			// Mensagem de erro
-			cout << "catch de texto no campo numérico" << endl;
+			inserirTextoConsole("ERRO: coordenadas devem ser valores numéricos.");
 			return;
 		}
 
@@ -343,8 +350,7 @@ void inserirNovoPonto(string nome) {
 		addToListBox(elmnt_List, nome);
 		limparTextoNovoPonto();
 	} else {
-		cout << "ponto sem coord" << endl;
-		//mensagem de ERRO
+		inserirTextoConsole("ERRO: não é possível inserir ponto sem valor X ou Y.");
 	}
 }
 
@@ -370,8 +376,7 @@ void inserirNovaReta(string nome) {
 			cF->setX(stod(coordFinX));
 			cF->setY(stod(coordFinY));
 		} catch (const invalid_argument& e) {
-			// Mensagem de erro
-			cout << "catch de texto no campo numérico" << endl;
+			inserirTextoConsole("ERRO: coordenadas devem ser valores numéricos.");
 			return;
 		}
 
@@ -381,7 +386,7 @@ void inserirNovaReta(string nome) {
 		addToListBox(elmnt_List, nome);
 		limparTextoNovaReta();
 	} else {
-		//mensagem de erro
+		inserirTextoConsole("ERRO: não é possível inserir reta sem dois pares de coordenadas.");
 	}
 	
 }
@@ -401,15 +406,13 @@ string inserirCoordListaEnc() {
 			c->setX(stod(polX));
 			c->setY(stod(polY));
 		} catch (const invalid_argument& e) {
-			// Mensagem de erro
-			cout << "catch de texto no campo numérico" << endl;
+			inserirTextoConsole("ERRO: coordenadas devem ser valores numéricos.");
 			return "";
 		}
 		listaCoordsPoligono->adiciona(c);
 		return "(" + polX + "," + polY + ")";
 	} else {
-		cout << "coord pol vazia" << endl;
-		//mensagem de erro
+		inserirTextoConsole("ERRO: não é possível inserir coordenada sem valor X ou Y.");
 	}
 	return "";
 }
@@ -422,8 +425,7 @@ void inserirNovoPoligono(string nome) {
 		listaCoordsPoligono = new ListaEnc<Coordenada*>();
 		limparTextoNovoPoligono();
 	} else {
-		cout << "poligono sem coord" << endl;
-		// erro de não há coordenadas no polígono
+		inserirTextoConsole("ERRO: não é possível inserir polígono sem coordenadas.");
 	}
 }
 
@@ -450,8 +452,7 @@ void inserirNovoElemento() {
 				break;
 		}
 	} else {
-		//mensagem de erro
-		cout << "sem nome" << endl;
+		inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
 	}
 }
 
