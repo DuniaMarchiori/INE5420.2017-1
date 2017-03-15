@@ -88,8 +88,8 @@ int main(int argc, char *argv[]){
 	windowInfEsq->y = 0;
 	
 	Coordenada* windowSupDir = new Coordenada();
-	windowSupDir->x = 10;
-	windowSupDir->y = 10;
+	windowSupDir->x = 200;
+	windowSupDir->y = 200;
 	
 	window = new Window(windowInfEsq, windowSupDir);
 	//
