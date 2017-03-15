@@ -8,6 +8,8 @@
 #include "Poligono.hpp"
 #include "Window.hpp"
 #include "Coordenada.hpp"
+#include "Desenhista.hpp"
+#include "Viewport.hpp"
 
 using namespace std;
 
@@ -21,7 +23,7 @@ GtkWidget *pos_Txt_Fator, *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_
 
 GtkWidget *zoom_Txt_Fator, *zoom_Btn_Menos, *zoom_Btn_Mais;
 
-GtkWidget *viewport_DrawingArea;
+//GtkWidget *viewport_DrawingArea;
 GtkWidget *window_NovoElemento;
 
 GtkEntry *textoNomeElemento, *textoPontoX, *textoPontoY, *textoRetaInicialX, *textoRetaInicialY, 
@@ -37,6 +39,9 @@ GtkTextBuffer *buffer;
 Window *window;
 ListaEnc<ElementoGrafico*> *displayFile;
 ListaEnc<Coordenada*> *listaCoordsPoligono;
+
+Desenhista* desenhista;
+Viewport* view;
 
 int main(int argc, char *argv[]){
 	
@@ -73,7 +78,7 @@ int main(int argc, char *argv[]){
 	
 	zoom_Txt_Fator = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Zoom_Txt_Fator"));
 	
-	viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
+	//viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
 
 	window_NovoElemento = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_NovoElmnt"));
 	g_signal_connect (window_NovoElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
@@ -105,6 +110,9 @@ int main(int argc, char *argv[]){
 	gtk_builder_connect_signals(gtkBuilder, NULL);
 	gtk_widget_show_all(window_Main);
 	gtk_main ();
+
+	desenhista = new Desenhista();
+	view = new Viewport(gtkBuilder);
 	
 	return 0;
 }
@@ -119,14 +127,14 @@ void inserirTextoConsole(const gchar *texto) {
     gtk_text_view_scroll_to_iter(console, iter, 0.0, TRUE, 0.5, 1);
 }
 
-Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMin, Coordenada* vpMax) {
+/*Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMin, Coordenada* vpMax) {
 	Coordenada* transformada = new Coordenada();
 	Coordenada* wMin = wind->getPontoInferiorEsquerdo();
 	Coordenada* wMax = wind->getPontoSuperiorDireito();
 	transformada->x = ( ( (ponto->x - wMin->x)/(wMax->x - wMin->x) ) * (vpMax->x - vpMin->x) );
 	transformada->y = ( ( 1 - ( (ponto->y - wMin->y)/(wMax->y - wMin->y) ) ) * (vpMax->y - vpMin->y) );
 	return transformada;
-}
+}*/
 
 /*
 double transformaViewportX(double xW, double xWMin, double xWMax, double xVPMax, double xVPMin) {
@@ -138,7 +146,7 @@ double transformaViewportY(double yW, double yWMin, double yWMax, double yVPMax,
 }
 */
 
-Coordenada* getViewportMin () {
+/*Coordenada* getViewportMin () {
 	Coordenada* viewportMin = new Coordenada();;
 	viewportMin->x = 0;
 	viewportMin->y = 0;
@@ -152,9 +160,9 @@ Coordenada* getViewportMax () {
 	viewportMax->y = gtk_widget_get_allocated_height(viewport_DrawingArea);
 
 	return viewportMax;
-}
+}*/
 
-void desenhaPonto(cairo_t* c, ElementoGrafico *elem){
+/*void desenhaPonto(cairo_t* c, ElementoGrafico *elem){
 	Ponto* p = static_cast<Ponto*> (elem);
 	Coordenada* transformada = transformaViewport(p->getCoordenada(), window, getViewportMin(), getViewportMax());
 	//Seria apenas um pixel, mas é feito um círculo ao redor do ponto para ficar visível.
@@ -230,14 +238,14 @@ static void clear_surface (){
   cairo_paint (cr);
 
   cairo_destroy (cr);
-}
+}*/
 
 static void update_Surface () {
-	clear_surface();
+	desenhista->clear_surface();
 	Elemento<ElementoGrafico*> *elementoLista = displayFile->getHead();
 	while (elementoLista != NULL) {
 		// Desenha esse elemento
-		desenhaElemento(elementoLista->getInfo());
+		desenhista->desenhaElemento(elementoLista->getInfo(), view, window, window_Main);
 		elementoLista = elementoLista->getProximo();
 	}
 }
