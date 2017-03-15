@@ -524,13 +524,13 @@
                 <property name="shadow_type">in</property>
                 <child>
                   <object class="GtkAlignment" id="alignment2">
-                    <property name="width_request">400</property>
-                    <property name="height_request">400</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="left_padding">12</property>
                     <child>
                       <object class="GtkDrawingArea" id="Viewport_DrawingArea">
+                        <property name="width_request">400</property>
+                        <property name="height_request">400</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_left">5</property>
