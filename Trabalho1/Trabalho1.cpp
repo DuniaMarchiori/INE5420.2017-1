@@ -38,47 +38,11 @@ Window *window;
 ListaEnc<ElementoGrafico*> *displayFile;
 ListaEnc<Coordenada*> *listaCoordsPoligono;
 
-//void addToListBox(GtkWidget* ListBox, string nome);
-//Coordenada* getViewportMin ();
-//Coordenada* getViewportMax ();
-
-// Main de testes básicos
 int main(int argc, char *argv[]){
-	
-	// Objetos para teste	
-	/*Coordenada* c = new Coordenada();
-	c->x = 10;
-	c->setY(10);
-	
-	Coordenada* c2 = new Coordenada();
-	c2->x = 20;
-	c2->y = 30;
-	
-	Coordenada* c3 = new Coordenada();
-	c3->x = 40;
-	c3->y = 20;
-	
-	Coordenada* c4 = new Coordenada();
-	c4->x = 25;
-	c4->y = 54;
-	
-	
-	Ponto* p = new Ponto("ponto1", c);
-		
-	Reta* r = new Reta("reta1", c, c2);
-	Reta* r2 = new Reta("reta2", c3, c4);*/
-	//Reta* r3 = new Reta("reta3", getViewportMin(), getViewportMax());
-	
-	//Poligono* pol = new Poligono("poligono1");
-	/*pol->adicionarCoordenada(c);
-	pol->adicionarCoordenada(c2);
-	pol->adicionarCoordenada(c3);
-	pol->adicionarCoordenada(c4);*/
 	
 	// Display File
 	displayFile = new ListaEnc<ElementoGrafico*>();
 	
-	//-------------------------------------------------------
 	listaCoordsPoligono = new ListaEnc<Coordenada*>();
 
 	// Window
@@ -91,7 +55,6 @@ int main(int argc, char *argv[]){
 	windowSupDir->y = 200;
 	
 	window = new Window(windowInfEsq, windowSupDir);
-	//
 
 	GtkBuilder  *gtkBuilder;
 	gtk_init(&argc, &argv);
@@ -141,13 +104,7 @@ int main(int argc, char *argv[]){
 }
 
 void inserirTextoConsole(const gchar *texto) {
-	//GtkTextMark *mark;
-    //GtkTextIter iter;
-    //mark = gtk_text_buffer_get_insert (buffer);
-    //gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
-    //gtk_text_buffer_insert (buffer, &iter, texto, -1);
-
-    // -1 indica que é para adicionar o texto todo
+	// -1 indica que é para adicionar o texto todo
     gtk_text_buffer_insert_at_cursor (buffer, g_strconcat(texto, "\n", NULL), -1);
 }
 
@@ -253,13 +210,6 @@ void desenhaElemento(ElementoGrafico *elem) {
 	gtk_widget_queue_draw (window_Main);
 }
 
-void addToListBox(GtkWidget* listBox, string nome) {
-	GtkWidget* row = gtk_list_box_row_new();
-	GtkWidget* label = gtk_label_new(nome.c_str());
-	gtk_container_add((GtkContainer*) listBox, label);
-	gtk_widget_show_all(listBox);
-}
-
 static void clear_surface (){
   cairo_t *cr;
 
@@ -279,6 +229,13 @@ static void update_Surface () {
 		desenhaElemento(elementoLista->getInfo());
 		elementoLista = elementoLista->getProximo();
 	}
+}
+
+void addToListBox(GtkWidget* listBox, string nome) {
+	GtkWidget* row = gtk_list_box_row_new();
+	GtkWidget* label = gtk_label_new(nome.c_str());
+	gtk_container_add((GtkContainer*) listBox, label);
+	gtk_widget_show_all(listBox);
 }
 
 // list é a listbox que queremos deletar o elemento
@@ -388,6 +345,48 @@ void inserirNovaReta(string nome) {
 	
 }
 
+void inserirNovoPoligono(string nome) {
+	if ( !(listaCoordsPoligono->listaVazia()) ) {
+		Poligono *pol = new Poligono(nome, listaCoordsPoligono);
+		displayFile->adiciona(pol);
+		addToListBox(elmnt_List, nome);
+		listaCoordsPoligono = new ListaEnc<Coordenada*>();
+		limparTextoNovoPoligono();
+	} else {
+		inserirTextoConsole("ERRO: não é possível inserir polígono sem coordenadas.");
+	}
+}
+
+void inserirNovoElemento() {
+
+	// Pega o nome do elemento
+	string nome = gtk_entry_get_text(textoNomeElemento);
+
+	// Se o campo de nome não está em branco
+	if ( !(nome.empty()) ) {	
+		// Verifica que tipo de figura está sendo inserida (as páginas do notebook são as abas da janela de novo elemento)
+		switch (gtk_notebook_get_current_page(notebook)) {
+			case 0:
+				// A page 0 corresponde à aba de Ponto
+				inserirNovoPonto(nome);
+				inserirTextoConsole("Novo ponto adicionado.");
+				break;
+			case 1:
+				// A page 1 corresponde à aba de Reta
+				inserirNovaReta(nome);
+				inserirTextoConsole("Nova reta adicionada.");
+				break;
+			case 2:
+				// A page 2 corresponde à aba de Polígono
+				inserirNovoPoligono(nome);
+				inserirTextoConsole("Novo polígono adicionado.");
+				break;
+		}
+	} else {
+		inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
+	}
+}
+
 string inserirCoordListaEnc() {
 	// Pega coordenadas
 	string polX = gtk_entry_get_text(textoPoligonoX);
@@ -412,45 +411,6 @@ string inserirCoordListaEnc() {
 		inserirTextoConsole("ERRO: não é possível inserir coordenada sem valor X ou Y.");
 	}
 	return "";
-}
-
-void inserirNovoPoligono(string nome) {
-	if ( !(listaCoordsPoligono->listaVazia()) ) {
-		Poligono *pol = new Poligono(nome, listaCoordsPoligono);
-		displayFile->adiciona(pol);
-		addToListBox(elmnt_List, nome);
-		listaCoordsPoligono = new ListaEnc<Coordenada*>();
-		limparTextoNovoPoligono();
-	} else {
-		inserirTextoConsole("ERRO: não é possível inserir polígono sem coordenadas.");
-	}
-}
-
-void inserirNovoElemento() {
-
-	// Pega o nome do elemento
-	string nome = gtk_entry_get_text(textoNomeElemento);
-
-	// Se o campo de nome não está em branco
-	if ( !(nome.empty()) ) {	
-		// Verifica que tipo de figura está sendo inserida (as páginas do notebook são as abas da janela de novo elemento)
-		switch (gtk_notebook_get_current_page(notebook)) {
-			case 0:
-				// A page 0 corresponde à aba de Ponto
-				inserirNovoPonto(nome);	
-				break;
-			case 1:
-				// A page 1 corresponde à aba de Reta
-				inserirNovaReta(nome);
-				break;
-			case 2:
-				// A page 2 corresponde à aba de Polígono
-				inserirNovoPoligono(nome);
-				break;
-		}
-	} else {
-		inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
-	}
 }
 
 // método para uso em testes

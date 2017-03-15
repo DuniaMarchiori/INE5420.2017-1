@@ -20,8 +20,6 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	displayFile->retiraDaPosicao(getIndexElementoDeletado(elmnt_List));
 	update_Surface();
 	inserirTextoConsole("Elemento excluído.");
-	// apenas para testes
-	exibeDisplayFile();
 }
 
 //  Método do botão de mover a window para Cima.
@@ -129,8 +127,8 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_configure_event_cb (Gtk
 												gtk_widget_get_allocated_width (widget),
 												gtk_widget_get_allocated_height (widget));
 
-	clear_surface ();
 	update_Surface();
+	
 	return TRUE;
 }
 
@@ -143,6 +141,7 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 	return FALSE;
 }
 
+
 //--------------------------------------------------------
 // Métodos da janela de novo elemento
 
@@ -150,7 +149,6 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
 	inserirNovoElemento();
 	update_Surface();
-	inserirTextoConsole("Novo elemento adicionado.");
 }
 
 // Botão que adiciona uma nova coordenada no poligono
