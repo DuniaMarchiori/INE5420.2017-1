@@ -1,27 +1,32 @@
-// Métodos da janela principal.
-
-//  Método para fechar o programa quando a janela principal é fechada.
+//! Método que é chamado ao fechar a janela principal.
+/*!
+	Finalza o programa quando a janela principal é fechada.
+*/
 extern "C" G_MODULE_EXPORT void Window_Main_destroy_cb(){
 	gtk_main_quit();
 }
 
-//  Métodos da região do Menu de Funções.
-
-//  Métodos do menu de Elementos.
-
-
-// Quando alguma linha da lista de elementos é selecionada, o botão de deletar é ativado
+//! Método que é chamado ao selecionar um elemtno da list box.
+/*!
+	Ativa o botão de deletar elemento.
+*/
 extern "C" G_MODULE_EXPORT void Elmnt_List_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
 	gtk_widget_set_sensitive (elmnt_Btn_Del, TRUE);	
 }
 
-//  Método do botão de novo elemento.
+//! Método que é chamado ao pressionar o botão de Novo Elemento na janela principal.
+/*!
+	Mostra a janela de criação de elemento.
+*/
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
 	listaCoordsPoligono = new ListaEnc<Coordenada*>();
 	gtk_widget_show(window_NovoElemento);
 }
 
-//  Método do botão de deletar elemento.
+//! Método que é chamado ao pressionar o botão de Deletar um elemento.
+/*!
+	Manda deletar o elemento da display file e executa um update na tela.
+*/
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	displayFile->deletarElemento();
 	update_Surface();
@@ -29,7 +34,10 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	gtk_widget_set_sensitive (elmnt_Btn_Del, FALSE);	
 }
 
-//  Método do botão de mover a window para Cima.
+//! Método que é chamado ao pressionar o botão "Cima".
+/*!
+	Move a window para cima baseado no fator.
+*/
 extern "C" G_MODULE_EXPORT void Pos_Btn_Cima_clicked_cb(){
 	double fator = 0;
 	
@@ -44,7 +52,11 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Cima_clicked_cb(){
 	console->inserirTexto("Movimentação para cima.");
 }
 
-//  Método do botão de mover a window para Esquerda.
+
+//! Método que é chamado ao pressionar o botão "Esquerda".
+/*!
+	Move a window para esquerda baseado no fator.
+*/
 extern "C" G_MODULE_EXPORT void Pos_Btn_Esq_clicked_cb(){
 	double fator = 0;
 	
@@ -59,7 +71,11 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Esq_clicked_cb(){
 	console->inserirTexto("Movimentação para a esquerda.");
 }
 
-//  Método do botão de mover a window para Direita.
+
+//! Método que é chamado ao pressionar o botão "Direita".
+/*!
+	Move a window para direita baseado no fator.
+*/
 extern "C" G_MODULE_EXPORT void Pos_Btn_Dir_clicked_cb(){
 	double fator = 0;
 	
@@ -74,7 +90,11 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Dir_clicked_cb(){
 	console->inserirTexto("Movimentação para a direita.");
 }
 
-//  Método do botão de mover a window para Baixo.
+
+//! Método que é chamado ao pressionar o botão "Baixo".
+/*!
+	Move a window para baixo baseado no fator.
+*/
 extern "C" G_MODULE_EXPORT void Pos_Btn_Baixo_clicked_cb(){
 	double fator = 0;
 	
@@ -89,7 +109,11 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Baixo_clicked_cb(){
 	console->inserirTexto("Movimentação para baixo.");
 }
 
-//  Método do botão de menor zoom.
+
+//! Método que é chamado ao pressionar o botão "-" do zoom.
+/*!
+	Aumenta o tamanho da window baseado no fator.
+*/
 extern "C" G_MODULE_EXPORT void Zoom_Btn_Menos_clicked_cb(){
 	double fator = 0;
 	
@@ -104,7 +128,10 @@ extern "C" G_MODULE_EXPORT void Zoom_Btn_Menos_clicked_cb(){
 	console->inserirTexto("Menos zoom.");
 }
 
-//  Método do botão de mais zoom.
+//! Método que é chamado ao pressionar o botão "+" do zoom.
+/*!
+	Diminui o tamanho da window baseado no fator.
+*/
 extern "C" G_MODULE_EXPORT void Zoom_Btn_Mais_clicked_cb(){
 	double fator = 0;
 	
@@ -119,10 +146,10 @@ extern "C" G_MODULE_EXPORT void Zoom_Btn_Mais_clicked_cb(){
 	console->inserirTexto("Mais zoom.");
 }
 
-//--------------------------------------------------------
-// Métodos da viewport
-
-// Método configure-event
+//! Método que é chamado quando o signal "configure event" é ativado.
+/*!
+	Cria uma nova surface a atualiza o desenho.
+*/
 extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_configure_event_cb (GtkWidget *widget, GdkEventConfigure *event, gpointer data){
 	desenhista->nova_surface(widget);
 	update_Surface();
@@ -130,7 +157,10 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_configure_event_cb (Gtk
 	return TRUE;
 }
 
-// Método do draw da viewport
+//! Método que é chamado quando o signal "draw" é ativado.
+/*!
+	Chama o metodo modifica_surface
+*/
 extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *widget, cairo_t *cr,  gpointer   data){
 
 	desenhista->modifica_surface(cr);
@@ -142,7 +172,11 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 //--------------------------------------------------------
 // Métodos da janela de novo elemento
 
-// Botão que adiciona um novo elemento
+
+//! Método que é chamado ao pressionar o botão de Adicionar dentro da janela de novo elemento.
+/*!
+	Verifica qual tipo de objeto esta sendo criado, e manda cria-los na display file, exibindo mensagens dependendo do resultado da operação.
+*/
 extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
 	string nome = gtk_entry_get_text(textoNomeElemento);
 	switch (gtk_notebook_get_current_page(notebook)) {
@@ -201,7 +235,11 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
 	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE);
 }
 
-// Botão que adiciona uma nova coordenada no poligono
+
+//! Método que é chamado ao pressionar o botão de nova coordenada na criação de um polígono.
+/*!
+	Adiciona uma nova coordenada à lista de coordenadas e à list box.
+*/
 extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Add_clicked_cb() {
 	string c = inserirCoordListaEnc();
 	if ( !(c.empty()) )  {
@@ -213,23 +251,34 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Add_clicked_cb() {
 	}
 }
 
-// Botão que deleta uma coordenada do poligono
+//! Método que é chamado ao pressionar o botão de deletar coordenada na criação de um polígono.
+/*!
+	Remove a coordenada selecionada na list box.
+*/
 extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Del_clicked_cb(){
 	listaCoordsPoligono->retiraDaPosicao(getIndexElementoDeletado(poligono_Listbox));
 	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE);	
 }
 
-// Quando alguma linha da lista de coordenadas é selecionada, o botão de deletar é ativado
+//! Método que é chamado ao selecionar uma coordenada da list box de criação de poligono.
+/*!
+	Ativa o botão de deletar coordenada.
+*/
 extern "C" G_MODULE_EXPORT void NovoElmnt_Listbox_Pol_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
 
 	gtk_widget_set_sensitive (poligono_Btn_Del, TRUE);	
 }
 
+
+//! Método que é ativado ao fechar a janela de novo elemento.
+/*!
+	Restaura a janela para o seu estado inicial.
+*/
 extern "C" G_MODULE_EXPORT void Window_NovoElmnt_hide_cb(){
 	limparTextoNomeNovoElmnt();
 	limparTextoNovoPonto();
 	limparTextoNovaReta();
 	limparTextoNovoPoligono();
+	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE);	
 	gtk_notebook_set_current_page(notebook, 0);
-	//free(listaCoordsPoligono);
 }

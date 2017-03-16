@@ -15,34 +15,38 @@
 
 using namespace std;
 
-// Relacionados à interface
-GtkWidget *window_Main;
+// Objetos relacionados à interface
+GtkWidget *window_Main; /*!< Referência para a janela principal.*/
 
-GtkListBox *elmnt_List;
-GtkWidget *elmnt_Btn_Novo, *elmnt_Btn_Del;
+GtkListBox *elmnt_List; /*!< Referência para a lista de elementos.*/
+GtkWidget *elmnt_Btn_Novo, *elmnt_Btn_Del; /*!< Referência para os botões de novo e deletar elementos.*/
 
-GtkWidget *pos_Txt_Fator, *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_Dir;
+GtkWidget *pos_Txt_Fator; /*!< Referência para a caixa de texto de Fator da movimentação.*/
+GtkWidget *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_Dir; /*!< Referência para os botões das quatro direções.*/
 
-GtkWidget *zoom_Txt_Fator, *zoom_Btn_Menos, *zoom_Btn_Mais;
+GtkWidget *zoom_Txt_Fator; /*!< Referência para a caixa de texto de Fator de zoom.*/
+GtkWidget *zoom_Btn_Menos, *zoom_Btn_Mais; /*!< Referência para os botões de mais e menos zoom.*/
 
-GtkWidget *window_NovoElemento;
+GtkTextView* consoleWidget; /*!< Referência para a caixa de texto do console.*/
 
-GtkEntry *textoNomeElemento, *textoPontoX, *textoPontoY, *textoRetaInicialX, *textoRetaInicialY, 
-		*textoRetaFinalX, *textoRetaFinalY, *textoPoligonoX, *textoPoligonoY;
+GtkWidget *window_NovoElemento; /*!< Referência para a janela de novo elemento.*/
 
-GtkWidget *poligono_Btn_Add, *poligono_Btn_Del, *poligono_Listbox;
+GtkEntry *textoNomeElemento; /*!< Referência para a caixa de texto de inserção de nome para um elemento.*/
+GtkEntry *textoPontoX, *textoPontoY, *textoRetaInicialX, *textoRetaInicialY, 
+		*textoRetaFinalX, *textoRetaFinalY, *textoPoligonoX, *textoPoligonoY; /*!< Referência para as caixas de texto que recebem valores de coordenadas.*/
 
-GtkNotebook *notebook;
-GtkTextView* consoleWidget;
-GtkTextBuffer *buffer;
+GtkWidget *poligono_Btn_Add, *poligono_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de poligono.*/
+GtkWidget *poligono_Listbox; /*!< Referência para a listbox coma s coordenadas do poligono.*/
 
-// Relacionados ao sistema
-Window *window;
-ListaEnc<Coordenada*> *listaCoordsPoligono;
-DisplayFile* displayFile;
-Desenhista* desenhista;
-Viewport* view;
-Console* console;
+GtkNotebook *notebook; /*!< Referência para o notebook na criação de elemento.*/
+
+// Objetos relacionados ao sistema
+Window *window; /*!< Objeto encarregado de administrar a Window*/
+ListaEnc<Coordenada*> *listaCoordsPoligono; /*!< Uma lista de coordenadas para criar novos poligonos*/
+DisplayFile* displayFile; /*!< Objeto encarregado de administrar a Display File*/
+Desenhista* desenhista; /*!< Objeto encarregado de desenhar os objetos na viewport*/
+Viewport* view; /*!< Objeto encarregado de administrar a Viewport*/
+Console* console; /*!< Objeto encarregado de administrar o console*/
 
 
 // !Método inicial
