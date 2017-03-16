@@ -187,6 +187,7 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
 			int resultado = displayFile->inserirNovoPoligono(nome, listaCoordsPoligono);
 			if(resultado == 1) {
 				limparTextoNovoPoligono();
+				listaCoordsPoligono = new ListaEnc<Coordenada*>();
 				console->inserirTexto("Novo poligono adicionado.");
 			} else if(resultado == -1) {
 				console->inserirTexto("ERRO: não é possível inserir elemento sem nome.");
@@ -197,6 +198,7 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
 			}
 	}
 	update_Surface();
+	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE);
 }
 
 // Botão que adiciona uma nova coordenada no poligono
@@ -229,5 +231,5 @@ extern "C" G_MODULE_EXPORT void Window_NovoElmnt_hide_cb(){
 	limparTextoNovaReta();
 	limparTextoNovoPoligono();
 	gtk_notebook_set_current_page(notebook, 0);
-	free(listaCoordsPoligono);
+	//free(listaCoordsPoligono);
 }

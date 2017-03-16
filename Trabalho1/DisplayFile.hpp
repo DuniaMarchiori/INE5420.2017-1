@@ -7,6 +7,8 @@
 #include "Coordenada.hpp"
 #include "ElementoGrafico.hpp"
 
+#include <iostream>
+
 using namespace std;
 
 class DisplayFile {
@@ -113,7 +115,6 @@ public:
 			Poligono *pol = new Poligono(nome, listaCoordsPoligono);
 			displayFile->adiciona(pol);
 			addToListBox(nome);
-			listaCoordsPoligono = new ListaEnc<Coordenada*>();
 			return 1;
 		} else {
 			return -3;
