@@ -198,7 +198,8 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
 			}
 	}
 	update_Surface();
-	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE);
+	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE); // botão de deletar coordenada é desativado
+	gtk_widget_grab_focus((GtkWidget*) textoNomeElemento); // foco vai para a caixa de texto de nome do novo elemento
 }
 
 // Botão que adiciona uma nova coordenada no poligono
@@ -231,5 +232,5 @@ extern "C" G_MODULE_EXPORT void Window_NovoElmnt_hide_cb(){
 	limparTextoNovaReta();
 	limparTextoNovoPoligono();
 	gtk_notebook_set_current_page(notebook, 0);
-	//free(listaCoordsPoligono);
+	free(listaCoordsPoligono);
 }
