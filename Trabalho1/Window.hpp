@@ -68,6 +68,7 @@ public:
 		/param fator é um double que indica o quanto de aproximação ou afastamento será feito.
 	*/
 	void zoom(double fator) {
+		double min = 0;
 		double quant = fator/2;
 		inferiorEsquerdo->x += quant;
 		inferiorEsquerdo->y += quant;
@@ -75,13 +76,15 @@ public:
 		superiorDireito->y -= quant;
 		
 		if (inferiorEsquerdo->x > superiorDireito-> x) {
-			inferiorEsquerdo->x = 0;
-			superiorDireito->x = 0;
+			double med = (inferiorEsquerdo->x + superiorDireito->x)/2;
+			inferiorEsquerdo->x = med - min/2;
+			superiorDireito->x = med + min/2;
 		}
 		
 		if (inferiorEsquerdo->y > superiorDireito-> y) {
-			inferiorEsquerdo->y = 0;
-			superiorDireito->y = 0;
+			double med = (inferiorEsquerdo->y + superiorDireito->y)/2;
+			inferiorEsquerdo->y = med - min/2;
+			superiorDireito->y = med + min/2;
 		}
 	}
 };
