@@ -39,7 +39,7 @@ public:
 	
 	//! Método que altera o tipo do elemento.
 	/*!
-		/param s é uma variável Tipo que representa o tipo do elemento.
+		/param t é uma variável Tipo que representa o tipo do elemento.
 	*/
 	void setTipo(Tipo t) {
 		tipo = t;

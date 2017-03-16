@@ -39,14 +39,13 @@ GtkTextBuffer *buffer;
 // Relacionados ao sistema
 Window *window;
 ListaEnc<Coordenada*> *listaCoordsPoligono;
-
 DisplayFile* displayFile;
-
 Desenhista* desenhista;
 Viewport* view;
-
 Console* console;
 
+
+// !Método inicial
 int main(int argc, char *argv[]){
 		
 	listaCoordsPoligono = new ListaEnc<Coordenada*>();
@@ -76,7 +75,6 @@ int main(int argc, char *argv[]){
 	pos_Txt_Fator = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Pos_Txt_Fator"));
 	
 	zoom_Txt_Fator = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Zoom_Txt_Fator"));
-	
 
 	window_NovoElemento = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_NovoElmnt"));
 	g_signal_connect (window_NovoElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
@@ -100,10 +98,8 @@ int main(int argc, char *argv[]){
 	consoleWidget = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
 	
 	displayFile = new DisplayFile(elmnt_List);
-	
 	desenhista = new Desenhista();
 	view = new Viewport(gtkBuilder);
-	
 	console = new Console(consoleWidget);
 	
 	gtk_builder_connect_signals(gtkBuilder, NULL);
@@ -113,6 +109,7 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
+//! Método que desenha os elementos na display file.	
 static void update_Surface () {
 	desenhista->clear_surface();
 	Elemento<ElementoGrafico*> *elementoLista = displayFile->getHead();
@@ -123,6 +120,11 @@ static void update_Surface () {
 	}
 }
 
+//! Método que adiciona a uma GtkListBox um novo elemento.
+/*!
+	/param listBox é a GtkListBox que queremos adicionar o elemento.
+	/param nome é o texto a ser adicionado.
+*/
 void addToListBox(GtkWidget* listBox, string nome) {
 	GtkWidget* row = gtk_list_box_row_new();
 	GtkWidget* label = gtk_label_new(nome.c_str());
@@ -130,7 +132,11 @@ void addToListBox(GtkWidget* listBox, string nome) {
 	gtk_widget_show_all(listBox);
 }
 
-// list é a listbox que queremos deletar o elemento
+//! Método que remove de uma GtkListBox a linha selecionada e retorna seu índice.
+/*!
+	/param list é a GtkListBox que queremos deletar o elemento selecionado.
+	/return o valor do índice do elemento removido.
+*/
 int getIndexElementoDeletado(GtkWidget* list) {
 	GtkListBoxRow* row = gtk_list_box_get_selected_row ((GtkListBox*) list);
 	if (row != NULL) {
@@ -141,16 +147,19 @@ int getIndexElementoDeletado(GtkWidget* list) {
 	return 0;
 }
 
+//! Método que limpa a caixa de texto do nome da janela de novo objeto.
 void limparTextoNomeNovoElmnt() {
 	gtk_entry_set_text(textoNomeElemento, "");
 }
 
+//! Método que limpa as caixas de texto de ponto da janela de novo objeto.
 void limparTextoNovoPonto() {
 	limparTextoNomeNovoElmnt();
 	gtk_entry_set_text(textoPontoX, "");
 	gtk_entry_set_text(textoPontoY, "");
 }
 
+//! Método que limpa as caixas de texto de reta da janela de novo objeto.
 void limparTextoNovaReta() {
 	limparTextoNomeNovoElmnt();
 	gtk_entry_set_text(textoRetaInicialX, "");
@@ -159,6 +168,7 @@ void limparTextoNovaReta() {
 	gtk_entry_set_text(textoRetaFinalY, "");
 }
 
+//! Método que limpa as caixas de texto de polígono da janela de novo objeto.
 void limparTextoNovoPoligono() {
 	limparTextoNomeNovoElmnt();
 	gtk_entry_set_text(textoPoligonoX, "");
@@ -171,6 +181,7 @@ void limparTextoNovoPoligono() {
 	}
 }
 
+//! Método que insere em uma lista as coordenadas do polígono a ser criado.
 string inserirCoordListaEnc() {
 	// Pega coordenadas
 	string polX = gtk_entry_get_text(textoPoligonoX);
