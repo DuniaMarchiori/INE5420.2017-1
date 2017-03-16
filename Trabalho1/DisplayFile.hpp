@@ -1,7 +1,8 @@
 #ifndef DISPLAYFILE_HPP
 #define DISPLAYFILE_HPP
 
-#include<string>
+#include <gtk/gtk.h>
+#include <string>
 
 #include "ListaEnc.hpp"
 #include "Coordenada.hpp"
@@ -14,15 +15,27 @@ using namespace std;
 class DisplayFile {
 	
 private:
-	ListaEnc<ElementoGrafico*> *displayFile;
-	GtkListBox* elmnt_List;
+
+	ListaEnc<ElementoGrafico*> *displayFile; /*!< Lista encadeada de Elementos Graficos representando a display file.*/
+	GtkListBox* elmnt_List; /*!< Um GtkListBox para poder mostrar a display file ao usuário.*/
 	
+	//! Método que adiciona uma nova entrada na list box.
+    /*!
+        Adiciona uma nova entrada à list box que se pode interagir.
+        /param nome É nome que será mostrado na list box.
+    */
 	void addToListBox(string nome) {
 		GtkWidget* label = gtk_label_new(nome.c_str());
 		gtk_container_add((GtkContainer*) elmnt_List, label);
 		gtk_widget_show_all((GtkWidget*) elmnt_List);
 	}
 	
+	//! Método que verifica a validade de um nome.
+    /*!
+        Verifica se um nome é valido para um Elemento Grafico.
+        /param nome É nome que será validado.
+		/return Retorna true se o nome é valido.
+    */
 	bool nomeValido(string nome){
 		if ( !(nome.empty()) ) {	
 			return true;
@@ -33,16 +46,31 @@ private:
 	
 public:
 	
-	// Rever esse metodo, ele só existe por causa do update_surface, que deveria ir pro Desenhista.
-	Elemento<ElementoGrafico*>* getHead() {
-		return displayFile->getHead();
-	}
-
+	//! Construtor
+	/*
+		/param listBox É uma referência para a listBox que mostrará a display file.
+	*/
 	DisplayFile (GtkListBox* listBox) {
 		elmnt_List = listBox;
 		displayFile = new ListaEnc<ElementoGrafico*>();
 	}
 	
+	//! Método que retorna o primeiro elemento do display file.
+    /*!
+        /return O primeiro elemento da lista encadeada do display file.
+    */
+	Elemento<ElementoGrafico*>* getHead() {
+		return displayFile->getHead();
+	}
+	
+	//! Método que insere um ponto no display file.
+    /*!
+		Verifica se o nome e as coordenadas são válidas e então cria um ponto tanto no display file quanto uma referência para ele na list box.
+        /param nome O nome do novo ponto.
+		/param coordX A coordenada em X desse ponto.
+		/param coordY A coordenada em Y desse ponto.
+		/return Um valor inteiro com o resultado da operação.
+    */
 	int inserirNovoPonto(string nome, string coordX, string coordY) {
 		if (!nomeValido(nome)) {
 			return -1;
@@ -72,6 +100,16 @@ public:
 		}
 	}
 
+	//! Método que insere uma reta no display file.
+    /*!
+		Verifica se o nome e as coordenadas são válidas e então cria uma reta tanto no display file quanto uma referência para ele na list box.
+        /param nome O nome da nova reta.
+		/param coordIniX A coordenada inicial em X dessa reta.
+		/param coordIniY A coordenada inicial em Y dessa reta.
+		/param coordFinX A coordenada final em X dessa reta.
+		/param coordFinY A coordenada final em Y dessa reta.
+		/return Um valor inteiro com o resultado da operação.
+    */
 	int inserirNovaReta(string nome, string coordIniX, string coordIniY, string coordFinX, string coordFinY) {
 		if (!nomeValido(nome)) {
 			return -1;
@@ -106,6 +144,13 @@ public:
 		
 	}
 
+	//! Método que insere um poligono no display file.
+    /*!
+		Verifica se o nome e as coordenadas são válidas e então cria um ponto tanto no display file quanto uma referência para ele na list box.
+        /param nome O nome do novo ponto.
+		/param listaCoordsPoligono Uma lista de coordenadas que contém todos os pontos do poligono.
+		/return Um valor inteiro com o resultado da operação.
+    */
 	int inserirNovoPoligono(string nome, ListaEnc<Coordenada*>* listaCoordsPoligono) {
 		if (!nomeValido(nome)) {
 			return -1;
@@ -121,6 +166,10 @@ public:
 		}
 	}
 	
+	//! Método que deleta um elemento da display file.
+    /*!
+		Verifica qual objeto esta selecionado e o deleta tanto da display file quanto da list box.
+    */
 	void deletarElemento() {
 		GtkListBoxRow* row = gtk_list_box_get_selected_row (elmnt_List);
 		if (row != NULL) {
@@ -131,7 +180,10 @@ public:
 		}
 	}
 	
-	// Método para testes
+	//! Método que imprime a display file. (Para testes)
+    /*!
+		Este metodo é somente para ser utilizado em testes.
+    */
 	void exibeDisplayFile() {
 		Elemento<ElementoGrafico*> *elementoCoord = displayFile->getHead();
 
@@ -149,8 +201,6 @@ public:
 			cout << "lista vazia" << endl;
 		}
 	}
-
-	
 };
 
 #endif
