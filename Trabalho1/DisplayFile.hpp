@@ -119,35 +119,6 @@ public:
 			return -3;
 		}
 	}
-
-	/* Devido a parametros diferentes, deve-se usar os metodos especificos para adicionar elementos, o switch deve ser feito no botão de adicionar elemento
-	void inserirNovoElemento() {
-
-		// Pega o nome do elemento
-		string nome = gtk_entry_get_text(textoNomeElemento);
-
-		// Se o campo de nome não está em branco
-		if ( !(nome.empty()) ) {	
-			// Verifica que tipo de figura está sendo inserida (as páginas do notebook são as abas da janela de novo elemento)
-			switch (gtk_notebook_get_current_page(notebook)) {
-				case 0:
-					// A page 0 corresponde à aba de Ponto
-					inserirNovoPonto(nome);
-					break;
-				case 1:
-					// A page 1 corresponde à aba de Reta
-					inserirNovaReta(nome);
-					break;
-				case 2:
-					// A page 2 corresponde à aba de Polígono
-					inserirNovoPoligono(nome);
-					break;
-			}
-		} else {
-			console->inserirTexto("ERRO: não é possível inserir elemento sem nome.");
-		}
-	}
-	*/
 	
 	void deletarElemento() {
 		GtkListBoxRow* row = gtk_list_box_get_selected_row (elmnt_List);

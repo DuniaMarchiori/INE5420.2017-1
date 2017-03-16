@@ -9,7 +9,6 @@ static cairo_surface_t *surface = NULL;
 class Desenhista {
 
 private:
-	//static airo_surface_t *surface = NULL;
 
 public:
 	/*Desenhista() {

@@ -16,7 +16,6 @@
 using namespace std;
 
 // Relacionados à interface
-//static cairo_surface_t *surface = NULL;
 GtkWidget *window_Main;
 
 GtkListBox *elmnt_List;
@@ -26,7 +25,6 @@ GtkWidget *pos_Txt_Fator, *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_
 
 GtkWidget *zoom_Txt_Fator, *zoom_Btn_Menos, *zoom_Btn_Mais;
 
-//GtkWidget *viewport_DrawingArea;
 GtkWidget *window_NovoElemento;
 
 GtkEntry *textoNomeElemento, *textoPontoX, *textoPontoY, *textoRetaInicialX, *textoRetaInicialY, 
@@ -57,11 +55,9 @@ int main(int argc, char *argv[]){
 	Coordenada* windowInfEsq = new Coordenada();
 	windowInfEsq->x = 0;
 	windowInfEsq->y = 0;
-	
 	Coordenada* windowSupDir = new Coordenada();
 	windowSupDir->x = 200;
 	windowSupDir->y = 200;
-	
 	window = new Window(windowInfEsq, windowSupDir);
 
 	GtkBuilder  *gtkBuilder;
@@ -81,7 +77,6 @@ int main(int argc, char *argv[]){
 	
 	zoom_Txt_Fator = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Zoom_Txt_Fator"));
 	
-	//viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
 
 	window_NovoElemento = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_NovoElmnt"));
 	g_signal_connect (window_NovoElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
@@ -103,11 +98,6 @@ int main(int argc, char *argv[]){
 	gtk_widget_set_sensitive (poligono_Btn_Del, FALSE);
 
 	consoleWidget = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
-
-	/*
-	g_signal_connect (viewport_DrawingArea, "draw", G_CALLBACK (viewport_DrawingArea_draw_cb), NULL);
-	g_signal_connect (viewport_DrawingArea,"configure-event", G_CALLBACK (viewport_DrawingArea_configure_event_cb), NULL);
-	*/
 	
 	displayFile = new DisplayFile(elmnt_List);
 	
@@ -122,131 +112,6 @@ int main(int argc, char *argv[]){
 	
 	return 0;
 }
-
-/*
-void inserirTextoConsole(const gchar *texto) {
-	// -1 indica que é para adicionar o texto todo
-	GtkTextIter* iter = new GtkTextIter();
-
-    gtk_text_buffer_insert_at_cursor (buffer, g_strconcat(texto, "\n", NULL), -1);
-    //gtk_text_buffer_get_iter_at_line(buffer, iter, gtk_text_buffer_get_line_count(buffer));
-    gtk_text_buffer_get_end_iter(buffer, iter);
-    gtk_text_view_scroll_to_iter(console, iter, 0.0, TRUE, 0.5, 1);
-}
-*/
-
-/*Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMin, Coordenada* vpMax) {
-	Coordenada* transformada = new Coordenada();
-	Coordenada* wMin = wind->getPontoInferiorEsquerdo();
-	Coordenada* wMax = wind->getPontoSuperiorDireito();
-	transformada->x = ( ( (ponto->x - wMin->x)/(wMax->x - wMin->x) ) * (vpMax->x - vpMin->x) );
-	transformada->y = ( ( 1 - ( (ponto->y - wMin->y)/(wMax->y - wMin->y) ) ) * (vpMax->y - vpMin->y) );
-	return transformada;
-}*/
-
-/*
-double transformaViewportX(double xW, double xWMin, double xWMax, double xVPMax, double xVPMin) {
-	return ( ( (xW - xWMin)/(xWMax - xWMin) ) * (xVPMax - xVPMin) );
-}
-
-double transformaViewportY(double yW, double yWMin, double yWMax, double yVPMax, double yVPMin) {
-	return ( ( 1 - ( (yW - yWMin)/(yWMax - yWMin) ) ) * (yVPMax - yVPMin) );
-}
-*/
-
-/*Coordenada* getViewportMin () {
-	Coordenada* viewportMin = new Coordenada();;
-	viewportMin->x = 0;
-	viewportMin->y = 0;
-	return viewportMin;
-}
-
-Coordenada* getViewportMax () {
-	Coordenada* viewportMax = new Coordenada();
-
-	viewportMax->x = gtk_widget_get_allocated_width(viewport_DrawingArea);
-	viewportMax->y = gtk_widget_get_allocated_height(viewport_DrawingArea);
-
-	return viewportMax;
-}*/
-
-/*void desenhaPonto(cairo_t* c, ElementoGrafico *elem){
-	Ponto* p = static_cast<Ponto*> (elem);
-	Coordenada* transformada = transformaViewport(p->getCoordenada(), window, getViewportMin(), getViewportMax());
-	//Seria apenas um pixel, mas é feito um círculo ao redor do ponto para ficar visível.
-	cairo_move_to(c, transformada->x, transformada->y);
-	cairo_arc(c,transformada->x, transformada->y, 1.5, 0.0, 2*M_PI);
-	cairo_fill(c);
-}
-
-void desenhaReta(cairo_t* c, ElementoGrafico *elem) {
-	Reta* r = static_cast<Reta*> (elem);
-	
-	Coordenada* transformadaPInicial = transformaViewport(r->getPontoInicial(), window, getViewportMin(), getViewportMax());
-	Coordenada* transformadaPFinal = transformaViewport(r->getPontoFinal(), window, getViewportMin(), getViewportMax());
-
-	cairo_move_to(c, transformadaPInicial->x, transformadaPInicial->y);
-	cairo_line_to(c, transformadaPFinal->x, transformadaPFinal->y);
-}
-
-void desenhaPoligono(cairo_t* c, ElementoGrafico *elem) {
-	Poligono* p = static_cast<Poligono*> (elem);
-	ListaEnc<Coordenada*> *lista = p->getLista();
-	Elemento<Coordenada*> *elementoCoord = lista->getHead();
-	Coordenada* coord = elementoCoord->getInfo();
-	
-	Coordenada* transformada = transformaViewport(coord, window, getViewportMin(), getViewportMax());
-
-	cairo_move_to(c, transformada->x, transformada->y);
-	elementoCoord = elementoCoord->getProximo();
-	if (elementoCoord == NULL) {
-		// Quando há só uma coordenada, desenha um ponto
-		cairo_arc(c,transformada->x, transformada->y, 1.5, 0.0, 2*M_PI);
-		cairo_fill(c);
-	} else {
-		while (elementoCoord != NULL) {
-			coord = elementoCoord->getInfo();
-			transformada = transformaViewport(coord, window, getViewportMin(), getViewportMax());
-			cairo_line_to(c, transformada->x, transformada->y);
-			elementoCoord = elementoCoord->getProximo();
-		}
-	}
-	cairo_close_path(c);
-}
-
-void desenhaElemento(ElementoGrafico *elem) {	
-	cairo_t *cr;
-	cr = cairo_create (surface);
-	
-	// Desenha o elemento de acordo com seu tipo
-	switch (elem->getTipo()) {
-		case PONTO:
-			desenhaPonto(cr, elem);
-			break;
-			
-		case RETA:
-			desenhaReta(cr, elem);
-			break;
-			
-		case POLIGONO:
-			desenhaPoligono(cr, elem);
-			break;
-	}
-	
-	cairo_stroke(cr);
-	gtk_widget_queue_draw (window_Main);
-}
-
-static void clear_surface (){
-  cairo_t *cr;
-
-  cr = cairo_create (surface);
-
-  cairo_set_source_rgb (cr, 1, 1, 1);
-  cairo_paint (cr);
-
-  cairo_destroy (cr);
-}*/
 
 static void update_Surface () {
 	desenhista->clear_surface();
@@ -305,115 +170,6 @@ void limparTextoNovoPoligono() {
 		row = gtk_list_box_get_row_at_index ((GtkListBox*) poligono_Listbox, 0);
 	}
 }
-/*
-void inserirNovoPonto(string nome) {
-	// Pega coordenadas
-	string coordX = gtk_entry_get_text(textoPontoX);
-	string coordY = gtk_entry_get_text(textoPontoY);
-
-	/// Se os campos de coordenada não estão em branco
-	if ( !(coordX.empty()) && !(coordY.empty()) ) {
-		// Cria novo objeto
-		Coordenada* c = new Coordenada();
-		// Verifica se os campos são números
-		try {
-			// stod = string to double
-			c->setX(stod(coordX));
-			c->setY(stod(coordY));
-		} catch (const invalid_argument& e) {
-			inserirTextoConsole("ERRO: coordenadas devem ser valores numéricos.");
-			return;
-		}
-
-		Ponto *p = new Ponto(nome, c);
-		// Adiciona objeto na display file
-		displayFile->adiciona(p);
-		addToListBox(elmnt_List, nome);
-		limparTextoNovoPonto();
-		inserirTextoConsole("Novo ponto adicionado.");
-	} else {
-		inserirTextoConsole("ERRO: não é possível inserir ponto sem valor X ou Y.");
-	}
-}
-
-void inserirNovaReta(string nome) {
-	// Pega coordenadas
-	string coordIniX = gtk_entry_get_text(textoRetaInicialX);
-	string coordIniY = gtk_entry_get_text(textoRetaInicialY);
-	string coordFinX = gtk_entry_get_text(textoRetaFinalX);
-	string coordFinY = gtk_entry_get_text(textoRetaFinalY);
-
-	/// Se os campos de coordenada não estão em branco
-	if ( !(coordIniX.empty()) && !(coordIniY.empty()) && !(coordFinX.empty()) && !(coordFinY.empty()) ) { 
-		// Cria novo objeto
-		Coordenada* cI = new Coordenada();
-		Coordenada* cF = new Coordenada();
-
-		// Verifica se os campos são números
-		try {
-			// stod = string to double
-			cI->setX(stod(coordIniX));
-			cI->setY(stod(coordIniY));
-
-			cF->setX(stod(coordFinX));
-			cF->setY(stod(coordFinY));
-		} catch (const invalid_argument& e) {
-			inserirTextoConsole("ERRO: coordenadas devem ser valores numéricos.");
-			return;
-		}
-
-		Reta *r = new Reta(nome, cI, cF);
-		// Adiciona objeto na display file
-		displayFile->adiciona(r);
-		addToListBox(elmnt_List, nome);
-		limparTextoNovaReta();
-		inserirTextoConsole("Nova reta adicionada.");
-	} else {
-		inserirTextoConsole("ERRO: não é possível inserir reta sem dois pares de coordenadas.");
-	}
-	
-}
-
-void inserirNovoPoligono(string nome) {
-	if ( !(listaCoordsPoligono->listaVazia()) ) {
-		Poligono *pol = new Poligono(nome, listaCoordsPoligono);
-		displayFile->adiciona(pol);
-		addToListBox(elmnt_List, nome);
-		listaCoordsPoligono = new ListaEnc<Coordenada*>();
-		limparTextoNovoPoligono();
-		inserirTextoConsole("Novo polígono adicionado.");
-	} else {
-		inserirTextoConsole("ERRO: não é possível inserir polígono sem coordenadas.");
-	}
-}
-
-void inserirNovoElemento() {
-
-	// Pega o nome do elemento
-	string nome = gtk_entry_get_text(textoNomeElemento);
-
-	// Se o campo de nome não está em branco
-	if ( !(nome.empty()) ) {	
-		// Verifica que tipo de figura está sendo inserida (as páginas do notebook são as abas da janela de novo elemento)
-		switch (gtk_notebook_get_current_page(notebook)) {
-			case 0:
-				// A page 0 corresponde à aba de Ponto
-				inserirNovoPonto(nome);
-				break;
-			case 1:
-				// A page 1 corresponde à aba de Reta
-				inserirNovaReta(nome);
-				break;
-			case 2:
-				// A page 2 corresponde à aba de Polígono
-				inserirNovoPoligono(nome);
-				break;
-		}
-	} else {
-		inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
-	}
-}
-*/
 
 string inserirCoordListaEnc() {
 	// Pega coordenadas
@@ -440,26 +196,5 @@ string inserirCoordListaEnc() {
 	}
 	return "";
 }
-
-// método para uso em testes
-/*
-void exibeDisplayFile() {
-	Elemento<ElementoGrafico*> *elementoCoord = displayFile->getHead();
-
-	if (elementoCoord != NULL) {
-		ElementoGrafico* e = elementoCoord->getInfo();
-		cout << "primeiro:" + e->getNome() << endl;
-
-		elementoCoord = elementoCoord->getProximo();
-		while (elementoCoord != NULL) {
-			e = elementoCoord->getInfo();
-			cout << e->getNome() << endl;
-			elementoCoord = elementoCoord->getProximo();
-		}
-	} else {
-		cout << "lista vazia" << endl;
-	}
-}
-*/
 
 #include "Callbacks.hpp"
