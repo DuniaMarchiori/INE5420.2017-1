@@ -1,7 +1,7 @@
 #ifndef CONSOLE_HPP
 #define CONSOLE_HPP
 
-class Console: public ElementoGrafico {
+class Console {
 	
 private:
 	GtkTextView* caixaTexto; /*!< Referência para a caixa de texto da interface de usuário*/
