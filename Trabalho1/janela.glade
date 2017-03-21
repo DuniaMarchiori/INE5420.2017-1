@@ -4,6 +4,7 @@
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkWindow" id="Window_Main">
     <property name="can_focus">False</property>
+    <property name="window_position">center</property>
     <signal name="destroy" handler="Window_Main_destroy_cb" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
