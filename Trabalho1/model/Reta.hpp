@@ -54,6 +54,13 @@ public:
 	void setPontoFinal(Coordenada* p) {
 		pontoFinal = p;
 	}
+
+	Coordenada* getCentroGeometrico() override {
+		double retornoX = (pontoInicial->getX() + pontoFinal->getX()) /2;
+		double retornoY = (pontoInicial->getY() + pontoFinal->getY()) /2;
+		Coordenada* coord = new Coordenada(retornoX,retornoY);
+		return coord;
+	}
 };
 
 #endif

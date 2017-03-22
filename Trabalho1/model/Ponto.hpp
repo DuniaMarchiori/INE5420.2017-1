@@ -36,6 +36,10 @@ public:
 	void setCoordenada(Coordenada* c) {
 		coord = c;
 	}
+
+	Coordenada* getCentroGeometrico() override {
+		return coord;
+	}
 };
 
 #endif

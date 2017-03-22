@@ -56,6 +56,28 @@ public:
 	ListaEnc<Coordenada*>* getLista() {
 		return lista;
 	}
+
+	Coordenada* getCentroGeometrico() override{
+		Coordenada* coord;
+
+		if (lista->listaVazia()) {
+			coord = new Coordenada(-1, -1); // Se não há pontos no polígono
+		} else {
+			int n = 0;
+			double somaX = 0, somaY = 0;
+			Elemento<Coordenada*>* proxCoord = lista->getHead(); 
+
+			while (proxCoord != NULL) {
+				n++;
+				somaX += proxCoord->getInfo()->getX();
+				somaY += proxCoord->getInfo()->getY();
+			}
+
+			coord = new Coordenada( (somaX/n), (somaY/n) );
+		}
+
+		return coord;
+	}
 };
 
 #endif

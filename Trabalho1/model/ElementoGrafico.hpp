@@ -3,6 +3,7 @@
 
 #include<string>
 #include "Tipo.hpp"
+//#include "Coordenada.hpp"
 
 using std::string;
 
@@ -44,6 +45,9 @@ public:
 	void setTipo(Tipo t) {
 		tipo = t;
 	}
+
+	virtual Coordenada* getCentroGeometrico() {}
+
 };
 
 #endif

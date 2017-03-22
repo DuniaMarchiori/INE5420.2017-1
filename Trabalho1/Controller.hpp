@@ -78,6 +78,8 @@ public:
 			proxElemento = proxElemento->getProximo();
 		}
 	}
+
+	// Fazer transformações
 	
 };
 

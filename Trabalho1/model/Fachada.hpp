@@ -10,6 +10,7 @@
 #include "Ponto.hpp"
 #include "Reta.hpp"
 #include "Poligono.hpp"
+#include "Transformacao.hpp"
 
 class Fachada {
 
@@ -17,6 +18,7 @@ private:
 	Window* window;
 	Viewport* viewport;
 	DisplayFile* displayFile;
+	Transformacao* transformacao;
 
 	//! Método que verifica a validade de um nome.
     /*!
@@ -40,6 +42,7 @@ public:
 		window = new Window(windowInfEsq, windowSupDir);
 		viewport = new Viewport();
 		displayFile = new DisplayFile();
+		transformacao = new Transformacao();
 	}
 
 	void moverWindow(double fatX, double fatY) {
@@ -166,6 +169,25 @@ public:
 		displayFile->deletarElemento(index);
 	}
 	
+	Coordenada* transformaCoordenada(Coordenada* coord, double matriz) {
+		transformacao->transformaCoordenada(coord, matriz);
+	}
+
+	double multiplicarMatrizes3x3(double matriz1, double matriz2) {
+		transformacao->multiplicarMatrizes3x3(matriz1, matriz2);
+	}
+
+	double novaMatrizTraslacao(double Dx, double Dy) {
+		transformacao->novaMatrizTraslacao(Dx, Dy);
+	}
+
+	double novaMatrizEscalonamento(double Sx, double Sy) {
+		transformacao->novaMatrizEscalonamento(Sx, Sy);
+	}
+
+	double novaMatrizRotacao(double angulo) {
+		transformacao->novaMatrizRotacao(angulo);
+	}
 };
 
 #endif
