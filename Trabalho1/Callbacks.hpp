@@ -37,8 +37,11 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 		if (erro == 1) {
 			controller->getView()->inserirTextoConsole("É preciso selecionar um elemento para ser deletado.");
 		}
-	}
-	
+	}	
+}
+
+extern "C" G_MODULE_EXPORT void Elmnt_Btn_Edit_clicked_cb() {
+	controller->editarElementoGrafico();
 }
 
 //! Método que é chamado ao pressionar o botão "Cima".

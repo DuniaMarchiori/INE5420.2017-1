@@ -161,6 +161,10 @@ public:
 			displayFile->retiraDaPosicao(index);
 		//}
 	}
+
+	ElementoGrafico* getElementoNoIndice(int index) {
+		displayFile->elementoNoIndice(index);
+	}
 	
 	//! Método que imprime a display file. (Para testes)
     /*!

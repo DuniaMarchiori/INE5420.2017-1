@@ -358,6 +358,10 @@ public:
 		string entradaYfin = gtk_entry_get_text(textoRetaFinalY);
 		return entradaYfin;
 	}
+
+	int getIndexLinhaElementosSelecionada() {
+		return gtk_list_box_row_get_index(gtk_list_box_get_selected_row (elmnt_List));
+	}
 	
 	ListaEnc<Coordenada*>* getListaCoordsPoligono() {
 		return listaCoordsPoligono;

@@ -80,8 +80,19 @@ public:
 	}
 
 	// Fazer transformações
-	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord, double dx, double dy) {
+	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
 		model->fazTranslacao(elem, coord);	
+	}
+
+	void editarElementoGrafico() {
+		int index = view->getIndexLinhaElementosSelecionada();
+		ElementoGrafico* elemento = model->getElementoNoIndice(index);
+
+		//case tipo de transformação
+		Coordenada* c = new Coordenada(50,10);
+		fazTranslacao(elemento, c);
+
+		atualizaDesenho();
 	}
 	
 };
