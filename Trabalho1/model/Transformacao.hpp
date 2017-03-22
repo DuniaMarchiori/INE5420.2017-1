@@ -4,7 +4,7 @@ class Transformacao {
 
 private:
 	double multiplicarMatrizes(double matriz1, double matriz2, int linhasMatriz1) {
-		double matrizResultado[3][3];
+		double matrizResultado[3][3] /*= new double[3][3]*/;
 
 		for (int i = 0; i < linhasMatriz1; ++i) {
 			for (int j = 0; j < 3; ++j) {

@@ -80,6 +80,9 @@ public:
 	}
 
 	// Fazer transformações
+	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord, double dx, double dy) {
+		model->fazTranslacao(elem, coord);	
+	}
 	
 };
 

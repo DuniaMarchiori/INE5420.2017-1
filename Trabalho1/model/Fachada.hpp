@@ -169,7 +169,7 @@ public:
 		displayFile->deletarElemento(index);
 	}
 	
-	Coordenada* transformaCoordenada(Coordenada* coord, double matriz) {
+	/*Coordenada* transformaCoordenada(Coordenada* coord, double matriz) {
 		transformacao->transformaCoordenada(coord, matriz);
 	}
 
@@ -187,6 +187,19 @@ public:
 
 	double novaMatrizRotacao(double angulo) {
 		transformacao->novaMatrizRotacao(angulo);
+	}*/
+	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
+		Tipo t = elem->getTipo();
+
+		switch (t) {
+			case PONTO:
+				{
+					Ponto* p = static_cast<Ponto*> (elem);
+					Coordenada* novaC = transformacao->transformaCoordenada(p->getCoordenada(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+					p->setCoordenada(novaC);
+					break;
+				}
+		}
 	}
 };
 
