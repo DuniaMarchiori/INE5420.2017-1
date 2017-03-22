@@ -30,6 +30,14 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	controller->botaoDeletarElemento();
 }
 
+//! Método que é chamado ao pressionar o botão de Editar um elemento.
+/*!
+	Abre a janela de editar elemento grafico.
+*/
+extern "C" G_MODULE_EXPORT void Elmnt_Btn_Edit_clicked_cb() {
+	controller->editarElementoGrafico();
+}
+
 //! Método que é chamado ao pressionar o botão "Cima".
 /*!
 	Move a window para cima baseado no fator.

@@ -294,7 +294,32 @@ class ListaEnc {
 	T primeiroElemento() {
 	    return head->getInfo();
 	}
+
+	//! Método que retorna o elemento de determinado indice na lista
+    /*
+    	\param indice é o indice do elemento a ser resgatado
+        \return retorna o elemento de determinado indice na lista
+    */
+	T elementoNoIndice(int indice) {
+		if (listaVazia()) throw -1;
+	    if (indice > size) throw -1;
+	    if (indice == 0) {
+	        return primeiroElemento();
+	    } else {
+	        Elemento<T>* elem = head;
+	        for (int i = 0; i < indice; i++) {
+	            elem = elem->getProximo();
+	        }
+	        T volta = elem->getInfo();
+	        return volta;
+	   }
+	}
 	
+	//! Método que retorna o primeiro elemento da lista
+    /*
+        Retorna o primeiro elemento da lista
+        \return retorna o primeiro elemento da lista
+    */
 	Elemento<T>* getHead() {
 		return head;
 	}

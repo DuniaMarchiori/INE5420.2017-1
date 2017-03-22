@@ -23,7 +23,7 @@ private:
 
 	double* multiplicarVetorPorMatriz(double** vetor, double** matriz) {
 		double** matrizMult = multiplicarMatrizes(vetor, matriz, 1);
-		return matrizMult[1];
+		return matrizMult[0];
 	}
 
 public:

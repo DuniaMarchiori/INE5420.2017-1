@@ -168,6 +168,10 @@ public:
 	void deletarElemento(int index) {
 		displayFile->deletarElemento(index);
 	}
+
+	ElementoGrafico* getElementoNoIndice(int index) {
+		displayFile->getElementoNoIndice(index);
+	}
 	
 	/*Coordenada* transformaCoordenada(Coordenada* coord, double matriz) {
 		transformacao->transformaCoordenada(coord, matriz);
@@ -195,8 +199,24 @@ public:
 			case PONTO:
 				{
 					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada* novaC = transformacao->transformaCoordenada(p->getCoordenada(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
-					p->setCoordenada(novaC);
+					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenada(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+					p->setCoordenada(nova);
+					break;
+				}
+			case RETA:
+				{
+					Reta* r = static_cast<Reta*> (elem);
+					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getPontoInicial(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getPontoFinal(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+					r->setPontoInicial(novaInicial);
+					r->setPontoFinal(novaFinal);
+					break;
+				}
+			case POLIGONO:
+				{
+					Poligono* p = static_cast<Poligono*> (elem);
+					//Coordenada* novaC = transformacao->transformaCoordenada(p->getCoordenada(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+					//p->setCoordenada(novaC);
 					break;
 				}
 		}
