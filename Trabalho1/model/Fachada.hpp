@@ -215,8 +215,19 @@ public:
 			case POLIGONO:
 				{
 					Poligono* p = static_cast<Poligono*> (elem);
-					//Coordenada* novaC = transformacao->transformaCoordenada(p->getCoordenada(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
-					//p->setCoordenada(novaC);
+					
+					ListaEnc<Coordenada*>* listaCoord = p->getLista();
+					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
+
+					while (proxCoord != NULL) {
+						Coordenada* coordPol = proxCoord->getInfo();
+						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+						listaNovasCoord->adiciona(coordTransformada);
+						proxCoord = proxCoord->getProximo();
+					}
+					p->setLista(listaNovasCoord);
+					free(listaCoord);
 					break;
 				}
 		}

@@ -88,8 +88,9 @@ public:
 		int index = view->getIndexLinhaElementosSelecionada();
 		ElementoGrafico* elemento = model->getElementoNoIndice(index);
 
-		//case tipo de transformação
-		Coordenada* c = new Coordenada(50,10);
+		// case tipo de transformação
+		// usar valores digitados pelo usuário na janela
+		Coordenada* c = new Coordenada(50,0);
 		fazTranslacao(elemento, c);
 
 		atualizaDesenho();
