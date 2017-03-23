@@ -51,7 +51,7 @@ private:
 
 	GtkEntry *editElmnt_trans_X, *editElmnt_trans_Y; /*!< Referência para a caixa de texto das coordenadas de translação.*/
 
-	GtkEntry *editElmnt_escal; /*!< Referência para a caixa de texto da quantidade de escalonamento.*/
+	GtkEntry *editElmnt_escal_X, *editElmnt_escal_Y; /*!< Referência para a caixa de texto da quantidade de escalonamento.*/
 
 	GtkEntry *editElmnt_rot_angulo; /*!< Referência para a caixa de texto do angulo de rotação.*/
 
@@ -138,7 +138,8 @@ public:
 
 		editElmnt_trans_X = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Trans_X"));
 		editElmnt_trans_Y = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Trans_Y"));
-		editElmnt_escal = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Escal_Fator"));
+		editElmnt_escal_X = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Escal_Fator_X"));
+		editElmnt_escal_Y = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Escal_Fator_Y"));
 		editElmnt_rot_angulo = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Angulo"));
 
 		editElmnt_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Op_0"));
@@ -552,7 +553,8 @@ public:
 
 	//! Método que limpa as caixas de texto de escalonamento da janela de editar objeto.
 	void limparTextoEscalonamento() {
-		gtk_entry_set_text(editElmnt_escal, "");
+		gtk_entry_set_text(editElmnt_escal_X, "");
+		gtk_entry_set_text(editElmnt_escal_Y, "");
 	}
 
 	//! Método que limpa as caixas de texto de rotacao da janela de editar objeto.
@@ -616,21 +618,61 @@ public:
 		}
 	}
 
-	//! Metodo que retorna o valor numérico contido na caixa de fator de Escala.
+	//! Metodo que retorna o valor numérico contido na caixa de fator de Escala em X.
 	/*!
-		/return o fator de escala.
+		/return o fator de escala em X.
 	*/
-	double getEscalFator() {
+	double getEscalFatorX() {
 		try {
-			return getFator(editElmnt_escal);
+			return getFator(editElmnt_escal_X);
 		} catch (int erro) {
 			if (erro == -1) {
 				console->inserirTexto("ERRO: Você deve inserir um valor numérico como fator de escalonamento.");
-				gtk_entry_set_text(editElmnt_escal, "1");
+				gtk_entry_set_text(editElmnt_escal_X, "1");
 				throw -1;
 			} else if (erro == -2) {
 				console->inserirTexto("ERRO: Você deve inserir um valor diferente de 0 como fator de escalonamento");
-				gtk_entry_set_text(editElmnt_escal, "1");
+				gtk_entry_set_text(editElmnt_escal_X, "1");
+				throw -2;
+			}
+		}
+	}
+	
+	//! Metodo que retorna o valor numérico contido na caixa de fator de Escala em Y.
+	/*!
+		/return o fator de escala em Y.
+	*/
+	double getEscalFatorY() {
+		try {
+			return getFator(editElmnt_escal_Y);
+		} catch (int erro) {
+			if (erro == -1) {
+				console->inserirTexto("ERRO: Você deve inserir um valor numérico como fator de escalonamento.");
+				gtk_entry_set_text(editElmnt_escal_Y, "1");
+				throw -1;
+			} else if (erro == -2) {
+				console->inserirTexto("ERRO: Você deve inserir um valor diferente de 0 como fator de escalonamento");
+				gtk_entry_set_text(editElmnt_escal_Y, "1");
+				throw -2;
+			}
+		}
+	}
+	
+	//! Metodo que retorna o valor numérico contido na caixa de angulo de rotacao.
+	/*!
+		/return o angulo a ser rotacionado.
+	*/
+	double getRotAngulo() {
+		try {
+			return getFator(editElmnt_rot_angulo);
+		} catch (int erro) {
+			if (erro == -1) {
+				console->inserirTexto("ERRO: Você deve inserir um valor numérico como fator de escalonamento.");
+				gtk_entry_set_text(editElmnt_rot_angulo, "1");
+				throw -1;
+			} else if (erro == -2) {
+				console->inserirTexto("ERRO: Você deve inserir um valor diferente de 0 como fator de escalonamento");
+				gtk_entry_set_text(editElmnt_rot_angulo, "1");
 				throw -2;
 			}
 		}

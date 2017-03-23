@@ -172,7 +172,22 @@
                                 <property name="can_focus">False</property>
                                 <property name="margin_right">5</property>
                                 <child>
-                                  <object class="GtkEntry" id="EditElmnt_Escal_Fator">
+                                  <object class="GtkLabel" id="label32">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_top">5</property>
+                                    <property name="margin_bottom">5</property>
+                                    <property name="label" translatable="yes">X: </property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="padding">5</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="EditElmnt_Escal_Fator_X">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="margin_top">5</property>
@@ -182,7 +197,36 @@
                                   <packing>
                                     <property name="expand">True</property>
                                     <property name="fill">True</property>
-                                    <property name="position">0</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="label33">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_top">5</property>
+                                    <property name="margin_bottom">5</property>
+                                    <property name="label" translatable="yes">Y: </property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="padding">5</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="EditElmnt_Escal_Fator_Y">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="margin_top">5</property>
+                                    <property name="margin_bottom">5</property>
+                                    <property name="input_purpose">number</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">3</property>
                                   </packing>
                                 </child>
                               </object>
