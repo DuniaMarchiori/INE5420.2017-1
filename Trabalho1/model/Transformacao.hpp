@@ -87,7 +87,6 @@ public:
 		return matriz;
 	}
 
-#include <stdio.h>
 	//! Método que cria uma matriz de rotação em coordenadas homogêneas.
 	/*!
 		/param angulo é o valor do ângulo para o qual será feita a rotação.
@@ -105,8 +104,6 @@ public:
 		matriz[2][2] = 1;
 		matriz[1][0] = (-1)*(sin (radianos));
 		matriz[0][1] = (sin (radianos));
-		std::cout << matriz[1][0] << std::endl;
-		std::cout << matriz[0][1] << std::endl;
 		return matriz;
 	}
 

@@ -194,6 +194,11 @@ public:
 		displayFile->getElementoNoIndice(index);
 	}
 	
+	//! Método que realiza a translação em um elemento grafico.
+	/*!
+        /param elem o elemento grafico que sera transladado.
+		/param coord uma coordenada contendo a quantidade de translação que sera aplicada em X e Y.
+    */
 	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
 		Tipo t = elem->getTipo();
 
@@ -235,6 +240,11 @@ public:
 		}
 	}
 
+	//! Método que realiza o escalonamento de um elemento grafico.
+	/*!
+        /param elem o elemento grafico que sera escalonado.
+		/param fator uma coordenada contendo a quantidade de escalonamento que sera aplicada em X e Y.
+    */
 	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
 		Tipo t = elem->getTipo();
 		Coordenada* centro = elem->getCentroGeometrico();
@@ -280,10 +290,16 @@ public:
 				}
 		}
 	}
-
+	
+	//! Método que realiza a rotação de um elemento grafico.
+	/*!
+        /param elem o elemento grafico que sera rotacionado.
+		/param coord a rotação sera relativa a este ponto.
+		/param angulo quantos graus o elemento sera rotacionado.
+    */
 	void fazRotacao(ElementoGrafico* elem, Coordenada* coord, double angulo) {
 		Tipo t = elem->getTipo();
-		// Traslada para a origem e rotaciona
+		// Traslada para o ponto arbitrário e rotaciona
 		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(coord->getX()), -(coord->getY())), transformacao->novaMatrizRotacao(angulo));
 		// Translada para o lugar de antes
 		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));

@@ -21,20 +21,12 @@ public:
 		view = new View();
 	}
 
+	//! Método que inicializa a interface grafica.
 	void inicializarView(int argc, char *argv[]){
 		view->inicializarComponentes(argc, argv);
 	}
 
-
-	View* getView() {
-		return view;
-	}
-
-	Fachada* getModel() {
-		return model;
-	}
-
-	// Método que percorre a display file, faz a transformada de Viewport para cada elemento e depois os desenha.
+	//! Método que percorre a display file, faz a transformada de Viewport para cada elemento e depois os desenha.
 	void atualizaDesenho() {
 		view->clear_surface();
 
@@ -81,10 +73,20 @@ public:
 		}
 	}
 
+	//! Método que realiza a translação em um elemento grafico.
+	/*!
+        /param elem o elemento grafico que sera transladado.
+		/param coord uma coordenada contendo a quantidade de translação que sera aplicada em X e Y.
+    */
 	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
 		model->fazTranslacao(elem, coord);
 	}
 
+	//! Método que realiza o escalonamento de um elemento grafico.
+	/*!
+        /param elem o elemento grafico que sera escalonado.
+		/param fator uma coordenada contendo a quantidade de escalonamento que sera aplicada em X e Y.
+    */
 	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
 		/*Coordenada* centro = elem->getCentroGeometrico();
 		fazTranslacaoParaOrigem(elem);*/
@@ -92,6 +94,12 @@ public:
 		//fazTranslacao(elem, centro);
 	}
 
+	//! Método que realiza a rotação de um elemento grafico.
+	/*!
+        /param elem o elemento grafico que sera rotacionado.
+		/param coord a rotação sera relativa a este ponto.
+		/param angulo quantos graus o elemento sera rotacionado.
+    */
 	void fazRotacao(ElementoGrafico* elem, Coordenada* coord, double angulo) {
 		/*Coordenada* coordNegativa = new Coordenada( -(coord->getX()), -(coord->getY()) );
 		fazTranslacao(elem, coordNegativa);*/
@@ -100,6 +108,7 @@ public:
 		free(coordNegativa);*/
 	}
 
+	//! Método encarregado de decidir qual operação de transformação sera feita.
 	void editarElementoGrafico() {
 		int index = view->getIndexLinhaElementosSelecionada();
 		ElementoGrafico* elemento = model->getElementoNoIndice(index);
@@ -188,25 +197,28 @@ public:
 
 	}
 
-	// Métodos chamados pela interface de usuário
-
+	//! Método que fecha o programa.
 	void janelaPrincipalDestroy() {
 		view->fecharPrograma();
 	}
 
+	//! Método que é chamado ao selecionar um elemento na list box de elementos.
 	void selecionaElementoListBox() {
 		view->setElmnt_Btn_DelSensitive(TRUE);
 		view->setElmnt_Btn_EditSensitive(TRUE);
 	}
 
+	//! Método que abre a janela de novo elemento.
 	void botaoNovoElemento() {
 		view->elmnt_Btn_Novo_Clicado();
 	}
 
+	//! Método que abre a janela de editar elemento.
 	void botaoEditarElemento() {
 		view->elmnt_Btn_Edit_Clicado();
 	}
 
+	//! Método que deleta um elemento.
 	void botaoDeletarElemento() {
 		try {
 			int index = view->deletarElemento();
@@ -222,6 +234,7 @@ public:
 		}
 	}
 
+	//! Método que movimenta a window para cima.
 	void botaoMovimentoCima() {
 		try {
 			double fator = view->getFatorMovimento();
@@ -233,6 +246,7 @@ public:
 		}
 	}
 
+	//! Método que movimenta a window para esquerda.
 	void botaoMovimentoEsquerda() {
 		try {
 			double fator = view->getFatorMovimento();
@@ -244,6 +258,7 @@ public:
 		}
 	}
 
+	//! Método que movimenta a window para direita.
 	void botaoMovimentoDireita() {
 		try {
 			double fator = view->getFatorMovimento();
@@ -255,6 +270,7 @@ public:
 		}
 	}
 
+	//! Método que movimenta a window para baixo.
 	void botaoMovimentoBaixo() {
 		try {
 			double fator = view->getFatorMovimento();
@@ -266,6 +282,7 @@ public:
 		}
 	}
 
+	//! Método que realiza zoom out na window.
 	void botaoZoomMenos() {
 		try {
 			double fator = view->getFatorZoom();
@@ -277,6 +294,7 @@ public:
 		}
 	}
 
+	//! Método que realiza zoom in na window.
 	void botaoZoomMais() {
 		try {
 			double fator = view->getFatorZoom();
@@ -288,15 +306,18 @@ public:
 		}
 	}
 
+	//! Método que é chamado ao signal de configure da janela principal.
 	void drawingAreaConfigure(GtkWidget *widget) {
 		view->nova_surface(widget);
 		atualizaDesenho();
 	}
 
+	//! Método que é chamado ao signal de draw da janela principal.
 	void drawingAreaDraw(cairo_t *cr) {
 		view->modifica_surface(cr);
 	}
 
+	//! Método que adiciona um novo elemento.
 	void addNovoElemento() {
 		string nome = view->getNomeElemento();
 		int tipo = view->getTipoNovoElemento();
@@ -368,6 +389,7 @@ public:
 		view->focusNome();
 	}
 
+	//! Método que adiciona uma coordenada ao poligono sendo criado.
 	void addNovaCoordenadaPolinomio() {
 		try {
 			view->inserirCoordListaEnc();
@@ -378,18 +400,22 @@ public:
 		}
 	}
 
+	//! Método que remove a coordenada selecionada na criação de poligono.
 	void delCoordenadaPolinomio() {
 		view->deletarCoordPoligono();
 	}
 
+	//! Método que é chamado ao selecionar um elemento na list box de elementos.
 	void selecionaCoordenadaListBox() {
 		view->setPoligono_Btn_DelSensitive(TRUE);
 	}
 
+	//! Método que é chamado ao fechar a janela de novo elemento.
 	void janelaNovoElementoHide() {
 		view->resetarJanelaNovoElemento();
 	}
 	
+	//! Método que é chamado ao fechar a janela de editar elemento.
 	void fecharJanelaEdicao() {
 		view->resetarJanelaEditElemento();
 	}
