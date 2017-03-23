@@ -535,15 +535,18 @@ public:
 
 	// Comandos Da Janela de Editar
 
+	//! Método que limpa as caixas de texto de translação da janela de editar objeto.
 	void limparTextoTranslacao() {
 		gtk_entry_set_text(editElmnt_trans_X, "");
 		gtk_entry_set_text(editElmnt_trans_Y, "");
 	}
 
+	//! Método que limpa as caixas de texto de escalonamento da janela de editar objeto.
 	void limparTextoEscalonamento() {
 		gtk_entry_set_text(editElmnt_escal, "");
 	}
 
+	//! Método que limpa as caixas de texto de rotacao da janela de editar objeto.
 	void limparTextoRotacao() {
 		gtk_entry_set_text(editElmnt_rot_X, "");
 		gtk_entry_set_text(editElmnt_rot_Y, "");
@@ -552,6 +555,7 @@ public:
 		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_2, FALSE);
 	}
 
+	//! Método que restaura a janela de editar elementos ao seu estado original.
 	void resetarJanelaEditElemento() {
 		limparTextoTranslacao();
 		limparTextoEscalonamento();
@@ -559,10 +563,18 @@ public:
 		gtk_notebook_set_current_page(novoElmnt_Notebook, 0);
 	}
 
+	//! Metodo que retorna o tipo de transformação.
+	/*!
+		/return inteiro correspondendo a qual o tipo de transformação esta sendo aplicada.
+	*/
 	int getTipoTransformacao () {
 		return gtk_notebook_get_current_page(editElmnt_Notebook);
 	}
 
+	//! Metodo que retorna o valor numérico contido na caixa de Translação em X.
+	/*!
+		/return a quantidade de translação em x.
+	*/
 	double getTransX() {
 		try {
 			return getFator(editElmnt_trans_X);
@@ -577,6 +589,10 @@ public:
 		}
 	}
 
+	//! Metodo que retorna o valor numérico contido na caixa de Translação em Y.
+	/*!
+		/return a quantidade de translação em y.
+	*/
 	double getTransY() {
 		try {
 			return getFator(editElmnt_trans_Y);
@@ -591,6 +607,10 @@ public:
 		}
 	}
 
+	//! Metodo que retorna o valor numérico contido na caixa de fator de Escala.
+	/*!
+		/return o fator de escala.
+	*/
 	double getEscalFator() {
 		try {
 			return getFator(editElmnt_escal);
@@ -607,6 +627,10 @@ public:
 		}
 	}
 
+	//! Metodo que retorna a relatividade da rotacao.
+	/*!
+		/return inteiro correspondendo à uma das três opções de relatividade para a rotação.
+	*/
 	int getRelatividadeRotacao() {
 		if (gtk_toggle_button_get_active((GtkToggleButton*) editElmnt_radio_0)) {
 			return 0;
@@ -617,6 +641,10 @@ public:
 		}
 	}
 
+	//! Metodo que retorna o valor numérico contido na caixa de posição X na rotação relativa à um ponto.
+	/*!
+		/return a coordenada X desse ponto.
+	*/
 	double getRotRelativoAX() {
 		try {
 			return getFator(editElmnt_rot_X);
@@ -631,6 +659,10 @@ public:
 		}
 	}
 
+	//! Metodo que retorna o valor numérico contido na caixa de posição Y na rotação relativa à um ponto.
+	/*!
+		/return a coordenada Y desse ponto.
+	*/
 	double getRotRelativoAY() {
 		try {
 			return getFator(editElmnt_rot_Y);
