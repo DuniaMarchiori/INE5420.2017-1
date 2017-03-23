@@ -26,9 +26,8 @@ public:
         /param text O texto que sera adicionado ao console.
     */
 	void inserirTexto(const gchar *texto) {
-		// -1 indica que é para adicionar o texto todo
 		GtkTextIter* iter = new GtkTextIter();
-
+		// -1 indica que é para adicionar o texto todo
 		gtk_text_buffer_insert_at_cursor(buffer, g_strconcat(texto, "\n", NULL), -1);
 		gtk_text_buffer_get_end_iter(buffer, iter);
 		gtk_text_view_scroll_to_iter(caixaTexto, iter, 0.0, TRUE, 0.5, 1);

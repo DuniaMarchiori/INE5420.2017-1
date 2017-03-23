@@ -55,6 +55,10 @@ public:
 		pontoFinal = p;
 	}
 
+	//! Método que retorna o centro geométrico da reta.
+	/*!
+		/return uma Coordenada que indica o centro geométrico da reta.
+	*/
 	Coordenada* getCentroGeometrico() override {
 		double retornoX = (pontoInicial->getX() + pontoFinal->getX()) /2;
 		double retornoY = (pontoInicial->getY() + pontoFinal->getY()) /2;

@@ -57,6 +57,10 @@ public:
 		return lista;
 	}
 
+	//! Método que retorna o centro geométrico do polígono.
+	/*!
+		/return uma Coordenada que indica o centro geométrico do polígono.
+	*/
 	Coordenada* getCentroGeometrico() override{
 		Coordenada* coord;
 

@@ -4,7 +4,7 @@
 
 Controller* controller;
 
-// !Método inicial
+//! Método inicial
 int main(int argc, char *argv[]) {
 	
 	controller = new Controller();

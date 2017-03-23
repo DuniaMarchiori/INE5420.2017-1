@@ -3,6 +3,14 @@
 class Transformacao {
 
 private:
+	//! Método que multiplica duas matrizes.
+	/*!
+		Faz a multiplicação de duas matrizes com no máximo 3 linhas e 3 colunas.
+		/param matriz1 é a matriz à esquerda da multiplicação.
+		/param matriz2 é a matriz à direita da multiplicação.
+		/param linhasMatriz1 é a quantidade de linhas da matriz1.
+		/return a matriz resultante da multiplicação.
+	*/
 	double** multiplicarMatrizes(double** matriz1, double** matriz2, int linhasMatriz1) {
 		//double matrizResultado[3][3] /*= new double[3][3]*/;
 		double **matrizResultado = new double*[3];
@@ -21,6 +29,13 @@ private:
 		return matrizResultado;
 	}
 
+	//! Método que multiplica um vetor por uma matriz.
+	/*!
+		Faz a multiplicação de um vetor com no máximo 3 colunas e uma matriz 3x3.
+		/param vetor é o vetor (à esquerda da multiplicação).
+		/param matriz é a matriz à direita da multiplicação.
+		/return a matriz resultante da multiplicação.
+	*/
 	double* multiplicarVetorPorMatriz(double** vetor, double** matriz) {
 		double** matrizMult = multiplicarMatrizes(vetor, matriz, 1);
 		return matrizMult[0];
@@ -29,6 +44,13 @@ private:
 public:
 	/*Transformacao();
 	~Transformacao();*/
+
+	//! Método que cria uma matriz de translação em coordenadas homogêneas.
+	/*!
+		/param Dx é o valor de X do ponto para o qual será feita a translação.
+		/param Dy é o valor de Y do ponto para o qual será feita a translação.
+		/return uma matriz de translação.
+	*/
 	double** novaMatrizTraslacao(double Dx, double Dy) {
 		double **matriz = new double*[3];
 		for(int i = 0; i < 3; ++i) {
@@ -47,6 +69,12 @@ public:
 		return matriz;
 	}
 
+	//! Método que cria uma matriz de escalonamento em coordenadas homogêneas.
+	/*!
+		/param Sx é o valor de X do ponto para o qual será feita o escalonamento.
+		/param Sy é o valor de Y do ponto para o qual será feita o escalonamento.
+		/return uma matriz de escalonamento.
+	*/
 	double** novaMatrizEscalonamento(double Sx, double Sy) {
 		double **matriz = new double*[3];
 		for(int i = 0; i < 3; ++i) {
@@ -60,6 +88,11 @@ public:
 	}
 
 #include <stdio.h>
+	//! Método que cria uma matriz de rotação em coordenadas homogêneas.
+	/*!
+		/param angulo é o valor do ângulo para o qual será feita a rotação.
+		/return uma matriz de rotação.
+	*/
 	double** novaMatrizRotacao(double angulo) {
 		double **matriz = new double*[3];
 		for(int i = 0; i < 3; ++i) {
@@ -77,10 +110,23 @@ public:
 		return matriz;
 	}
 
+	//! Método que multiplica duas matrizes 3x3.
+	/*!
+		/param matriz1 é a matriz à esquerda da multiplicação.
+		/param matriz2 é a matriz à direita da multiplicação.
+		/return a matriz resultante da multiplicação.
+	*/
 	double** multiplicarMatrizes3x3(double** matriz1, double** matriz2) {
 		return multiplicarMatrizes(matriz1, matriz2, 3);
 	}
 
+	//! Método que faz a transformação.
+	/*!
+		Faz a transformação sobre o ponto utilizando a matriz passada.
+		/param coord é a Coordenada na qual será feita a transformação.
+		/param matriz é a matriz de transformação.
+		/return a coordenada depois de feita a transformação.
+	*/
 	Coordenada* transformaCoordenada(Coordenada* coord, double** matriz) {
 		Coordenada* transformada;
 		double **vetor = new double*[1];

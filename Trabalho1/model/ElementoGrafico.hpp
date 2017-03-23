@@ -46,6 +46,10 @@ public:
 		tipo = t;
 	}
 
+	//! Método que retorna o centro geométrico do elemento.
+	/*!
+		/return uma Coordenada que indica o centro geométrico do elemento.
+	*/
 	virtual Coordenada* getCentroGeometrico() {}
 
 };

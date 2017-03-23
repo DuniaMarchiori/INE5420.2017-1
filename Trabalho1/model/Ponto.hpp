@@ -37,6 +37,10 @@ public:
 		coord = c;
 	}
 
+	//! Método que retorna o centro geométrico do ponto.
+	/*!
+		/return uma Coordenada que indica o centro geométrico do ponto.
+	*/
 	Coordenada* getCentroGeometrico() override {
 		return coord;
 	}

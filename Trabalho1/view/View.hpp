@@ -543,6 +543,7 @@ public:
 		listaCoordsPoligono = new ListaEnc<Coordenada*>();
 	}
 
+	// ------------------------------------------------------------------------------------------------
 	// Comandos Da Janela de Editar
 
 	//! Método que limpa as caixas de texto de translação da janela de editar objeto.
@@ -551,6 +552,7 @@ public:
 		gtk_entry_set_text(editElmnt_trans_Y, "");
 	}
 
+	//! Método que passa o foco do cursor para a caixa de Coordenada X na janela de translação.
 	void focusTransX() {
 		gtk_widget_grab_focus((GtkWidget*) editElmnt_trans_X);
 	}
@@ -561,6 +563,7 @@ public:
 		gtk_entry_set_text(editElmnt_escal_Y, "");
 	}
 
+	//! Método que passa o foco do cursor para a caixa de Coordenada X na janela de escalonamento.
 	void focusEscalX() {
 		gtk_widget_grab_focus((GtkWidget*) editElmnt_escal_X);
 	}
@@ -575,6 +578,7 @@ public:
 		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_2, FALSE);
 	}
 
+	//! Método que passa o foco do cursor para a caixa de valor do ângulo na janela de rotação.
 	void focusRotAngulo() {
 		gtk_widget_grab_focus((GtkWidget*) editElmnt_rot_angulo);
 	}
