@@ -161,6 +161,18 @@ extern "C" G_MODULE_EXPORT void Window_NovoElmnt_hide_cb(){
 //--------------------------------------------------------------
 // Métodos da janela de editar elementos
 
+//! Método que é chamado ao pressionar o botão de aplicar na janela de edição de elementos.
+/*!
+	Abre a janela de edição de elemento.
+*/
 extern "C" G_MODULE_EXPORT void EditElmnt_Aplicar_clicked_cb() {
 	controller->editarElementoGrafico();
+}
+
+//! Método que é ativado ao fechar a janela de editar elemento.
+/*!
+	Restaura a janela para o seu estado inicial.
+*/
+extern "C" G_MODULE_EXPORT void Window_EditElmnt_hide_cb() {
+	controller->fecharJanelaEdicao();
 }

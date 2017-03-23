@@ -44,15 +44,30 @@ public:
 		displayFile = new DisplayFile();
 		transformacao = new Transformacao();
 	}
-
+	
+	//! Método que manda a window se mover.
+	/*!
+        /param fatX O quanto a janela deve se mover em X.
+        /param fatY O quanto a janela deve se mover em Y.
+    */
 	void moverWindow(double fatX, double fatY) {
 		window->moverWindow(fatX, fatY);
 	}
 
+	//! Método que manda a window executar um zoom.
+	/*!
+        /param fator O quanto a janela deve dar zoom.
+    */
 	void zoom(double fator) {
 		window->zoom(fator);
 	}
 
+	//! Método que realiza a transformada de viewport.
+	/*!
+        /param ponto uma coordenada do mundo que sera transformada.
+        /param vpMax a coordenada vpMax da viewport.
+		/return o ponto transformado.
+    */
 	Coordenada* transformaViewport(Coordenada* ponto, Coordenada* vpMax) {
 		return viewport->transformaViewport(ponto, window, vpMax);
 	}
@@ -165,10 +180,19 @@ public:
 		}
 	}
 
+	//! Método que deleta um elemento da display file.
+	/*!
+        /param index a posicao do elemento a ser deletado.
+    */
 	void deletarElemento(int index) {
 		displayFile->deletarElemento(index);
 	}
 
+	//! Método que obtem um elemento da display file.
+	/*!
+        /param index a posicao do elemento a ser consultado.
+		/return o elemento da display file na posicao especificada.
+    */
 	ElementoGrafico* getElementoNoIndice(int index) {
 		displayFile->getElementoNoIndice(index);
 	}

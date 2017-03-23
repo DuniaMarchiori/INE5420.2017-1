@@ -9,7 +9,7 @@
 #define CONTROLLER_HPP
 
 class Controller {
-	
+
 private:
 	View* view;
 	Fachada* model;
@@ -20,26 +20,26 @@ public:
 		model = new Fachada();
 		view = new View();
 	}
-	
+
 	void inicializarView(int argc, char *argv[]){
 		view->inicializarComponentes(argc, argv);
 	}
-	
-	
+
+
 	View* getView() {
 		return view;
 	}
-	
+
 	Fachada* getModel() {
 		return model;
 	}
-	
+
 	// Método que percorre a display file, faz a transformada de Viewport para cada elemento e depois os desenha.
 	void atualizaDesenho() {
 		view->clear_surface();
-		
+
 		Coordenada* viewportMax = view->getViewportMax();
-		
+
 		Elemento<ElementoGrafico*>* proxElemento = model->getHeadDisplayFile(); // primeiro elemento da display file
 		while (proxElemento != NULL) {
 			ElementoGrafico* elemento = proxElemento->getInfo();
@@ -50,19 +50,19 @@ public:
 					view->desenhaPonto(pontoTransformado);
 					free(pontoTransformado);
 					break;
-					
+
 				} case RETA: {
 					Coordenada* coordIniTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getPontoInicial(), viewportMax);
 					Coordenada* coordFinTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getPontoFinal(), viewportMax);
-					
+
 					Reta* retaTransformada = new Reta(elemento->getNome(), coordIniTransformada, coordFinTransformada);
 					view->desenhaReta(retaTransformada);
 					free(retaTransformada);
 					break;
-					
+
 				} case POLIGONO: {
 					Poligono* poligonoTransformado = new Poligono(elemento->getNome());
-					
+
 					ListaEnc<Coordenada*>* listaCoord = (static_cast<Poligono*> (elemento))->getLista();
 					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
 
@@ -82,7 +82,7 @@ public:
 	}
 
 	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
-		model->fazTranslacao(elem, coord);	
+		model->fazTranslacao(elem, coord);
 	}
 
 	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
@@ -125,18 +125,18 @@ public:
 		atualizaDesenho();
 
 	}
-	
+
 	// Métodos chamados pela interface de usuário
-	
+
 	void janelaPrincipalDestroy() {
 		view->fecharPrograma();
 	}
-	
+
 	void selecionaElementoListBox() {
 		view->setElmnt_Btn_DelSensitive(TRUE);
 		view->setElmnt_Btn_EditSensitive(TRUE);
 	}
-	
+
 	void botaoNovoElemento() {
 		view->elmnt_Btn_Novo_Clicado();
 	}
@@ -144,21 +144,22 @@ public:
 	void botaoEditarElemento() {
 		view->elmnt_Btn_Edit_Clicado();
 	}
-	
+
 	void botaoDeletarElemento() {
 		try {
 			int index = view->deletarElemento();
 			model->deletarElemento(index);
 			atualizaDesenho();
 			view->inserirTextoConsole("Elemento excluído.");
-			view->setElmnt_Btn_DelSensitive(FALSE);	
+			view->setElmnt_Btn_DelSensitive(FALSE);
+			view->setElmnt_Btn_EditSensitive(TRUE);
 		} catch (int erro) {
 			if (erro == 1) {
 				view->inserirTextoConsole("É preciso selecionar um elemento para ser deletado.");
 			}
 		}
 	}
-	
+
 	void botaoMovimentoCima() {
 		try {
 			double fator = view->getFatorMovimento();
@@ -169,7 +170,7 @@ public:
 			return;
 		}
 	}
-	
+
 	void botaoMovimentoEsquerda() {
 		try {
 			double fator = view->getFatorMovimento();
@@ -180,7 +181,7 @@ public:
 			return;
 		}
 	}
-	
+
 	void botaoMovimentoDireita() {
 		try {
 			double fator = view->getFatorMovimento();
@@ -191,7 +192,7 @@ public:
 			return;
 		}
 	}
-	
+
 	void botaoMovimentoBaixo() {
 		try {
 			double fator = view->getFatorMovimento();
@@ -202,7 +203,7 @@ public:
 			return;
 		}
 	}
-	
+
 	void botaoZoomMenos() {
 		try {
 			double fator = view->getFatorZoom();
@@ -213,7 +214,7 @@ public:
 			return;
 		}
 	}
-	
+
 	void botaoZoomMais() {
 		try {
 			double fator = view->getFatorZoom();
@@ -224,16 +225,16 @@ public:
 			return;
 		}
 	}
-	
+
 	void drawingAreaConfigure(GtkWidget *widget) {
 		view->nova_surface(widget);
 		atualizaDesenho();
 	}
-	
+
 	void drawingAreaDraw(cairo_t *cr) {
 		view->modifica_surface(cr);
 	}
-	
+
 	void addNovoElemento() {
 		string nome = view->getNomeElemento();
 		int tipo = view->getTipoNovoElemento();
@@ -255,14 +256,14 @@ public:
 						view->inserirTextoConsole("ERRO: não é possível inserir um ponto sem coordenadas.");
 					}
 				}
-				
+
 				break;
 			} case 1: { // A page 1 corresponde à aba de Reta
 				string coordIniX = view->getCoordIniXNovaReta();
 				string coordIniY = view->getCoordIniYNovaReta();
 				string coordFinX = view->getCoordFinXNovaReta();
 				string coordFinY = view->getCoordFinYNovaReta();
-			
+
 				try {
 					model->inserirNovaReta(nome, coordIniX, coordIniY, coordFinX, coordFinY);
 					view->limparTextoNovaReta();
@@ -277,11 +278,11 @@ public:
 						view->inserirTextoConsole("ERRO: não é possível inserir reta sem dois pares de coordenadas.");
 					}
 				}
-				
+
 				break;
 			} case 2: { // A page 2 corresponde à aba de Polígono
 				ListaEnc<Coordenada*>* lista = view->getListaCoordsPoligono();
-				
+
 				try {
 					model->inserirNovoPoligono(nome, lista);
 					view->resetarListaCoordenadasPoligono();
@@ -295,16 +296,16 @@ public:
 						view->inserirTextoConsole("ERRO: não é possível inserir polígono sem coordenadas.");
 					}
 				}
-				
+
 				break;
 			}
 		}
-		
+
 		atualizaDesenho();
 		view->setPoligono_Btn_DelSensitive(FALSE);
 		view->focusNome();
 	}
-	
+
 	void addNovaCoordenadaPolinomio() {
 		try {
 			view->inserirCoordListaEnc();
@@ -314,19 +315,23 @@ public:
 			return;
 		}
 	}
-	
+
 	void delCoordenadaPolinomio() {
 		view->deletarCoordPoligono();
 	}
-	
+
 	void selecionaCoordenadaListBox() {
-		view->setPoligono_Btn_DelSensitive(TRUE);	
+		view->setPoligono_Btn_DelSensitive(TRUE);
 	}
-	
+
 	void janelaNovoElementoHide() {
 		view->resetarJanelaNovoElemento();
 	}
 	
+	void fecharJanelaEdicao() {
+		view->resetarJanelaEditElemento();
+	}
+
 };
 
 #endif
