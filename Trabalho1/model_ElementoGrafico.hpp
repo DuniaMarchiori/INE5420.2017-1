@@ -2,7 +2,7 @@
 #define ELEMENTOGRAFICO_HPP
 
 #include<string>
-#include "Tipo.hpp"
+#include "model_Tipo.hpp"
 //#include "Coordenada.hpp"
 
 using std::string;

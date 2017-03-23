@@ -1,9 +1,9 @@
 #include <math.h>
-#include "../model/Coordenada.hpp"
-#include "../model/Ponto.hpp"
-#include "../model/Reta.hpp"
-#include "../model/Poligono.hpp"
-#include "../model/Fachada.hpp"
+#include "model_Coordenada.hpp"
+#include "model_Ponto.hpp"
+#include "model_Reta.hpp"
+#include "model_Poligono.hpp"
+#include "model_Fachada.hpp"
 
 #include <iostream>
 using namespace std;

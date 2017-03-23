@@ -2,8 +2,8 @@
 
 #include <stdio.h>
 
-#include "view/View.hpp"
-#include "model/Fachada.hpp"
+#include "view_View.hpp"
+#include "model_Fachada.hpp"
 
 #ifndef CONTROLLER_HPP
 #define CONTROLLER_HPP

@@ -1,8 +1,8 @@
 #ifndef POLIGONO_HPP
 #define POLIGONO_HPP
 
-#include "ElementoGrafico.hpp"
-#include "Coordenada.hpp"
+#include "model_ElementoGrafico.hpp"
+#include "model_Coordenada.hpp"
 #include "ListaEnc.hpp"
 
 class Poligono: public ElementoGrafico {

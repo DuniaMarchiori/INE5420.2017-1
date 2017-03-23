@@ -2,7 +2,7 @@
 #define DISPLAYFILE_HPP
 
 #include "ListaEnc.hpp"
-#include "ElementoGrafico.hpp"
+#include "model_ElementoGrafico.hpp"
 
 class DisplayFile {
 	

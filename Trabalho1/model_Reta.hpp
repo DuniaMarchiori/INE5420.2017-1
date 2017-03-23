@@ -1,8 +1,8 @@
 #ifndef RETA_HPP
 #define RETA_HPP
 
-#include "ElementoGrafico.hpp"
-#include "Coordenada.hpp"
+#include "model_ElementoGrafico.hpp"
+#include "model_Coordenada.hpp"
 
 class Reta: public ElementoGrafico {
 	

@@ -2,8 +2,8 @@
 #include <string>
 #include <stdexcept>
 #include <iostream>
-#include "Console.hpp"
-#include "Desenhista.hpp"
+#include "view_Console.hpp"
+#include "view_Desenhista.hpp"
 
 #ifndef VIEW_HPP
 #define VIEW_HPP

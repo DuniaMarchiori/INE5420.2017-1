@@ -1,7 +1,7 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include "Coordenada.hpp"
+#include "model_Coordenada.hpp"
 
 class Window {
 	
