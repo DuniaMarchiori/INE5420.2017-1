@@ -107,36 +107,79 @@ public:
 		
 		switch (view->getTipoTransformacao()) {
 			case 0: // Aba da translação
-				c = new Coordenada(view->getTransX(), view->getTransY());
-				fazTranslacao(elemento, c);
-				view->inserirTextoConsole("Elemento transladado.");
+				try {
+					c = new Coordenada(view->getTransX(), view->getTransY());
+					fazTranslacao(elemento, c);
+					view->limparTextoTranslacao();
+					view->focusTransX();
+					view->inserirTextoConsole("Elemento transladado.");
+				} catch (int erro) {
+					if (erro == -1) {
+						view->inserirTextoConsole("ERRO: Você deve inserir um valor numérico como quantidade de translação.");
+					}
+				}
 				break;
 
 			case 1: // Aba do escalonamento
-				c = new Coordenada(2,2);
-				fazEscalonamento(elemento, c);
-				view->inserirTextoConsole("Elemento escalonado.");
+				try {
+					c = new Coordenada(view->getEscalFatorX(), view->getEscalFatorY());
+					fazEscalonamento(elemento, c);
+					view->limparTextoEscalonamento();
+					view->focusEscalX();
+					view->inserirTextoConsole("Elemento escalonado.");
+				} catch (int erro) {
+					if (erro == -1) {
+						view->inserirTextoConsole("ERRO: Você deve inserir um valor numérico como fator de escalonamento.");
+					} else if (erro == -2){
+						view->inserirTextoConsole("ERRO: Você deve inserir um valor diferente de 0 como fator de escalonamento.");
+					}
+				}
 				break;
 
 			case 2: // Aba da rotação
+				double angulo;
+				try {
+					angulo = view->getRotAngulo();
+				} catch (int erro) {
+					if (erro == -1) {
+						view->inserirTextoConsole("ERRO: Você deve inserir um valor numérico como ângulo de rotação.");
+						break;
+					} else if(erro == -2) {
+						view->inserirTextoConsole("ERRO: Você deve inserir um valor diferente de 0 como ângulo de rotação.");
+						break;
+					}
+				}
 				switch(view->getRelatividadeRotacao()) {
 					case 0: // Opção de rotação em relação à origem
 						c = new Coordenada(0, 0);
-						fazRotacao(elemento, c, 30);
+						fazRotacao(elemento, c, angulo);
 						view->inserirTextoConsole("Elemento rotacionado ao redor da origem.");
+						view->focusRotAngulo();
+						view->limparTextoRotacao();
 						break;
 
 					case 1: // Opção de rotação em relação ao centro do elemento
 						c = new Coordenada(elemento->getCentroGeometrico()->getX(), elemento->getCentroGeometrico()->getY());
-						fazRotacao(elemento, c, 30);
+						fazRotacao(elemento, c, angulo);
 						view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");
+						view->focusRotAngulo();
+						view->limparTextoRotacao();
 						break;
 
 					case 2: // Opção de rotação em relação a um ponto qualquer
-						c = new Coordenada(view->getRotRelativoAX(), view->getRotRelativoAY());
-						fazRotacao(elemento, c, 30);
-						view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
-						break;
+						try {
+							c = new Coordenada(view->getRotRelativoAX(), view->getRotRelativoAY());
+							fazRotacao(elemento, c, angulo);
+							view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
+							view->focusRotAngulo();
+							view->limparTextoRotacao();
+							break;
+						} catch (int erro) {
+							if (erro == -1) {
+								view->inserirTextoConsole("ERRO: Você deve inserir um valor numérico como ponto de referência para a rotação.");
+								break;
+							}						
+						}
 				}
 				break;
 		}
@@ -171,7 +214,7 @@ public:
 			atualizaDesenho();
 			view->inserirTextoConsole("Elemento excluído.");
 			view->setElmnt_Btn_DelSensitive(FALSE);
-			view->setElmnt_Btn_EditSensitive(TRUE);
+			view->setElmnt_Btn_EditSensitive(FALSE);
 		} catch (int erro) {
 			if (erro == 1) {
 				view->inserirTextoConsole("É preciso selecionar um elemento para ser deletado.");

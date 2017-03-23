@@ -551,19 +551,32 @@ public:
 		gtk_entry_set_text(editElmnt_trans_Y, "");
 	}
 
+	void focusTransX() {
+		gtk_widget_grab_focus((GtkWidget*) editElmnt_trans_X);
+	}
+
 	//! Método que limpa as caixas de texto de escalonamento da janela de editar objeto.
 	void limparTextoEscalonamento() {
 		gtk_entry_set_text(editElmnt_escal_X, "");
 		gtk_entry_set_text(editElmnt_escal_Y, "");
 	}
 
+	void focusEscalX() {
+		gtk_widget_grab_focus((GtkWidget*) editElmnt_escal_X);
+	}
+
 	//! Método que limpa as caixas de texto de rotacao da janela de editar objeto.
 	void limparTextoRotacao() {
 		gtk_entry_set_text(editElmnt_rot_X, "");
 		gtk_entry_set_text(editElmnt_rot_Y, "");
+		gtk_entry_set_text(editElmnt_rot_angulo, "");
 		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_0, TRUE);
 		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_1, FALSE);
 		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_2, FALSE);
+	}
+
+	void focusRotAngulo() {
+		gtk_widget_grab_focus((GtkWidget*) editElmnt_rot_angulo);
 	}
 
 	//! Método que restaura a janela de editar elementos ao seu estado original.
@@ -572,6 +585,7 @@ public:
 		limparTextoEscalonamento();
 		limparTextoRotacao();
 		gtk_notebook_set_current_page(novoElmnt_Notebook, 0);
+		focusTransX();
 	}
 
 	//! Metodo que retorna o tipo de transformação.
@@ -591,8 +605,7 @@ public:
 			return getFator(editElmnt_trans_X);
 		} catch (int erro) {
 			if (erro == -1) {
-				console->inserirTexto("ERRO: Você deve inserir um valor numérico como quantidade de translação.");
-				gtk_entry_set_text(editElmnt_trans_X, "0");
+				//gtk_entry_set_text(editElmnt_trans_X, "0");
 				throw -1;
 			} else if (erro == -2) {
 				return 0;
@@ -609,8 +622,7 @@ public:
 			return getFator(editElmnt_trans_Y);
 		} catch (int erro) {
 			if (erro == -1) {
-				console->inserirTexto("ERRO: Você deve inserir um valor numérico como quantidade de translação.");
-				gtk_entry_set_text(editElmnt_trans_Y, "0");
+				//gtk_entry_set_text(editElmnt_trans_Y, "0");
 				throw -1;
 			} else if (erro == -2) {
 				return 0;
@@ -627,12 +639,10 @@ public:
 			return getFator(editElmnt_escal_X);
 		} catch (int erro) {
 			if (erro == -1) {
-				console->inserirTexto("ERRO: Você deve inserir um valor numérico como fator de escalonamento.");
-				gtk_entry_set_text(editElmnt_escal_X, "1");
+				//gtk_entry_set_text(editElmnt_escal_X, "1");
 				throw -1;
 			} else if (erro == -2) {
-				console->inserirTexto("ERRO: Você deve inserir um valor diferente de 0 como fator de escalonamento");
-				gtk_entry_set_text(editElmnt_escal_X, "1");
+				//gtk_entry_set_text(editElmnt_escal_X, "1");
 				throw -2;
 			}
 		}
@@ -647,12 +657,10 @@ public:
 			return getFator(editElmnt_escal_Y);
 		} catch (int erro) {
 			if (erro == -1) {
-				console->inserirTexto("ERRO: Você deve inserir um valor numérico como fator de escalonamento.");
-				gtk_entry_set_text(editElmnt_escal_Y, "1");
+				//gtk_entry_set_text(editElmnt_escal_Y, "1");
 				throw -1;
 			} else if (erro == -2) {
-				console->inserirTexto("ERRO: Você deve inserir um valor diferente de 0 como fator de escalonamento");
-				gtk_entry_set_text(editElmnt_escal_Y, "1");
+				//gtk_entry_set_text(editElmnt_escal_Y, "1");
 				throw -2;
 			}
 		}
@@ -667,12 +675,10 @@ public:
 			return getFator(editElmnt_rot_angulo);
 		} catch (int erro) {
 			if (erro == -1) {
-				console->inserirTexto("ERRO: Você deve inserir um valor numérico como fator de escalonamento.");
-				gtk_entry_set_text(editElmnt_rot_angulo, "1");
+				//gtk_entry_set_text(editElmnt_rot_angulo, "1");
 				throw -1;
 			} else if (erro == -2) {
-				console->inserirTexto("ERRO: Você deve inserir um valor diferente de 0 como fator de escalonamento");
-				gtk_entry_set_text(editElmnt_rot_angulo, "1");
+				//gtk_entry_set_text(editElmnt_rot_angulo, "1");
 				throw -2;
 			}
 		}
@@ -701,8 +707,7 @@ public:
 			return getFator(editElmnt_rot_X);
 		} catch (int erro) {
 			if (erro == -1) {
-				console->inserirTexto("ERRO: Você deve inserir um valor numérico como ponto de referência para a rotação.");
-				gtk_entry_set_text(editElmnt_rot_X, "1");
+				//gtk_entry_set_text(editElmnt_rot_X, "1");
 				throw -1;
 			} else if (erro == -2) {
 				return 0;
@@ -719,8 +724,7 @@ public:
 			return getFator(editElmnt_rot_Y);
 		} catch (int erro) {
 			if (erro == -1) {
-				console->inserirTexto("ERRO: Você deve inserir um valor numérico como ponto de referência para a rotação.");
-				gtk_entry_set_text(editElmnt_rot_Y, "1");
+				//gtk_entry_set_text(editElmnt_rot_Y, "1");
 				throw -1;
 			} else if (erro == -2) {
 				return 0;
