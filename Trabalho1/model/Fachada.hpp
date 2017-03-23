@@ -232,6 +232,48 @@ public:
 				}
 		}
 	}
+
+	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
+		Tipo t = elem->getTipo();
+
+		switch (t) {
+			case PONTO:
+				{
+					Ponto* p = static_cast<Ponto*> (elem);
+					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenada(), transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+					p->setCoordenada(nova);
+					break;
+				}
+			case RETA:
+				{
+					Reta* r = static_cast<Reta*> (elem);
+					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getPontoInicial(), transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getPontoFinal(), transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+					r->setPontoInicial(novaInicial);
+					r->setPontoFinal(novaFinal);
+					break;
+				}
+			case POLIGONO:
+				{
+					Poligono* p = static_cast<Poligono*> (elem);
+					
+					ListaEnc<Coordenada*>* listaCoord = p->getLista();
+					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
+
+					while (proxCoord != NULL) {
+						Coordenada* coordPol = proxCoord->getInfo();
+						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+						listaNovasCoord->adiciona(coordTransformada);
+						proxCoord = proxCoord->getProximo();
+					}
+					p->setLista(listaNovasCoord);
+					free(listaCoord);
+					break;
+				}
+		}
+	}
+
 };
 
 #endif
