@@ -192,6 +192,7 @@ public:
 	double novaMatrizRotacao(double angulo) {
 		transformacao->novaMatrizRotacao(angulo);
 	}*/
+	
 	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
 		Tipo t = elem->getTipo();
 
@@ -235,20 +236,25 @@ public:
 
 	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
 		Tipo t = elem->getTipo();
+		Coordenada* centro = elem->getCentroGeometrico();
+		// Traslada para a origem e escalona
+		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(centro->getX()), -(centro->getY())), transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+		// Translada para o lugar de antes
+		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizTraslacao(centro->getX(), centro->getY()));
 
 		switch (t) {
 			case PONTO:
 				{
 					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenada(), transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenada(), resultado);
 					p->setCoordenada(nova);
 					break;
 				}
 			case RETA:
 				{
 					Reta* r = static_cast<Reta*> (elem);
-					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getPontoInicial(), transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
-					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getPontoFinal(), transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getPontoInicial(), resultado);
+					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getPontoFinal(), resultado);
 					r->setPontoInicial(novaInicial);
 					r->setPontoFinal(novaFinal);
 					break;
@@ -263,7 +269,7 @@ public:
 
 					while (proxCoord != NULL) {
 						Coordenada* coordPol = proxCoord->getInfo();
-						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, resultado);
 						listaNovasCoord->adiciona(coordTransformada);
 						proxCoord = proxCoord->getProximo();
 					}
@@ -274,6 +280,53 @@ public:
 		}
 	}
 
+#include <stdio.h>
+	void fazRotacao(ElementoGrafico* elem, Coordenada* coord, double angulo) {
+		Tipo t = elem->getTipo();
+		// Traslada para a origem e rotaciona
+		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(coord->getX()), -(coord->getY())), transformacao->novaMatrizRotacao(angulo));
+		// Translada para o lugar de antes
+		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+
+		switch (t) {
+			case PONTO:
+				{
+					Ponto* p = static_cast<Ponto*> (elem);
+					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenada(), resultado);
+					p->setCoordenada(nova);
+					std::cout << "x"+ to_string(nova->getX()) << std::endl;
+					std::cout << nova->getY() << std::endl;
+					break;
+				}
+			case RETA:
+				{
+					Reta* r = static_cast<Reta*> (elem);
+					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getPontoInicial(), resultado);
+					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getPontoFinal(), resultado);
+					r->setPontoInicial(novaInicial);
+					r->setPontoFinal(novaFinal);
+					break;
+				}
+			case POLIGONO:
+				{
+					Poligono* p = static_cast<Poligono*> (elem);
+					
+					ListaEnc<Coordenada*>* listaCoord = p->getLista();
+					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
+
+					while (proxCoord != NULL) {
+						Coordenada* coordPol = proxCoord->getInfo();
+						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, resultado);
+						listaNovasCoord->adiciona(coordTransformada);
+						proxCoord = proxCoord->getProximo();
+					}
+					p->setLista(listaNovasCoord);
+					free(listaCoord);
+					break;
+				}
+		}
+	}
 };
 
 #endif

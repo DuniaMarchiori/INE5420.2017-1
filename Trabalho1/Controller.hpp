@@ -81,36 +81,46 @@ public:
 		}
 	}
 
-	// Fazer transformações
 	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
 		model->fazTranslacao(elem, coord);	
 	}
 
-	void fazTranslacaoParaOrigem(ElementoGrafico* elem) {
-		Coordenada * coord = new Coordenada(-(elem->getCentroGeometrico()->getX()), -(elem->getCentroGeometrico()->getY()));
-		model->fazTranslacao(elem, coord);	
+	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
+		/*Coordenada* centro = elem->getCentroGeometrico();
+		fazTranslacaoParaOrigem(elem);*/
+		model->fazEscalonamento(elem, fator);
+		//fazTranslacao(elem, centro);
 	}
 
-	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
-		Coordenada* centro = elem->getCentroGeometrico();
-		fazTranslacaoParaOrigem(elem);
-		model->fazEscalonamento(elem, fator);
-		fazTranslacao(elem, centro);
+	void fazRotacao(ElementoGrafico* elem, Coordenada* coord, double angulo) {
+		/*Coordenada* coordNegativa = new Coordenada( -(coord->getX()), -(coord->getY()) );
+		fazTranslacao(elem, coordNegativa);*/
+		model->fazRotacao(elem, coord, angulo);
+		/*fazTranslacao(elem, coord);
+		free(coordNegativa);*/
 	}
 
 	void editarElementoGrafico() {
 		int index = view->getIndexLinhaElementosSelecionada();
 		ElementoGrafico* elemento = model->getElementoNoIndice(index);
-		std::cout <<"vAI ESCALonar" << std::endl;
-		// case tipo de transformação
+		
+		// case tipo de transformação (3 rotações diferentes)
 		// usar valores digitados pelo usuário na janela
 		/*Coordenada* c = new Coordenada(50,0);
 		fazTranslacao(elemento, c);
 		view->inserirTextoConsole("Elemento transladado.");*/
 
-		Coordenada* c = new Coordenada(2,2);
+		/*Coordenada* c = new Coordenada(2,2);
 		fazEscalonamento(elemento, c);
-		view->inserirTextoConsole("Elemento escalonado.");
+		view->inserirTextoConsole("Elemento escalonado.");*/
+
+		/*Coordenada* c = new Coordenada(elemento->getCentroGeometrico()->getX(), elemento->getCentroGeometrico()->getY());
+		fazRotacao(elemento, c, 90);
+		view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");*/
+
+		Coordenada* c = new Coordenada(0, 0);
+		fazRotacao(elemento, c, 30);
+		view->inserirTextoConsole("Elemento rotacionado ao redor do centro do mundo.");
 
 		atualizaDesenho();
 
