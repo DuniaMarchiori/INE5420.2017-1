@@ -316,6 +316,12 @@ public:
 	void janelaNovoElementoHide() {
 		view->resetarJanelaNovoElemento();
 	}
+	
+	void fecharJanelaEdicao() {
+		view->limparTextoTranslacao();
+		view->limparTextoEscalonamento();
+		view->limparTextoRotacao();
+	}
 
 };
 

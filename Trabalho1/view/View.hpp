@@ -37,7 +37,6 @@ private:
 	GtkWidget *viewport_DrawingArea; /*!< A área de desenho*/
 
 	GtkWindow *window_NovoElemento; /*!< Referência para a janela de novo elemento.*/
-	GtkWindow *window_EditarElemento;
 	
 	GtkEntry *textoNomeElemento; /*!< Referência para a caixa de texto de inserção de nome para um elemento.*/
 	GtkEntry *textoPontoX, *textoPontoY, *textoRetaInicialX, *textoRetaInicialY, 
@@ -64,7 +63,7 @@ private:
 	
 	GtkNotebook *editElmnt_Notebook; /*!< Referência para o notebook na edição de elemento.*/
 	
-	GtkButton *editElmnt_Aplicar; /*!< Botão que confirma a edição de um elemento.*/
+	GtkButton *editElmnt_aplicar; /*!< Botão que confirma a edição de um elemento.*/
 
 	double getFator(GtkEntry* area) {
 		double fator = 0;
@@ -109,8 +108,6 @@ public:
 		gtk_entry_set_text(zoom_Txt_Fator, "1");
 		window_NovoElemento = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_NovoElmnt"));
 		g_signal_connect (window_NovoElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL); // Essa janela não se deletará ao fechá-la, apenas esconderá.
-		window_EditarElemento = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_EditElmnt"));
-		g_signal_connect (window_EditarElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL); // Essa janela não se deletará ao fechá-la, apenas esconderá.
 		
 		textoNomeElemento = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Nome"));
 		textoPontoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_X"));
@@ -317,7 +314,7 @@ public:
 	}
 
 	void elmnt_Btn_Edit_Clicado() {
-		gtk_widget_show((GtkWidget*) window_EditarElemento);
+		gtk_widget_show((GtkWidget*) window_EditElemento);
 	}
 	
 	int deletarElemento(){
@@ -450,13 +447,34 @@ public:
 	
 	// Comandos Da Janela de Editar
 	
+	void limparTextoTranslacao() {
+		gtk_entry_set_text(editElmnt_trans_X, "");
+		gtk_entry_set_text(editElmnt_trans_Y, "");
+	}
+	
+	void limparTextoEscalonamento() {
+		gtk_entry_set_text(editElmnt_escal, "");
+	}
+	
+	void limparTextoRotacao() {
+		gtk_entry_set_text(editElmnt_rot_X, "");
+		gtk_entry_set_text(editElmnt_rot_Y, "");
+		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_0, TRUE);
+		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_1, FALSE);
+		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_2, FALSE);
+	}
+	
+	int getTipoTransformacao () {
+		return gtk_notebook_get_current_page(editElmnt_Notebook);
+	}
+	
 	double getTransX() {
 		try {
 			return getFator(editElmnt_trans_X);
 		} catch (int erro) {
 			if (erro == -1) {
 				console->inserirTexto("ERRO: Você deve inserir um valor numérico como quantidade de translação.");
-				gtk_entry_set_text(editElmnt_trans_X, "1");
+				gtk_entry_set_text(editElmnt_trans_X, "0");
 				throw -1;
 			} else if (erro == -2) {
 				return 0;
@@ -470,7 +488,7 @@ public:
 		} catch (int erro) {
 			if (erro == -1) {
 				console->inserirTexto("ERRO: Você deve inserir um valor numérico como quantidade de translação.");
-				gtk_entry_set_text(editElmnt_trans_Y, "1");
+				gtk_entry_set_text(editElmnt_trans_Y, "0");
 				throw -1;
 			} else if (erro == -2) {
 				return 0;
@@ -478,7 +496,59 @@ public:
 		}
 	}
 	
+	double getEscalFator() {
+		try {
+			return getFator(editElmnt_escal);
+		} catch (int erro) {
+			if (erro == -1) {
+				console->inserirTexto("ERRO: Você deve inserir um valor numérico como fator de escalonamento.");
+				gtk_entry_set_text(editElmnt_escal, "1");
+				throw -1;
+			} else if (erro == -2) {
+				console->inserirTexto("ERRO: Você deve inserir um valor diferente de 0 como fator de escalonamento");
+				gtk_entry_set_text(editElmnt_escal, "1");
+				throw -2;
+			}
+		}
+	}
 	
+	int getRelatividadeRotacao() {
+		if (gtk_toggle_button_get_active((GtkToggleButton*) editElmnt_radio_0)) {
+			return 0;
+		} else if (gtk_toggle_button_get_active((GtkToggleButton*) editElmnt_radio_1)) {
+			return 1;
+		} else {
+			return 2;
+		}
+	}
+	
+	double getRotRelativoAX() {
+		try {
+			return getFator(editElmnt_rot_X);
+		} catch (int erro) {
+			if (erro == -1) {
+				console->inserirTexto("ERRO: Você deve inserir um valor numérico como ponto de referência para a rotação.");
+				gtk_entry_set_text(editElmnt_rot_X, "1");
+				throw -1;
+			} else if (erro == -2) {
+				return 0;
+			}
+		}
+	}
+	
+	double getRotRelativoAY() {
+		try {
+			return getFator(editElmnt_rot_Y);
+		} catch (int erro) {
+			if (erro == -1) {
+				console->inserirTexto("ERRO: Você deve inserir um valor numérico como ponto de referência para a rotação.");
+				gtk_entry_set_text(editElmnt_rot_Y, "1");
+				throw -1;
+			} else if (erro == -2) {
+				return 0;
+			}
+		}
+	}
 	
 };
 

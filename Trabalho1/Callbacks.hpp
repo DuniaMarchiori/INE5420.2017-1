@@ -164,3 +164,7 @@ extern "C" G_MODULE_EXPORT void Window_NovoElmnt_hide_cb(){
 extern "C" G_MODULE_EXPORT void EditElmnt_Aplicar_clicked_cb() {
 	controller->editarElementoGrafico();
 }
+
+extern "C" G_MODULE_EXPORT void Window_EditElmnt_hide_cb() {
+	controller->fecharJanelaEdicao();
+}
