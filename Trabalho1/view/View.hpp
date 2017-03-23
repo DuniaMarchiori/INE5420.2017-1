@@ -45,10 +45,26 @@ private:
 	GtkButton *poligono_Btn_Add, *poligono_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de poligono.*/
 	GtkListBox *poligono_Listbox; /*!< Referência para a listbox coma s coordenadas do poligono.*/
 
-	GtkNotebook *notebook; /*!< Referência para o notebook na criação de elemento.*/
+	GtkNotebook *novoElmnt_Notebook; /*!< Referência para o notebook na criação de elemento.*/
 	
-	// Metodos privados que adicionei
+	//
 	
+	GtkWindow *window_EditElemento; /*!< Referência para a janela de editar elemento.*/
+	
+	GtkEntry *editElmnt_trans_X, *editElmnt_trans_Y; /*!< Referência para a caixa de texto das coordenadas de translação.*/
+	
+	GtkEntry *editElmnt_escal; /*!< Referência para a caixa de texto da quantidade de escalonamento.*/
+	
+	GtkEntry *editElmnt_rot_angulo; /*!< Referência para a caixa de texto do angulo de rotação.*/
+	
+	GtkRadioButton *editElmnt_radio_0, *editElmnt_radio_1, *editElmnt_radio_2;
+	
+	GtkEntry *editElmnt_rot_X, *editElmnt_rot_Y; /*!< Referência para a caixa de texto do ponto arbitrário da rotação.*/
+	
+	GtkNotebook *editElmnt_Notebook; /*!< Referência para o notebook na edição de elemento.*/
+	
+	GtkButton *editElmnt_Aplicar; /*!< Botão que confirma a edição de um elemento.*/
+
 	double getFator(GtkEntry* area) {
 		double fator = 0;
 		
@@ -101,11 +117,28 @@ public:
 		textoPoligonoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_X"));
 		textoPoligonoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Y"));
 		poligono_Listbox = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Pol"));
-		notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
+		novoElmnt_Notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "novoElmnt_Notebook"));
 		poligono_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Del"));
 		gtk_widget_set_sensitive ((GtkWidget*) poligono_Btn_Del, FALSE); // Esse botão começa desativado.
 		consoleWidget = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
+		
+		window_EditElemento = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_EditElmnt"));
+		g_signal_connect (window_EditElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
+		
+		editElmnt_trans_X = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Trans_X"));
+		editElmnt_trans_Y = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Trans_Y"));
+		editElmnt_escal = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Escal_Fator"));
+		editElmnt_rot_angulo = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Angulo"));
+		
+		editElmnt_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Op_0"));
+		editElmnt_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Op_1"));
+		editElmnt_radio_2 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Op_2"));
+		editElmnt_rot_X = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_X"));
+		editElmnt_rot_Y = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Y"));
+		editElmnt_Notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Notebook"));
 
+		editElmnt_aplicar = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Aplicar"));
+		
 		console = new Console(consoleWidget);
 		desenhista = new Desenhista();
 		
@@ -326,7 +359,7 @@ public:
 	}
 	
 	int getTipoNovoElemento () {
-		return gtk_notebook_get_current_page(notebook);
+		return gtk_notebook_get_current_page(novoElmnt_Notebook);
 	}
 	
 	string getCoordXNovoPonto() {
@@ -394,13 +427,45 @@ public:
 		limparTextoNovaReta();
 		limparTextoNovoPoligono();
 		setPoligono_Btn_DelSensitive(FALSE);	
-		gtk_notebook_set_current_page(notebook, 0);
+		gtk_notebook_set_current_page(novoElmnt_Notebook, 0);
 		free(listaCoordsPoligono);
 	}
 	
 	void resetarListaCoordenadasPoligono() {
 		listaCoordsPoligono = new ListaEnc<Coordenada*>();
 	}
+	
+	// Comandos Da Janela de Editar
+	
+	double getTransX() {
+		try {
+			return getFator(editElmnt_trans_X);
+		} catch (int erro) {
+			if (erro == -1) {
+				console->inserirTexto("ERRO: Você deve inserir um valor numérico como quantidade de translação.");
+				gtk_entry_set_text(editElmnt_trans_X, "1");
+				throw -1;
+			} else if (erro == -2) {
+				return 0;
+			}
+		}
+	}
+	
+	double getTransY() {
+		try {
+			return getFator(editElmnt_trans_Y);
+		} catch (int erro) {
+			if (erro == -1) {
+				console->inserirTexto("ERRO: Você deve inserir um valor numérico como quantidade de translação.");
+				gtk_entry_set_text(editElmnt_trans_Y, "1");
+				throw -1;
+			} else if (erro == -2) {
+				return 0;
+			}
+		}
+	}
+	
+	
 	
 };
 

@@ -13,7 +13,7 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkNotebook" id="NovoElmnt_Notebook1">
+          <object class="GtkNotebook" id="EditElmnt_Notebook">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_left">5</property>
@@ -297,7 +297,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="orientation">vertical</property>
                                 <child>
-                                  <object class="GtkRadioButton" id="EditElmnt_Rot_Op1">
+                                  <object class="GtkRadioButton" id="EditElmnt_Rot_Op_0">
                                     <property name="label" translatable="yes">à origem.</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -305,7 +305,6 @@
                                     <property name="xalign">0</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
-                                    <property name="group">EditElmnt_Rot_Op2</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -314,7 +313,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkRadioButton" id="EditElmnt_Rot_Op2">
+                                  <object class="GtkRadioButton" id="EditElmnt_Rot_Op_1">
                                     <property name="label" translatable="yes">ao centro do objeto.</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -322,6 +321,7 @@
                                     <property name="xalign">0</property>
                                     <property name="active">True</property>
                                     <property name="draw_indicator">True</property>
+                                    <property name="group">EditElmnt_Rot_Op_0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -335,7 +335,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="orientation">vertical</property>
                                     <child>
-                                      <object class="GtkRadioButton" id="EditElmnt_Rot_Op3">
+                                      <object class="GtkRadioButton" id="EditElmnt_Rot_Op_2">
                                         <property name="label" translatable="yes">ao ponto:</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
@@ -343,7 +343,7 @@
                                         <property name="xalign">0</property>
                                         <property name="active">True</property>
                                         <property name="draw_indicator">True</property>
-                                        <property name="group">EditElmnt_Rot_Op2</property>
+                                        <property name="group">EditElmnt_Rot_Op_0</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -520,11 +520,12 @@
             <property name="label_xalign">0</property>
             <property name="shadow_type">none</property>
             <child>
-              <object class="GtkButton" id="NovoElmnt_Adicionar1">
+              <object class="GtkButton" id="EditElmnt_Aplicar">
                 <property name="label" translatable="yes">Aplicar Transformação</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <signal name="clicked" handler="EditElmnt_Aplicar_clicked_cb" swapped="no"/>
               </object>
             </child>
           </object>
