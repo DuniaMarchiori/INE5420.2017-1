@@ -8,38 +8,13 @@ using namespace std;
 
 class Viewport {
 
-private:
-	//Coordenada *viewportMin, *viewportMax; /*!< Coordenadas que indicam os pontos mínimo e máximo do viewport, respectivamente.*/
-	//GtkWidget *viewport_DrawingArea; /*!< A área de desenho*/
-
 public: 
-	//! Construtor
-	//Viewport() {
-		//viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
-	//	Coordenada* viewportMin = new Coordenada(0, 0);
-	//	Coordenada* viewportMax = new Coordenada();
-	//}
-
-	//! Método que retorna o valor do ponto mínimo do viewport.
-	/*!
-		/return a coordenada do ponto mínimo.
-	*/
-	//Coordenada* getViewportMin () {
-	//	return viewportMin;
-	//}
-
-	//! Método que retorna o valor do ponto máximo do viewport.
-	/*!
-		/return a coordenada do ponto máximo.
-	*/
-	/*Coordenada* getViewportMax () {
-		viewportMax->x = gtk_widget_get_allocated_width(viewport_DrawingArea);
-		viewportMax->y = gtk_widget_get_allocated_height(viewport_DrawingArea);
-		return viewportMax;
-	}*/
-
+	
 	//! Método que faz a transformada de viewport.
 	/*!
+		/param ponto o ponto que sera transformado.
+		/param wind a janela na qual a transformação se baseia.
+		/param vpMax o valor maximo da viewport que a transformação se baseia.
 		/return a coordenada após a transformada.
 	*/
 	Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMax) {
