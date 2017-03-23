@@ -318,9 +318,7 @@ public:
 	}
 	
 	void fecharJanelaEdicao() {
-		view->limparTextoTranslacao();
-		view->limparTextoEscalonamento();
-		view->limparTextoRotacao();
+		view->resetarJanelaEditElemento();
 	}
 
 };

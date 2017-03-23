@@ -464,6 +464,13 @@ public:
 		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_2, FALSE);
 	}
 	
+	void resetarJanelaEditElemento() {
+		limparTextoTranslacao();
+		limparTextoEscalonamento();
+		limparTextoRotacao();
+		gtk_notebook_set_current_page(novoElmnt_Notebook, 0);
+	}
+	
 	int getTipoTransformacao () {
 		return gtk_notebook_get_current_page(editElmnt_Notebook);
 	}
