@@ -103,24 +103,43 @@ public:
 	void editarElementoGrafico() {
 		int index = view->getIndexLinhaElementosSelecionada();
 		ElementoGrafico* elemento = model->getElementoNoIndice(index);
+		Coordenada* c;
 		
-		// case tipo de transformação (3 rotações diferentes)
-		// usar valores digitados pelo usuário na janela
-		/*Coordenada* c = new Coordenada(50,0);
-		fazTranslacao(elemento, c);
-		view->inserirTextoConsole("Elemento transladado.");*/
+		switch (view->getTipoTransformacao()) {
+			case 0: // Aba da translação
+				c = new Coordenada(view->getTransX(), view->getTransY());
+				fazTranslacao(elemento, c);
+				view->inserirTextoConsole("Elemento transladado.");
+				break;
 
-		/*Coordenada* c = new Coordenada(2,2);
-		fazEscalonamento(elemento, c);
-		view->inserirTextoConsole("Elemento escalonado.");*/
+			case 1: // Aba do escalonamento
+				c = new Coordenada(2,2);
+				fazEscalonamento(elemento, c);
+				view->inserirTextoConsole("Elemento escalonado.");
+				break;
 
-		/*Coordenada* c = new Coordenada(elemento->getCentroGeometrico()->getX(), elemento->getCentroGeometrico()->getY());
-		fazRotacao(elemento, c, 90);
-		view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");*/
+			case 2: // Aba da rotação
+				switch(view->getRelatividadeRotacao()) {
+					case 0: // Opção de rotação em relação à origem
+						c = new Coordenada(0, 0);
+						fazRotacao(elemento, c, 30);
+						view->inserirTextoConsole("Elemento rotacionado ao redor da origem.");
+						break;
 
-		Coordenada* c = new Coordenada(0, 0);
-		fazRotacao(elemento, c, 30);
-		view->inserirTextoConsole("Elemento rotacionado ao redor do centro do mundo.");
+					case 1: // Opção de rotação em relação ao centro do elemento
+						c = new Coordenada(elemento->getCentroGeometrico()->getX(), elemento->getCentroGeometrico()->getY());
+						fazRotacao(elemento, c, 30);
+						view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");
+						break;
+
+					case 2: // Opção de rotação em relação a um ponto qualquer
+						c = new Coordenada(view->getRotRelativoAX(), view->getRotRelativoAY());
+						fazRotacao(elemento, c, 30);
+						view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
+						break;
+				}
+				break;
+		}
 
 		atualizaDesenho();
 
