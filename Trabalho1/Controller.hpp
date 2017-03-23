@@ -142,6 +142,7 @@ public:
 			atualizaDesenho();
 			view->inserirTextoConsole("Elemento excluído.");
 			view->setElmnt_Btn_DelSensitive(FALSE);
+			view->setElmnt_Btn_EditSensitive(TRUE);
 		} catch (int erro) {
 			if (erro == 1) {
 				view->inserirTextoConsole("É preciso selecionar um elemento para ser deletado.");
