@@ -588,7 +588,7 @@ public:
 		limparTextoTranslacao();
 		limparTextoEscalonamento();
 		limparTextoRotacao();
-		gtk_notebook_set_current_page(novoElmnt_Notebook, 0);
+		gtk_notebook_set_current_page(editElmnt_Notebook, 0);
 		focusTransX();
 	}
 

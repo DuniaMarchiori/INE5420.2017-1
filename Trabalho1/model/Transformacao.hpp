@@ -82,7 +82,7 @@ public:
 		}
 
 		matriz[0][0] = Sx;
-		matriz[1][1] = Sx;
+		matriz[1][1] = Sy;
 		matriz[2][2] = 1;
 		return matriz;
 	}

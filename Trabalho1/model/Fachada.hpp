@@ -194,26 +194,6 @@ public:
 		displayFile->getElementoNoIndice(index);
 	}
 	
-	/*Coordenada* transformaCoordenada(Coordenada* coord, double matriz) {
-		transformacao->transformaCoordenada(coord, matriz);
-	}
-
-	double multiplicarMatrizes3x3(double matriz1, double matriz2) {
-		transformacao->multiplicarMatrizes3x3(matriz1, matriz2);
-	}
-
-	double novaMatrizTraslacao(double Dx, double Dy) {
-		transformacao->novaMatrizTraslacao(Dx, Dy);
-	}
-
-	double novaMatrizEscalonamento(double Sx, double Sy) {
-		transformacao->novaMatrizEscalonamento(Sx, Sy);
-	}
-
-	double novaMatrizRotacao(double angulo) {
-		transformacao->novaMatrizRotacao(angulo);
-	}*/
-	
 	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
 		Tipo t = elem->getTipo();
 
@@ -301,7 +281,6 @@ public:
 		}
 	}
 
-#include <stdio.h>
 	void fazRotacao(ElementoGrafico* elem, Coordenada* coord, double angulo) {
 		Tipo t = elem->getTipo();
 		// Traslada para a origem e rotaciona
@@ -315,8 +294,6 @@ public:
 					Ponto* p = static_cast<Ponto*> (elem);
 					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenada(), resultado);
 					p->setCoordenada(nova);
-					std::cout << "x"+ to_string(nova->getX()) << std::endl;
-					std::cout << nova->getY() << std::endl;
 					break;
 				}
 			case RETA:
