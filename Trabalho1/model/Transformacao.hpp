@@ -59,17 +59,21 @@ public:
 		return matriz;
 	}
 
+#include <stdio.h>
 	double** novaMatrizRotacao(double angulo) {
 		double **matriz = new double*[3];
 		for(int i = 0; i < 3; ++i) {
 			matriz[i] = new double[3];
 		}
 		
-		matriz[0][0] = cos (angulo);
-		matriz[1][1] = matriz[0][0];
+		double radianos = (angulo * M_PI/180.0);
+		matriz[0][0] = cos (radianos);
+		matriz[1][1] = cos (radianos);
 		matriz[2][2] = 1;
-		matriz[1][0] = sin (angulo);
-		matriz[0][1] = -(matriz[1][0]);
+		matriz[1][0] = (-1)*(sin (radianos));
+		matriz[0][1] = (sin (radianos));
+		std::cout << matriz[1][0] << std::endl;
+		std::cout << matriz[0][1] << std::endl;
 		return matriz;
 	}
 
