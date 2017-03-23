@@ -1,5 +1,7 @@
 #include <stdlib.h>
 
+#include <stdio.h>
+
 #include "view/View.hpp"
 #include "model/Fachada.hpp"
 
@@ -84,16 +86,34 @@ public:
 		model->fazTranslacao(elem, coord);	
 	}
 
+	void fazTranslacaoParaOrigem(ElementoGrafico* elem) {
+		Coordenada * coord = new Coordenada(-(elem->getCentroGeometrico()->getX()), -(elem->getCentroGeometrico()->getY()));
+		model->fazTranslacao(elem, coord);	
+	}
+
+	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
+		Coordenada* centro = elem->getCentroGeometrico();
+		fazTranslacaoParaOrigem(elem);
+		model->fazEscalonamento(elem, fator);
+		fazTranslacao(elem, centro);
+	}
+
 	void editarElementoGrafico() {
 		int index = view->getIndexLinhaElementosSelecionada();
 		ElementoGrafico* elemento = model->getElementoNoIndice(index);
-
+		std::cout <<"vAI ESCALonar" << std::endl;
 		// case tipo de transformação
 		// usar valores digitados pelo usuário na janela
-		Coordenada* c = new Coordenada(50,0);
+		/*Coordenada* c = new Coordenada(50,0);
 		fazTranslacao(elemento, c);
+		view->inserirTextoConsole("Elemento transladado.");*/
+
+		Coordenada* c = new Coordenada(2,2);
+		fazEscalonamento(elemento, c);
+		view->inserirTextoConsole("Elemento escalonado.");
 
 		atualizaDesenho();
+
 	}
 	
 	// Métodos chamados pela interface de usuário
@@ -104,10 +124,15 @@ public:
 	
 	void selecionaElementoListBox() {
 		view->setElmnt_Btn_DelSensitive(TRUE);
+		view->setElmnt_Btn_EditSensitive(TRUE);
 	}
 	
 	void botaoNovoElemento() {
-		view->Elmnt_Btn_Novo_Clicado();
+		view->elmnt_Btn_Novo_Clicado();
+	}
+
+	void botaoEditarElemento() {
+		view->elmnt_Btn_Edit_Clicado();
 	}
 	
 	void botaoDeletarElemento() {

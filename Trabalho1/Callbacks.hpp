@@ -35,7 +35,7 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	Abre a janela de editar elemento grafico.
 */
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Edit_clicked_cb() {
-	controller->editarElementoGrafico();
+	controller->botaoEditarElemento();
 }
 
 //! Método que é chamado ao pressionar o botão "Cima".
@@ -109,7 +109,8 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 }
 
 
-//--------------------------------------------------------
+
+//--------------------------------------------------------------
 // Métodos da janela de novo elemento
 
 
@@ -153,4 +154,13 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Listbox_Pol_row_selected_cb (GtkListBo
 */
 extern "C" G_MODULE_EXPORT void Window_NovoElmnt_hide_cb(){
 	controller->janelaNovoElementoHide();
+}
+
+
+
+//--------------------------------------------------------------
+// Métodos da janela de editar elementos
+
+extern "C" G_MODULE_EXPORT void EditElmnt_Aplicar_clicked_cb() {
+	controller->editarElementoGrafico();
 }

@@ -8,7 +8,7 @@
 #ifndef VIEW_HPP
 #define VIEW_HPP
 
-using namespace std;
+//using namespace std;
 using std::string;
 using std::stod;
 using std::invalid_argument;
@@ -25,7 +25,7 @@ private:
 	GtkWidget *window_Main; /*!< Referência para a janela principal.*/
 
 	GtkListBox *elmnt_List; /*!< Referência para a lista de elementos.*/
-	GtkButton *elmnt_Btn_Novo, *elmnt_Btn_Del; /*!< Referência para os botões de novo e deletar elementos.*/
+	GtkButton *elmnt_Btn_Novo, *elmnt_Btn_Del, *elmnt_Btn_Edit; /*!< Referência para os botões de novo, deletar e editar elementos.*/
 
 	GtkEntry *pos_Txt_Fator; /*!< Referência para a caixa de texto de Fator da movimentação.*/
 	GtkButton *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_Dir; /*!< Referência para os botões das quatro direções.*/
@@ -37,6 +37,7 @@ private:
 	GtkWidget *viewport_DrawingArea; /*!< A área de desenho*/
 
 	GtkWindow *window_NovoElemento; /*!< Referência para a janela de novo elemento.*/
+	GtkWindow *window_EditarElemento;
 	
 	GtkEntry *textoNomeElemento; /*!< Referência para a caixa de texto de inserção de nome para um elemento.*/
 	GtkEntry *textoPontoX, *textoPontoY, *textoRetaInicialX, *textoRetaInicialY, 
@@ -82,7 +83,9 @@ public:
 		elmnt_List = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_List"));
 		elmnt_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_Btn_Del"));
 		gtk_widget_set_sensitive ((GtkWidget*) elmnt_Btn_Del, FALSE); // Esse botão começa desativado.
-		
+		elmnt_Btn_Edit = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Elmnt_Btn_Edit"));
+		gtk_widget_set_sensitive ((GtkWidget*) elmnt_Btn_Edit, FALSE); // Esse botão começa desativado.
+
 		pos_Txt_Fator = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Pos_Txt_Fator"));
 		gtk_entry_set_text(pos_Txt_Fator, "1");
 		
@@ -90,6 +93,8 @@ public:
 		gtk_entry_set_text(zoom_Txt_Fator, "1");
 		window_NovoElemento = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_NovoElmnt"));
 		g_signal_connect (window_NovoElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL); // Essa janela não se deletará ao fechá-la, apenas esconderá.
+		window_EditarElemento = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_EditElmnt"));
+		g_signal_connect (window_EditarElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL); // Essa janela não se deletará ao fechá-la, apenas esconderá.
 		
 		textoNomeElemento = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Nome"));
 		textoPontoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_X"));
@@ -268,11 +273,19 @@ public:
 	void setElmnt_Btn_DelSensitive(gboolean valor) {
 		gtk_widget_set_sensitive ((GtkWidget*) elmnt_Btn_Del, valor);	
 	}
+
+	void setElmnt_Btn_EditSensitive(gboolean valor) {
+		gtk_widget_set_sensitive ((GtkWidget*) elmnt_Btn_Edit, valor);	
+	}
 	
-	void Elmnt_Btn_Novo_Clicado() {
+	void elmnt_Btn_Novo_Clicado() {
 		listaCoordsPoligono = new ListaEnc<Coordenada*>();
 		gtk_widget_show((GtkWidget*) window_NovoElemento);
-	};
+	}
+
+	void elmnt_Btn_Edit_Clicado() {
+		gtk_widget_show((GtkWidget*) window_EditarElemento);
+	}
 	
 	int deletarElemento(){
 		GtkListBoxRow* row = gtk_list_box_get_selected_row (elmnt_List);

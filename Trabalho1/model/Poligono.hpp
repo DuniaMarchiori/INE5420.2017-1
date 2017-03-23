@@ -68,12 +68,13 @@ public:
 			Elemento<Coordenada*>* proxCoord = lista->getHead(); 
 
 			while (proxCoord != NULL) {
-				n++;
+				++n;
 				somaX += proxCoord->getInfo()->getX();
 				somaY += proxCoord->getInfo()->getY();
+				proxCoord = proxCoord->getProximo();
 			}
 
-			coord = new Coordenada( (somaX/n), (somaY/n) );
+			coord = new Coordenada( (somaX/n),(somaY/n) );
 		}
 
 		return coord;
