@@ -258,18 +258,27 @@ public:
 	}
 
 	//! Método que repassa a instrução de desenhar um ponto para o desenhista.
+	/*!
+		/param p é o ponto que sera desenhado.
+	*/
 	void desenhaPonto(Ponto* p) {
 		desenhista->desenhaPonto(p);
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);
 	}
 
 	//! Método que repassa a instrução de desenhar uma reta para o desenhista.
+	/*!
+		/param r é a reta que sera desenhada.
+	*/
 	void desenhaReta(Reta* r) {
 		desenhista->desenhaReta(r);
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);
 	}
 
 	//! Método que repassa a instrução de desenhar um poligono para o desenhista.
+	/*!
+		/param p é o poligono que sera desenhado.
+	*/
 	void desenhaPoligono(Poligono* p) {
 		desenhista->desenhaPoligono(p);
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);

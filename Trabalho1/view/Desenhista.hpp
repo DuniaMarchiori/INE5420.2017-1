@@ -18,10 +18,7 @@ class Desenhista {
 public:
 	//! Método que desenha um ponto na tela.
 	/*!
-		/param c é um objeto cairo_t utilizado para desenhar.
-		/param elem é o elemento gráfico(o ponto) a ser desenhado.
-		/param v é um objeto da classe Viewport.
-		/param window é a Window do sistema.
+		/param p é o ponto a ser desenhado.
 	*/
 	void desenhaPonto(Ponto* p){
 		cairo_t *c = cairo_create (surface);
@@ -32,15 +29,11 @@ public:
 		cairo_fill(c);
 
 		cairo_stroke(c);
-		//gtk_widget_queue_draw (window_Main);
 	}
 
 	//! Método que desenha uma reta na tela.
 	/*!
-		/param c é um objeto cairo_t utilizado para desenhar.
-		/param elem é o elemento gráfico(a reta) a ser desenhado.
-		/param v é um objeto da classe Viewport.
-		/param window é a Window do sistema.
+		/param r é a reta a ser desenhada.
 	*/
 	void desenhaReta(Reta* r) {
 		cairo_t *c = cairo_create (surface);
@@ -49,14 +42,11 @@ public:
 		cairo_line_to(c, r->getPontoFinal()->getX(), r->getPontoFinal()->getY());
 
 		cairo_stroke(c);
-		//gtk_widget_queue_draw (window_Main);
 	}
 
 	//! Método que desenha um polígono na tela.
 	/*!
-		/param c é um objeto cairo_t utilizado para desenhar.
-		/param elem é o elemento gráfico(o polígono) a ser desenhado.
-		/param v é um objeto da classe Viewport.
+		/param p é o polígono a ser desenhado.
 	*/
 	void desenhaPoligono(Poligono* p) {
 		cairo_t *c = cairo_create (surface);
@@ -83,42 +73,7 @@ public:
 		cairo_close_path(c);
 
 		cairo_stroke(c);
-		//gtk_widget_queue_draw (window_Main);
 	}
-
-	/*Desenhista() {
-		
-	}*/
-
-	//! Método que desenha na tela.
-	/*!
-		/param elem é o elemento gráfico(o ponto) a ser desenhado.
-		/param v é um objeto da classe Viewport.
-		/param window é a Window do sistema.
-		/param window_Main é o widget da interface do sistema a ser desenhado.
-	*/
-	/*void desenhaElemento(ElementoGrafico *elem, Fachada* f, Coordenada* vpMax, GtkWidget *window_Main) {	
-		cairo_t *cr;
-		cr = cairo_create (surface);
-		
-		// Desenha o elemento de acordo com seu tipo
-		switch (elem->getTipo()) {
-			case PONTO:
-				desenhaPonto(cr, elem, f, vpMax);
-				break;
-				
-			case RETA:
-				desenhaReta(cr, elem, f, vpMax);
-				break;
-				
-			case POLIGONO:
-				desenhaPoligono(cr, elem, f, vpMax);
-				break;
-		}
-		
-		cairo_stroke(cr);
-		gtk_widget_queue_draw (window_Main);
-	}*/
 
 	//! Método que limpa a tela(pintando-a de branco).
 	static void clear_surface (){

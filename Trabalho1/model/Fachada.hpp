@@ -110,7 +110,6 @@ public:
 			Ponto *p = new Ponto(nome, c);
 			// Adiciona objeto na display file
 			displayFile->inserirNovoPonto(p);
-			//addToListBox(nome);
 		} else {
 			throw -3;
 		}
@@ -152,7 +151,6 @@ public:
 			Reta *r = new Reta(nome, cI, cF);
 			// Adiciona objeto na display file
 			displayFile->inserirNovaReta(r);
-			//addToListBox(nome);
 		} else {
 			throw -3;
 		}
@@ -173,7 +171,6 @@ public:
 		if ( !(listaCoordsPoligono->listaVazia()) ) {
 			Poligono *pol = new Poligono(nome, listaCoordsPoligono);
 			displayFile->inserirNovoPoligono(pol);
-			//addToListBox(nome);
 			return 1;
 		} else {
 			return -3;
