@@ -113,7 +113,7 @@ public:
 		int index = view->getIndexLinhaElementosSelecionada();
 		ElementoGrafico* elemento = model->getElementoNoIndice(index);
 		Coordenada* c;
-		
+
 		switch (view->getTipoTransformacao()) {
 			case 0: // Aba da translação
 				try {
@@ -187,7 +187,7 @@ public:
 							if (erro == -1) {
 								view->inserirTextoConsole("ERRO: Você deve inserir um valor numérico como ponto de referência para a rotação.");
 								break;
-							}						
+							}
 						}
 				}
 				break;
@@ -234,10 +234,36 @@ public:
 		}
 	}
 
+
+	//! Método que gira a window no sentido anti-horário.
+	void botaoGirarWindowEsquerdo() {
+		try {
+			double fator = view->getFatorPosicao();
+			model->rotacionarWindow(fator);
+			atualizaDesenho();
+			view->inserirTextoConsole("Window rotacionada");
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que gira a window no sentido horário.
+	void botaoGirarWindowDireito() {
+		try {
+			double fator = view->getFatorPosicao();
+			model->rotacionarWindow(-1 * fator);
+			atualizaDesenho();
+			view->inserirTextoConsole("Window rotacionada");
+		} catch (...){
+			return;
+		}
+	}
+
+
 	//! Método que movimenta a window para cima.
 	void botaoMovimentoCima() {
 		try {
-			double fator = view->getFatorMovimento();
+			double fator = view->getFatorPosicao();
 			model->moverWindow(0,fator);
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para cima.");
@@ -249,7 +275,7 @@ public:
 	//! Método que movimenta a window para esquerda.
 	void botaoMovimentoEsquerda() {
 		try {
-			double fator = view->getFatorMovimento();
+			double fator = view->getFatorPosicao();
 			model->moverWindow(-fator,0);
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para a esquerda.");
@@ -261,7 +287,7 @@ public:
 	//! Método que movimenta a window para direita.
 	void botaoMovimentoDireita() {
 		try {
-			double fator = view->getFatorMovimento();
+			double fator = view->getFatorPosicao();
 			model->moverWindow(fator,0);
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para a direita.");
@@ -273,7 +299,7 @@ public:
 	//! Método que movimenta a window para baixo.
 	void botaoMovimentoBaixo() {
 		try {
-			double fator = view->getFatorMovimento();
+			double fator = view->getFatorPosicao();
 			model->moverWindow(0,-fator);
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para baixo.");
@@ -414,7 +440,7 @@ public:
 	void janelaNovoElementoHide() {
 		view->resetarJanelaNovoElemento();
 	}
-	
+
 	//! Método que é chamado ao fechar a janela de editar elemento.
 	void fecharJanelaEdicao() {
 		view->resetarJanelaEditElemento();

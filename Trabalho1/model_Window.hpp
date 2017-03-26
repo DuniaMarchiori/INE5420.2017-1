@@ -1,93 +1,88 @@
+#include <math.h>
+
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
 #include "model_Coordenada.hpp"
 
 class Window {
-	
+
 private:
-	Coordenada *inferiorEsquerdo, *superiorDireito; /*!< As coordenadas que indicam os pontos inferior esquerdo e superior direito da Window, respectivamente.*/
-	
+	Coordenada *centro; /*!< A coordenada que indica a posição da window.*/
+	Coordenada *viewUpVector; /*!< O vetor que aponta para onde esta rotacionada a window.*/
+
 public:
 	//! Construtor
 	/*!
-		/param inferiorEsq é o ponto inferior esquerdo da Window
-		/param superiorDir é o ponto superior direito da Window
+		/param posInicial é a cooordenada inicial da window.
 	*/
-	Window(Coordenada* inferiorEsq, Coordenada* superiorDir) {
-		inferiorEsquerdo = inferiorEsq;
-		superiorDireito = superiorDir;
+	Window(Coordenada* posInicial) {
+		centro = posInicial;
+		viewUpVector = new Coordenada(0, 1);
 	}
 
-	//! Método que retorna o valor do ponto inferior esquerdo da Window.
+	//! Método que retorna a posição da Window.
 	/*!
-		/return a coordenada do ponto inferior esquerdo.
+		/return a coordenada da posição da window.
 	*/
-	Coordenada* getPontoInferiorEsquerdo() {
-		return inferiorEsquerdo;
+	Coordenada* getCentro() {
+		return centro;
 	}
-	
-	//! Método que altera o valor da coordenada do ponto inferior esquerdo da Window.
+
+	//! Método que altera a coordenada da posição da Window.
 	/*!
-		/param p é o valor que a coordenada receberá.
+		/param p é a coordenada que a posição receberá.
 	*/
-	void setPontoInferiorEsquerdo(Coordenada* p) {
-		inferiorEsquerdo = p;
+	void setCentro(Coordenada* p) {
+		centro = p;
 	}
-	
-	//! Método que retorna o valor do ponto superior direito da Window.
-	/*!
-		/return a coordenada do ponto superior direito.
-	*/
-	Coordenada* getPontoSuperiorDireito() {
-		return superiorDireito;
-	}
-	
-	//! Método que altera o valor da coordenada do ponto superior direito da Window.
-	/*!
-		/param p é o valor que a coordenada receberá.
-	*/
-	void setPontoSuperiorDireito(Coordenada* p) {
-		superiorDireito = p;
-	}
-	
+
 	//! Método que move a Window.
 	/*!
-		/param fatX é o valor que o eixo X da Window será somado.
-		/param fatY é o valor que o eixo Y da Window será somado.
+		/param fatX é o quanto a window ira se mover no eixo X.
+		/param fatY é o quanto a window ira se mover no eixo Y.
 	*/
 	void moverWindow(double fatX, double fatY) {
-		inferiorEsquerdo->setX(inferiorEsquerdo->getX() + fatX);
-		inferiorEsquerdo->setY(inferiorEsquerdo->getY() + fatY);
-		superiorDireito->setX(superiorDireito->getX() + fatX);
-		superiorDireito->setY(superiorDireito->getY() + fatY);
+		centro->setX(viewUpVector->getX() * fatX);
+		centro->setY(viewUpVector->getY() * fatY);
 	}
-	
+
 	//! Método que dá zoom na Window.
 	/*!
 		/param fator é um double que indica o quanto de aproximação ou afastamento será feito.
 	*/
 	void zoom(double fator) {
-		double janelaMinima = 0;
-		double quant = fator/2;
-		
-		inferiorEsquerdo->setX(inferiorEsquerdo->getX() + quant);
-		inferiorEsquerdo->setY(inferiorEsquerdo->getY() + quant);
-		superiorDireito->setX(superiorDireito->getX() - quant);
-		superiorDireito->setY(superiorDireito->getY() - quant);
-		
-		if (inferiorEsquerdo->getX() > superiorDireito->getX()) {
-			double med = (inferiorEsquerdo->getX() + superiorDireito->getX())/2;
-			inferiorEsquerdo->setX(med - janelaMinima/2);
-			superiorDireito->setX(med + janelaMinima/2);
-		}
-		
-		if (inferiorEsquerdo->getY() > superiorDireito->getY()) {
-			double med = (inferiorEsquerdo->getY() + superiorDireito->getY())/2;
-			inferiorEsquerdo->setY(med - janelaMinima/2);
-			superiorDireito->setY(med + janelaMinima/2);
-		}
+		// TODO
 	}
+
+	//! Método que rotaciona a Window.
+	/*!
+		/param graus é o quanto a window sera rotacionada em graus.
+	*/
+	void rotacionarWindow(double graus) {
+		Coordenada *novoVetor = new Coordenada();
+		double radianos = graus * M_PI/180.0;
+
+		double cosseno = cos(radianos);
+		double seno = sin(radianos);
+
+		novoVetor->setX(viewUpVector->getX() * cosseno - viewUpVector->getY() * seno);
+		novoVetor->setY(viewUpVector->getX() * seno + viewUpVector->getY() * cosseno);
+
+		free(viewUpVector);
+		viewUpVector = novoVetor;
+	}
+
+	//! Método que diz o angulo em que a Window se encontra.
+	/*!
+		/return o angulo entre a window e o eixo Y.
+	*/
+	void getAngulo() {
+		double angulo = atan2(viewUpVector->getY() - 1,viewUpVector->getX());
+		angulo = (angulo * 180.0) / M_PI;
+		return ;
+	}
+
 };
 
 #endif

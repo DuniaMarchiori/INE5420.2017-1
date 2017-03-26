@@ -369,11 +369,11 @@ public:
 		console->inserirTexto(texto);
 	}
 
-	//! Metodo que retorna o valor numérico contido na caixa de Fator de Movimento.
+	//! Metodo que retorna o valor numérico contido na caixa de Fator na regição da edição de posição.
 	/*!
-		/return o fator de movimento.
+		/return o fator da caixa na região da posição.
 	*/
-	double getFatorMovimento() {
+	double getFatorPosicao() {
 		try {
 			return getFator(pos_Txt_Fator);
 		} catch (int erro) {

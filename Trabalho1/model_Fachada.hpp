@@ -37,12 +37,15 @@ private:
 public:
 
 	Fachada () {
-		Coordenada* windowInfEsq = new Coordenada(0,0);
-		Coordenada* windowSupDir = new Coordenada(200,200);
-		window = new Window(windowInfEsq, windowSupDir);
+		Coordenada* centroWindow = new Coordenada(0,0);
+		window = new Window(centroWindow);
 		viewport = new Viewport();
 		displayFile = new DisplayFile();
 		transformacao = new Transformacao();
+	}
+	
+	void rotacionarWindow(double graus) {
+		window->rotacionarWindow(graus);
 	}
 	
 	//! Método que manda a window se mover.

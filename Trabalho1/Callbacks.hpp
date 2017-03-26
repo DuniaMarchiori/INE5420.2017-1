@@ -38,6 +38,33 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Edit_clicked_cb() {
 	controller->botaoEditarElemento();
 }
 
+
+
+
+
+//! Método que é chamado ao pressionar o botão de girar a window no sentido anti-horário.
+/*!
+	Roda a window no sentido anti-horário.
+*/
+extern "C" G_MODULE_EXPORT void Pos_Btn_Rot_Esq_clicked_cb(){
+	controller->botaoGirarWindowEsquerdo();
+}
+
+//! Método que é chamado ao pressionar o botão de girar a window no sentido horário.
+/*!
+	Roda a window no sentido anti-horário.
+*/
+extern "C" G_MODULE_EXPORT void Pos_Btn_Rot_Dir_clicked_cb(){
+	controller->botaoGirarWindowDireito();
+}
+
+
+
+
+
+
+
+
 //! Método que é chamado ao pressionar o botão "Cima".
 /*!
 	Move a window para cima baseado no fator.
