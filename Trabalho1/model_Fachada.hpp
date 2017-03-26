@@ -206,24 +206,24 @@ public:
 			case PONTO:
 				{
 					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenada(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
-					p->setCoordenada(nova);
+					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenadaMundo(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+					p->setCoordenadaMundo(nova);
 					break;
 				}
 			case RETA:
 				{
 					Reta* r = static_cast<Reta*> (elem);
-					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getPontoInicial(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
-					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getPontoFinal(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
-					r->setPontoInicial(novaInicial);
-					r->setPontoFinal(novaFinal);
+					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getCoordenadaMundoInicial(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getCoordenadaMundoFinal(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
+					r->setCoordenadaMundoInicial(novaInicial);
+					r->setCoordenadaMundoFinal(novaFinal);
 					break;
 				}
 			case POLIGONO:
 				{
 					Poligono* p = static_cast<Poligono*> (elem);
 					
-					ListaEnc<Coordenada*>* listaCoord = p->getLista();
+					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
 					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
 					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
 
@@ -233,7 +233,7 @@ public:
 						listaNovasCoord->adiciona(coordTransformada);
 						proxCoord = proxCoord->getProximo();
 					}
-					p->setLista(listaNovasCoord);
+					p->setListaMundo(listaNovasCoord);
 					free(listaCoord);
 					break;
 				}
@@ -257,24 +257,24 @@ public:
 			case PONTO:
 				{
 					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenada(), resultado);
-					p->setCoordenada(nova);
+					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenadaMundo(), resultado);
+					p->setCoordenadaMundo(nova);
 					break;
 				}
 			case RETA:
 				{
 					Reta* r = static_cast<Reta*> (elem);
-					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getPontoInicial(), resultado);
-					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getPontoFinal(), resultado);
-					r->setPontoInicial(novaInicial);
-					r->setPontoFinal(novaFinal);
+					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getCoordenadaMundoInicial(), resultado);
+					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getCoordenadaMundoFinal(), resultado);
+					r->setCoordenadaMundoInicial(novaInicial);
+					r->setCoordenadaMundoFinal(novaFinal);
 					break;
 				}
 			case POLIGONO:
 				{
 					Poligono* p = static_cast<Poligono*> (elem);
 					
-					ListaEnc<Coordenada*>* listaCoord = p->getLista();
+					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
 					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
 					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
 
@@ -284,7 +284,7 @@ public:
 						listaNovasCoord->adiciona(coordTransformada);
 						proxCoord = proxCoord->getProximo();
 					}
-					p->setLista(listaNovasCoord);
+					p->setListaMundo(listaNovasCoord);
 					free(listaCoord);
 					break;
 				}
@@ -308,24 +308,24 @@ public:
 			case PONTO:
 				{
 					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenada(), resultado);
-					p->setCoordenada(nova);
+					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenadaMundo(), resultado);
+					p->setCoordenadaMundo(nova);
 					break;
 				}
 			case RETA:
 				{
 					Reta* r = static_cast<Reta*> (elem);
-					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getPontoInicial(), resultado);
-					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getPontoFinal(), resultado);
-					r->setPontoInicial(novaInicial);
-					r->setPontoFinal(novaFinal);
+					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getCoordenadaMundoInicial(), resultado);
+					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getCoordenadaMundoFinal(), resultado);
+					r->setCoordenadaMundoInicial(novaInicial);
+					r->setCoordenadaMundoFinal(novaFinal);
 					break;
 				}
 			case POLIGONO:
 				{
 					Poligono* p = static_cast<Poligono*> (elem);
 					
-					ListaEnc<Coordenada*>* listaCoord = p->getLista();
+					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
 					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
 					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
 
@@ -335,7 +335,7 @@ public:
 						listaNovasCoord->adiciona(coordTransformada);
 						proxCoord = proxCoord->getProximo();
 					}
-					p->setLista(listaNovasCoord);
+					p->setListaMundo(listaNovasCoord);
 					free(listaCoord);
 					break;
 				}

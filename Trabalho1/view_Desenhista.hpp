@@ -24,8 +24,8 @@ public:
 		cairo_t *c = cairo_create (surface);
 
 		//Seria apenas um pixel, mas é feito um círculo ao redor do ponto para ficar visível.
-		cairo_move_to(c, p->getCoordenada()->getX(), p->getCoordenada()->getY());
-		cairo_arc(c,p->getCoordenada()->getX(), p->getCoordenada()->getY(), 1.5, 0.0, 2*M_PI);
+		cairo_move_to(c, p->getCoordenadaMundo()->getX(), p->getCoordenadaMundo()->getY());
+		cairo_arc(c,p->getCoordenadaMundo()->getX(), p->getCoordenadaMundo()->getY(), 1.5, 0.0, 2*M_PI);
 		cairo_fill(c);
 
 		cairo_stroke(c);
@@ -38,8 +38,8 @@ public:
 	void desenhaReta(Reta* r) {
 		cairo_t *c = cairo_create (surface);
 
-		cairo_move_to(c, r->getPontoInicial()->getX(), r->getPontoInicial()->getY());
-		cairo_line_to(c, r->getPontoFinal()->getX(), r->getPontoFinal()->getY());
+		cairo_move_to(c, r->getCoordenadaMundoInicial()->getX(), r->getCoordenadaMundoInicial()->getY());
+		cairo_line_to(c, r->getCoordenadaMundoFinal()->getX(), r->getCoordenadaMundoFinal()->getY());
 
 		cairo_stroke(c);
 	}
@@ -51,7 +51,7 @@ public:
 	void desenhaPoligono(Poligono* p) {
 		cairo_t *c = cairo_create (surface);
 
-		ListaEnc<Coordenada*> *lista = p->getLista();
+		ListaEnc<Coordenada*> *lista = p->getListaMundo();
 		Elemento<Coordenada*> *elementoCoord = lista->getHead();
 		Coordenada* coord = elementoCoord->getInfo();	
 		//Coordenada* transformada = f->transformaViewport(coord,vpMax);

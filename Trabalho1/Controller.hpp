@@ -37,15 +37,15 @@ public:
 			ElementoGrafico* elemento = proxElemento->getInfo();
 			switch (elemento->getTipo()) {
 				case PONTO: {
-					Coordenada* coordTransformada = model->transformaViewport((static_cast<Ponto*> (elemento))->getCoordenada(), viewportMax);
+					Coordenada* coordTransformada = model->transformaViewport((static_cast<Ponto*> (elemento))->getCoordenadaMundo(), viewportMax);
 					Ponto* pontoTransformado = new Ponto(elemento->getNome(), coordTransformada);
 					view->desenhaPonto(pontoTransformado);
 					free(pontoTransformado);
 					break;
 
 				} case RETA: {
-					Coordenada* coordIniTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getPontoInicial(), viewportMax);
-					Coordenada* coordFinTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getPontoFinal(), viewportMax);
+					Coordenada* coordIniTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaMundoInicial(), viewportMax);
+					Coordenada* coordFinTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaMundoFinal(), viewportMax);
 
 					Reta* retaTransformada = new Reta(elemento->getNome(), coordIniTransformada, coordFinTransformada);
 					view->desenhaReta(retaTransformada);
@@ -55,13 +55,13 @@ public:
 				} case POLIGONO: {
 					Poligono* poligonoTransformado = new Poligono(elemento->getNome());
 
-					ListaEnc<Coordenada*>* listaCoord = (static_cast<Poligono*> (elemento))->getLista();
+					ListaEnc<Coordenada*>* listaCoord = (static_cast<Poligono*> (elemento))->getListaMundo();
 					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
 
 					while (proxCoord != NULL) {
 						Coordenada* coord = proxCoord->getInfo();
 						Coordenada* coordTransformada = model->transformaViewport(coord, viewportMax);
-						poligonoTransformado->adicionarCoordenada(coordTransformada);
+						poligonoTransformado->adicionarCoordenadaMundo(coordTransformada);
 						proxCoord = proxCoord->getProximo();
 					}
 					view->desenhaPoligono(poligonoTransformado);
