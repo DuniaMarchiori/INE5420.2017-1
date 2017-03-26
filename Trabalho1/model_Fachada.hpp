@@ -34,6 +34,88 @@ private:
 		}
 	}
 
+	void fazTransformacaoMundo(ElementoGrafico* elem, double** matrizResultado) {
+		Tipo t = elem->getTipo();
+
+		switch (t) {
+			case PONTO:
+				{
+					Ponto* p = static_cast<Ponto*> (elem);
+					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenadaMundo(), matrizResultado);
+					p->setCoordenadaMundo(nova);
+					break;
+				}
+			case RETA:
+				{
+					Reta* r = static_cast<Reta*> (elem);
+					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getCoordenadaMundoInicial(), matrizResultado);
+					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getCoordenadaMundoFinal(), matrizResultado);
+					r->setCoordenadaMundoInicial(novaInicial);
+					r->setCoordenadaMundoFinal(novaFinal);
+					break;
+				}
+			case POLIGONO:
+				{
+					Poligono* p = static_cast<Poligono*> (elem);
+					
+					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
+					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
+
+					while (proxCoord != NULL) {
+						Coordenada* coordPol = proxCoord->getInfo();
+						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, matrizResultado);
+						listaNovasCoord->adiciona(coordTransformada);
+						proxCoord = proxCoord->getProximo();
+					}
+					p->setListaMundo(listaNovasCoord);
+					free(listaCoord);
+					break;
+				}
+		}
+	}
+
+	void fazTransformacaoNormalizada(ElementoGrafico* elem, double** matrizResultado) {
+		Tipo t = elem->getTipo();
+
+		switch (t) {
+			case PONTO:
+				{
+					Ponto* p = static_cast<Ponto*> (elem);
+					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenadaMundo(), matrizResultado);
+					p->setCoordenadaNormal(nova);
+					break;
+				}
+			case RETA:
+				{
+					Reta* r = static_cast<Reta*> (elem);
+					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getCoordenadaMundoInicial(), matrizResultado);
+					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getCoordenadaMundoFinal(), matrizResultado);
+					r->setCoordenadaNormalInicial(novaInicial);
+					r->setCoordenadaNormalFinal(novaFinal);
+					break;
+				}
+			case POLIGONO:
+				{
+					Poligono* p = static_cast<Poligono*> (elem);
+					
+					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
+					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
+
+					while (proxCoord != NULL) {
+						Coordenada* coordPol = proxCoord->getInfo();
+						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, matrizResultado);
+						listaNovasCoord->adiciona(coordTransformada);
+						proxCoord = proxCoord->getProximo();
+					}
+					p->setListaNormal(listaNovasCoord);
+					free(listaCoord);
+					break;
+				}
+		}
+	}
+
 public:
 
 	Fachada () {
@@ -203,44 +285,8 @@ public:
 		/param coord uma coordenada contendo a quantidade de translação que sera aplicada em X e Y.
     */
 	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
-		Tipo t = elem->getTipo();
-
-		switch (t) {
-			case PONTO:
-				{
-					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenadaMundo(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
-					p->setCoordenadaMundo(nova);
-					break;
-				}
-			case RETA:
-				{
-					Reta* r = static_cast<Reta*> (elem);
-					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getCoordenadaMundoInicial(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
-					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getCoordenadaMundoFinal(), transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
-					r->setCoordenadaMundoInicial(novaInicial);
-					r->setCoordenadaMundoFinal(novaFinal);
-					break;
-				}
-			case POLIGONO:
-				{
-					Poligono* p = static_cast<Poligono*> (elem);
-					
-					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
-					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
-
-					while (proxCoord != NULL) {
-						Coordenada* coordPol = proxCoord->getInfo();
-						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
-					}
-					p->setListaMundo(listaNovasCoord);
-					free(listaCoord);
-					break;
-				}
-		}
+		double** resultado = transformacao->novaMatrizTraslacao(coord->getX(), coord->getY());
+		fazTransformacaoMundo(elem, resultado);
 	}
 
 	//! Método que realiza o escalonamento de um elemento grafico.
@@ -249,49 +295,13 @@ public:
 		/param fator uma coordenada contendo a quantidade de escalonamento que sera aplicada em X e Y.
     */
 	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
-		Tipo t = elem->getTipo();
 		Coordenada* centro = elem->getCentroGeometrico();
 		// Traslada para a origem e escalona
 		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(centro->getX()), -(centro->getY())), transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
 		// Translada para o lugar de antes
 		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizTraslacao(centro->getX(), centro->getY()));
 
-		switch (t) {
-			case PONTO:
-				{
-					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenadaMundo(), resultado);
-					p->setCoordenadaMundo(nova);
-					break;
-				}
-			case RETA:
-				{
-					Reta* r = static_cast<Reta*> (elem);
-					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getCoordenadaMundoInicial(), resultado);
-					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getCoordenadaMundoFinal(), resultado);
-					r->setCoordenadaMundoInicial(novaInicial);
-					r->setCoordenadaMundoFinal(novaFinal);
-					break;
-				}
-			case POLIGONO:
-				{
-					Poligono* p = static_cast<Poligono*> (elem);
-					
-					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
-					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
-
-					while (proxCoord != NULL) {
-						Coordenada* coordPol = proxCoord->getInfo();
-						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, resultado);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
-					}
-					p->setListaMundo(listaNovasCoord);
-					free(listaCoord);
-					break;
-				}
-		}
+		fazTransformacaoMundo(elem, resultado);
 	}
 	
 	//! Método que realiza a rotação de um elemento grafico.
@@ -301,48 +311,43 @@ public:
 		/param angulo quantos graus o elemento sera rotacionado.
     */
 	void fazRotacao(ElementoGrafico* elem, Coordenada* coord, double angulo) {
-		Tipo t = elem->getTipo();
 		// Traslada para o ponto arbitrário e rotaciona
 		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(coord->getX()), -(coord->getY())), transformacao->novaMatrizRotacao(angulo));
 		// Translada para o lugar de antes
 		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
 
-		switch (t) {
-			case PONTO:
-				{
-					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada* nova = transformacao->transformaCoordenada(p->getCoordenadaMundo(), resultado);
-					p->setCoordenadaMundo(nova);
-					break;
-				}
-			case RETA:
-				{
-					Reta* r = static_cast<Reta*> (elem);
-					Coordenada* novaInicial = transformacao->transformaCoordenada(r->getCoordenadaMundoInicial(), resultado);
-					Coordenada* novaFinal = transformacao->transformaCoordenada(r->getCoordenadaMundoFinal(), resultado);
-					r->setCoordenadaMundoInicial(novaInicial);
-					r->setCoordenadaMundoFinal(novaFinal);
-					break;
-				}
-			case POLIGONO:
-				{
-					Poligono* p = static_cast<Poligono*> (elem);
-					
-					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
-					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
+		fazTransformacaoMundo(elem, resultado);		
+	}
 
-					while (proxCoord != NULL) {
-						Coordenada* coordPol = proxCoord->getInfo();
-						Coordenada* coordTransformada = transformacao->transformaCoordenada(coordPol, resultado);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
-					}
-					p->setListaMundo(listaNovasCoord);
-					free(listaCoord);
-					break;
-				}
+	void sistemaCoordenadasNormalizadas() {
+		double angulo = -(0);
+		Coordenada* fator = new Coordenada(1, 1);
+
+		// Matriz de transformação
+		// Traslada para o centro da window e rotaciona
+		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(window->getCentro()->getX()), -(window->getCentro()->getY())), transformacao->novaMatrizRotacao(angulo));
+		// Escalona
+		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+
+		// Faz a transformação em todo o mundo
+		Elemento<ElementoGrafico*>* elementoLista = displayFile->getHead();
+		while (elementoLista != NULL) {
+			fazTransformacaoNormalizada(elementoLista->getInfo(), resultado);
+			elementoLista = elementoLista->getProximo();
 		}
+	}
+
+	void sistemaCoordenadasNormalizadas(ElementoGrafico* elem) {
+		double angulo = -(0);
+		Coordenada* fator = new Coordenada(1, 1);
+
+		// Matriz de transformação
+		// Traslada para o centro da window e rotaciona
+		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(window->getCentro()->getX()), -(window->getCentro()->getY())), transformacao->novaMatrizRotacao(angulo));
+		// Escalona
+		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
+
+		fazTransformacaoNormalizada(elem, resultado);
 	}
 };
 

@@ -108,6 +108,14 @@ public:
 		free(coordNegativa);*/
 	}
 
+	void descricaoSCN() {
+		model->sistemaCoordenadasNormalizadas();
+	}
+
+	void descricaoSCN(ElementoGrafico* elem) {
+		model->sistemaCoordenadasNormalizadas(elem);
+	}
+
 	//! Método encarregado de decidir qual operação de transformação sera feita.
 	void editarElementoGrafico() {
 		int index = view->getIndexLinhaElementosSelecionada();
