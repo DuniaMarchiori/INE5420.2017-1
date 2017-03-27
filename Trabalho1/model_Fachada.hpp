@@ -120,7 +120,7 @@ public:
 
 	Fachada () {
 		Coordenada* centroWindow = new Coordenada(0,0);
-		window = new Window(centroWindow);
+		window = new Window(centroWindow, 100, 100);
 		viewport = new Viewport();
 		displayFile = new DisplayFile();
 		transformacao = new Transformacao();
@@ -321,7 +321,7 @@ public:
 
 	void sistemaCoordenadasNormalizadas() {
 		double angulo = window->getAngulo();
-		Coordenada* fator = new Coordenada(1, 1);
+		Coordenada* fator = new Coordenada( (1/window->getLargura()), (1/window->getAltura()) );
 
 		// Matriz de transformação
 		// Traslada para o centro da window e rotaciona
@@ -339,7 +339,7 @@ public:
 
 	void sistemaCoordenadasNormalizadas(ElementoGrafico* elem) {
 		double angulo = window->getAngulo();
-		Coordenada* fator = new Coordenada(1, 1);
+			Coordenada* fator = new Coordenada( (window->getLargura()), (1/window->getAltura()) );
 
 		// Matriz de transformação
 		// Traslada para o centro da window e rotaciona

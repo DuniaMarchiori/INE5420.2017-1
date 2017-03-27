@@ -17,9 +17,11 @@ public:
 	/*!
 		/param posInicial é a cooordenada inicial da window.
 	*/
-	Window(Coordenada* posInicial) {
+	Window(Coordenada* posInicial, double alt, double larg) {
 		centro = posInicial;
 		viewUpVector = new Coordenada(0, 1);
+		altura = alt;
+		largura = larg;
 	}
 
 	//! Método que retorna a posição da Window.
@@ -91,8 +93,8 @@ public:
 		/param fator é um double que indica o quanto de aproximação ou afastamento será feito.
 	*/
 	void zoom(double fator) {
-		altura += altura * (fator/100.0);
-		largura += largura * (fator/100.0);
+		altura -= altura * (fator/100.0);
+		largura -= largura * (fator/100.0);
 	}
 
 	//! Método que rotaciona a Window.
