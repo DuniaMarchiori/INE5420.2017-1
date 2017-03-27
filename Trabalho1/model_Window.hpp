@@ -91,7 +91,8 @@ public:
 		/param fator é um double que indica o quanto de aproximação ou afastamento será feito.
 	*/
 	void zoom(double fator) {
-		// TODO
+		altura += altura * (fator/100.0);
+		largura += largura * (fator/100.0);
 	}
 
 	//! Método que rotaciona a Window.
