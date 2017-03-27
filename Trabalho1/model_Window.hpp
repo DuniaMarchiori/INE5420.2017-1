@@ -10,6 +10,7 @@ class Window {
 private:
 	Coordenada *centro; /*!< A coordenada que indica a posição da window.*/
 	Coordenada *viewUpVector; /*!< O vetor que aponta para onde esta rotacionada a window.*/
+	double altura, largura; /*!< Altura e Largura da window.*/
 
 public:
 	//! Construtor
@@ -37,6 +38,38 @@ public:
 		centro = p;
 	}
 
+	//! Método que retorna a altura da window.
+	/*!
+		/return altura da window.
+	*/
+	double getAltura() {
+		return altura;
+	}
+
+	//! Método que altera a altura da Window.
+	/*!
+		/param h é nova altura da window.
+	*/
+	void setAltura(double h) {
+		altura = h;
+	}
+
+	//! Método que retorna a largura da window.
+	/*!
+		/return largura da window.
+	*/
+	double getLargura() {
+		return largura;
+	}
+
+	//! Método que altera a largura da Window.
+	/*!
+		/param w é nova largura da window.
+	*/
+	void setLargura(double w) {
+		largura = w;
+	}
+
 	//! Método que move a Window.
 	/*!
 		/param fatX é o quanto a window ira se mover no eixo X.
@@ -46,9 +79,9 @@ public:
 		double angulo = getAngulo() * M_PI/180.0;
 		centro->setX(centro->getX() + fatX * cos(angulo) - fatY * sin(angulo));
 		centro->setY(centro->getY() + fatX * sin(angulo) + fatY * cos(angulo));
-		
-		
-		
+
+
+
 		//centro->setX(centro->getX() + viewUpVector->getX() * fatX);
 		//centro->setY(centro->getY() + viewUpVector->getY() * fatY);
 	}
