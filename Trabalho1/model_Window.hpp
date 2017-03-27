@@ -16,12 +16,14 @@ public:
 	//! Construtor
 	/*!
 		/param posInicial é a cooordenada inicial da window.
+		/param _altura é a altura inicial da window.
+		/param _largura é a largura inicial da window.
 	*/
-	Window(Coordenada* posInicial, double alt, double larg) {
+	Window(Coordenada* posInicial, double _altura, double _largura) {
 		centro = posInicial;
 		viewUpVector = new Coordenada(0, 1);
-		altura = alt;
-		largura = larg;
+		altura = _altura;
+		largura = _largura;
 	}
 
 	//! Método que retorna a posição da Window.
