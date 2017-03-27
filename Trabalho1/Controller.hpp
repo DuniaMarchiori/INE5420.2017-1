@@ -372,7 +372,7 @@ public:
 				try {
 					model->inserirNovoPonto(nome, coordX, coordY);
 					view->limparTextoNovoPonto();
-					view->adicionaElementoListbox(nome);
+					view->adicionaElementoListbox(nome, "Ponto");
 					view->inserirTextoConsole("Novo ponto adicionado.");
 				} catch (int erro) {
 					if (erro == -1) {
@@ -394,7 +394,7 @@ public:
 				try {
 					model->inserirNovaReta(nome, coordIniX, coordIniY, coordFinX, coordFinY);
 					view->limparTextoNovaReta();
-					view->adicionaElementoListbox(nome);
+					view->adicionaElementoListbox(nome, "Reta");
 					view->inserirTextoConsole("Nova reta adicionada.");
 				} catch (int erro) {
 					if (erro == -1) {
@@ -414,7 +414,7 @@ public:
 					model->inserirNovoPoligono(nome, lista);
 					view->resetarListaCoordenadasPoligono();
 					view->limparTextoNovoPoligono();
-					view->adicionaElementoListbox(nome);
+					view->adicionaElementoListbox(nome, "Polígono");
 					view->inserirTextoConsole("Novo poligono adicionado.");
 				} catch (int erro) {
 					if (erro == -1) {

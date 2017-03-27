@@ -499,8 +499,8 @@ public:
 	/*!
 		/param nome o nome desse novo elemento.
 	*/
-	void adicionaElementoListbox(string nome) {
-		addToListBox(elmnt_List, nome);
+	void adicionaElementoListbox(string nome, string tipo) {
+		addToListBox(elmnt_List, nome + " (" + tipo + ")");
 	}
 
 	//! Método que altera a sensibilidade do botao de deletar na criação de poligonos.
