@@ -498,6 +498,7 @@ public:
 	//! Metodo que adiciona o nome de um elemento à listbox de elementos.
 	/*!
 		/param nome o nome desse novo elemento.
+		/param tipo é o tipo do elemento.
 	*/
 	void adicionaElementoListbox(string nome, string tipo) {
 		addToListBox(elmnt_List, nome + " (" + tipo + ")");

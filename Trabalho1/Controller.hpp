@@ -108,10 +108,15 @@ public:
 		free(coordNegativa);*/
 	}
 
+	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em todo o mundo.
 	void descricaoSCN() {
 		model->sistemaCoordenadasNormalizadas();
 	}
 
+	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em um elemento.
+	/*!
+		/param elem o elemento que será feita a transformação.
+	*/
 	void descricaoSCN(ElementoGrafico* elem) {
 		model->sistemaCoordenadasNormalizadas(elem);
 	}

@@ -34,6 +34,12 @@ private:
 		}
 	}
 
+	//! Método que faz transformações em coordenadas de mundo de um elemento.
+	/*!
+		Faz as transformações usando a matriz passada.
+		/param elem é o elemento gráfico que será feita a transformação.
+		/param matrizResultado é a matriz utilizada para fazer a transformação.
+	*/
 	void fazTransformacaoMundo(ElementoGrafico* elem, double** matrizResultado) {
 		Tipo t = elem->getTipo();
 
@@ -75,6 +81,12 @@ private:
 		}
 	}
 	
+	//! Método que faz transformações em coordenadas normalizadas de um elemento.
+	/*!
+		Faz as transformações usando a matriz passada.
+		/param elem é o elemento gráfico que será feita a transformação.
+		/param matrizResultado é a matriz utilizada para fazer a transformação.
+	*/
 	void fazTransformacaoNormalizada(ElementoGrafico* elem, double** matrizResultado) {
 		Tipo t = elem->getTipo();
 
@@ -118,6 +130,7 @@ private:
 
 public:
 
+	//! Construtor
 	Fachada () {
 		Coordenada* centroWindow = new Coordenada(0,0);
 		window = new Window(centroWindow, 100, 100);
@@ -171,7 +184,6 @@ public:
         /param nome O nome do novo ponto.
 		/param coordX A coordenada em X desse ponto.
 		/param coordY A coordenada em Y desse ponto.
-		/return Um valor inteiro com o resultado da operação.
     */
 	void inserirNovoPonto(string nome, string coordX, string coordY) {
 		if (!nomeValido(nome)) {
@@ -208,7 +220,6 @@ public:
 		/param coordIniY A coordenada inicial em Y dessa reta.
 		/param coordFinX A coordenada final em X dessa reta.
 		/param coordFinY A coordenada final em Y dessa reta.
-		/return Um valor inteiro com o resultado da operação.
     */
 	void inserirNovaReta(string nome, string coordIniX, string coordIniY, string coordFinX, string coordFinY) {
 		if (!nomeValido(nome)) {
@@ -319,6 +330,7 @@ public:
 		fazTransformacaoMundo(elem, resultado);		
 	}
 
+	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em todo o mundo.
 	void sistemaCoordenadasNormalizadas() {
 		double angulo = window->getAngulo();
 		Coordenada* fator = new Coordenada( (1/window->getLargura()), (1/window->getAltura()) );
@@ -337,6 +349,10 @@ public:
 		}
 	}
 
+	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em um elemento.
+	/*!
+		/param elem o elemento que será feita a transformação.
+	*/
 	void sistemaCoordenadasNormalizadas(ElementoGrafico* elem) {
 		double angulo = window->getAngulo();
 		Coordenada* fator = new Coordenada( (1/window->getLargura()), (1/window->getAltura()) );
