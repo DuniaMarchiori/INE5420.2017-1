@@ -37,15 +37,15 @@ public:
 			ElementoGrafico* elemento = proxElemento->getInfo();
 			switch (elemento->getTipo()) {
 				case PONTO: {
-					Coordenada* coordTransformada = model->transformaViewport((static_cast<Ponto*> (elemento))->getCoordenadaMundo(), viewportMax);
+					Coordenada* coordTransformada = model->transformaViewport((static_cast<Ponto*> (elemento))->getCoordenadaNormal(), viewportMax);
 					Ponto* pontoTransformado = new Ponto(elemento->getNome(), coordTransformada);
 					view->desenhaPonto(pontoTransformado);
 					free(pontoTransformado);
 					break;
 
 				} case RETA: {
-					Coordenada* coordIniTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaMundoInicial(), viewportMax);
-					Coordenada* coordFinTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaMundoFinal(), viewportMax);
+					Coordenada* coordIniTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaNormalInicial(), viewportMax);
+					Coordenada* coordFinTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaNormalFinal(), viewportMax);
 
 					Reta* retaTransformada = new Reta(elemento->getNome(), coordIniTransformada, coordFinTransformada);
 					view->desenhaReta(retaTransformada);
@@ -55,7 +55,7 @@ public:
 				} case POLIGONO: {
 					Poligono* poligonoTransformado = new Poligono(elemento->getNome());
 
-					ListaEnc<Coordenada*>* listaCoord = (static_cast<Poligono*> (elemento))->getListaMundo();
+					ListaEnc<Coordenada*>* listaCoord = (static_cast<Poligono*> (elemento))->getListaNormal();
 					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
 
 					while (proxCoord != NULL) {
@@ -201,6 +201,7 @@ public:
 				break;
 		}
 
+		descricaoSCN();
 		atualizaDesenho();
 
 	}
@@ -248,6 +249,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->rotacionarWindow(fator);
+			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Window rotacionada");
 		} catch (...){
@@ -260,6 +262,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->rotacionarWindow(-1 * fator);
+			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Window rotacionada");
 		} catch (...){
@@ -273,6 +276,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(0,fator);
+			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para cima.");
 		} catch (...){
@@ -285,6 +289,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(-fator,0);
+			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para a esquerda.");
 		} catch (...){
@@ -297,6 +302,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(fator,0);
+			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para a direita.");
 		} catch (...){
@@ -309,6 +315,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(0,-fator);
+			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para baixo.");
 		} catch (...){
@@ -321,6 +328,7 @@ public:
 		try {
 			double fator = view->getFatorZoom();
 			model->zoom(-fator);
+			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Zoom para fora.");
 		} catch (...){
@@ -333,6 +341,7 @@ public:
 		try {
 			double fator = view->getFatorZoom();
 			model->zoom(fator);
+			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Zoom para dentro.");
 		} catch (...){
@@ -343,6 +352,7 @@ public:
 	//! Método que é chamado ao signal de configure da janela principal.
 	void drawingAreaConfigure(GtkWidget *widget) {
 		view->nova_surface(widget);
+		descricaoSCN();
 		atualizaDesenho();
 	}
 
@@ -418,6 +428,7 @@ public:
 			}
 		}
 
+		descricaoSCN();
 		atualizaDesenho();
 		view->setPoligono_Btn_DelSensitive(FALSE);
 		view->focusNome();

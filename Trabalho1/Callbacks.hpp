@@ -26,7 +26,7 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Novo_clicked_cb(){
 /*!
 	Manda deletar o elemento da display file e executa um update na tela.
 */
-extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){	
+extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 	controller->botaoDeletarElemento();
 }
 
@@ -37,10 +37,6 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Del_clicked_cb(){
 extern "C" G_MODULE_EXPORT void Elmnt_Btn_Edit_clicked_cb() {
 	controller->botaoEditarElemento();
 }
-
-
-
-
 
 //! Método que é chamado ao pressionar o botão de girar a window no sentido anti-horário.
 /*!
@@ -57,13 +53,6 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Rot_Esq_clicked_cb(){
 extern "C" G_MODULE_EXPORT void Pos_Btn_Rot_Dir_clicked_cb(){
 	controller->botaoGirarWindowDireito();
 }
-
-
-
-
-
-
-
 
 //! Método que é chamado ao pressionar o botão "Cima".
 /*!

@@ -74,7 +74,7 @@ private:
 				}
 		}
 	}
-
+	
 	void fazTransformacaoNormalizada(ElementoGrafico* elem, double** matrizResultado) {
 		Tipo t = elem->getTipo();
 
@@ -110,7 +110,7 @@ private:
 						proxCoord = proxCoord->getProximo();
 					}
 					p->setListaNormal(listaNovasCoord);
-					free(listaCoord);
+					//free(listaCoord);
 					break;
 				}
 		}
@@ -320,12 +320,12 @@ public:
 	}
 
 	void sistemaCoordenadasNormalizadas() {
-		double angulo = -(0);
+		double angulo = window->getAngulo();
 		Coordenada* fator = new Coordenada(1, 1);
 
 		// Matriz de transformação
 		// Traslada para o centro da window e rotaciona
-		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(window->getCentro()->getX()), -(window->getCentro()->getY())), transformacao->novaMatrizRotacao(angulo));
+		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(window->getCentro()->getX()), -(window->getCentro()->getY())), transformacao->novaMatrizRotacao(-angulo));
 		// Escalona
 		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
 
@@ -338,12 +338,12 @@ public:
 	}
 
 	void sistemaCoordenadasNormalizadas(ElementoGrafico* elem) {
-		double angulo = -(0);
+		double angulo = window->getAngulo();
 		Coordenada* fator = new Coordenada(1, 1);
 
 		// Matriz de transformação
 		// Traslada para o centro da window e rotaciona
-		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(window->getCentro()->getX()), -(window->getCentro()->getY())), transformacao->novaMatrizRotacao(angulo));
+		double** resultado = transformacao->multiplicarMatrizes3x3(transformacao->novaMatrizTraslacao(-(window->getCentro()->getX()), -(window->getCentro()->getY())), transformacao->novaMatrizRotacao(-angulo));
 		// Escalona
 		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizEscalonamento(fator->getX(), fator->getY()));
 

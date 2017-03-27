@@ -43,8 +43,14 @@ public:
 		/param fatY é o quanto a window ira se mover no eixo Y.
 	*/
 	void moverWindow(double fatX, double fatY) {
-		centro->setX(viewUpVector->getX() * fatX);
-		centro->setY(viewUpVector->getY() * fatY);
+		double angulo = getAngulo() * M_PI/180.0;
+		centro->setX(centro->getX() + fatX * cos(angulo) - fatY * sin(angulo));
+		centro->setY(centro->getY() + fatX * sin(angulo) + fatY * cos(angulo));
+		
+		
+		
+		//centro->setX(centro->getX() + viewUpVector->getX() * fatX);
+		//centro->setY(centro->getY() + viewUpVector->getY() * fatY);
 	}
 
 	//! Método que dá zoom na Window.
@@ -77,10 +83,10 @@ public:
 	/*!
 		/return o angulo entre a window e o eixo Y.
 	*/
-	void getAngulo() {
-		double angulo = atan2(viewUpVector->getY() - 1,viewUpVector->getX());
+	double getAngulo() {
+		double angulo = atan2(viewUpVector->getY(), viewUpVector->getX()) - atan2(1, 0);
 		angulo = (angulo * 180.0) / M_PI;
-		return ;
+		return angulo;
 	}
 
 };

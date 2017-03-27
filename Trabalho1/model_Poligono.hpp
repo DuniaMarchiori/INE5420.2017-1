@@ -18,6 +18,7 @@ public:
 	*/
 	Poligono(string nome) {
 		listaMundo = new ListaEnc<Coordenada*>();
+		listaNormal = new ListaEnc<Coordenada*>();
 		setNome(nome);
 		setTipo(POLIGONO);
 	}

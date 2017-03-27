@@ -19,8 +19,8 @@ public:
 	*/
 	Coordenada* transformaViewport(Coordenada* ponto, Window* wind, Coordenada* vpMax) {
 		Coordenada* transformada = new Coordenada();
-		Coordenada* wMin = wind->getPontoInferiorEsquerdo();
-		Coordenada* wMax = wind->getPontoSuperiorDireito();
+		Coordenada* wMin = new Coordenada(-1,-1);
+		Coordenada* wMax = new Coordenada(1,1);
 		transformada->setX ( ( (ponto->getX() - wMin->getX())/(wMax->getX() - wMin->getX()) ) * (vpMax->getX()) );
 		transformada->setY ( ( 1 - ( (ponto->getY() - wMin->getY())/(wMax->getY() - wMin->getY()) ) ) * (vpMax->getY()) );
 		return transformada;
