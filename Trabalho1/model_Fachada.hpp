@@ -339,7 +339,7 @@ public:
 
 	void sistemaCoordenadasNormalizadas(ElementoGrafico* elem) {
 		double angulo = window->getAngulo();
-			Coordenada* fator = new Coordenada( (window->getLargura()), (1/window->getAltura()) );
+		Coordenada* fator = new Coordenada( (1/window->getLargura()), (1/window->getAltura()) );
 
 		// Matriz de transformação
 		// Traslada para o centro da window e rotaciona
