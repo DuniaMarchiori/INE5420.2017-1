@@ -18,14 +18,14 @@ class Desenhista {
 public:
 	//! Método que desenha um ponto na tela.
 	/*!
-		/param p é o ponto a ser desenhado.
+		/param coord é a coordenada do ponto a ser desenhado.
 	*/
-	void desenhaPonto(Ponto* p){
+	void desenhaPonto(Coordenada* coord){
 		cairo_t *c = cairo_create (surface);
 
 		//Seria apenas um pixel, mas é feito um círculo ao redor do ponto para ficar visível.
-		cairo_move_to(c, p->getCoordenadaMundo()->getX(), p->getCoordenadaMundo()->getY());
-		cairo_arc(c,p->getCoordenadaMundo()->getX(), p->getCoordenadaMundo()->getY(), 1.5, 0.0, 2*M_PI);
+		cairo_move_to(c, coord->getX(), coord->getY());
+		cairo_arc(c,coord->getX(), coord->getY(), 1.5, 0.0, 2*M_PI);
 		cairo_fill(c);
 
 		cairo_stroke(c);
@@ -33,25 +33,25 @@ public:
 
 	//! Método que desenha uma reta na tela.
 	/*!
-		/param r é a reta a ser desenhada.
+		/param coordInicial é a coordenada inicial da reta.
+		/param coordFinal é a coordenada final da reta.
 	*/
-	void desenhaReta(Reta* r) {
+	void desenhaReta(Coordenada* coordInicial, Coordenada* coordFinal) {
 		cairo_t *c = cairo_create (surface);
 
-		cairo_move_to(c, r->getCoordenadaMundoInicial()->getX(), r->getCoordenadaMundoInicial()->getY());
-		cairo_line_to(c, r->getCoordenadaMundoFinal()->getX(), r->getCoordenadaMundoFinal()->getY());
+		cairo_move_to(c, coordInicial->getX(), coordInicial->getY());
+		cairo_line_to(c, coordFinal->getX(), coordFinal->getY());
 
 		cairo_stroke(c);
 	}
 
 	//! Método que desenha um polígono na tela.
 	/*!
-		/param p é o polígono a ser desenhado.
+		/param lista é a lista de coordenadas do poligono a ser desenhado.
 	*/
-	void desenhaPoligono(Poligono* p) {
+	void desenhaPoligono(ListaEnc<Coordenada*>* lista) {
 		cairo_t *c = cairo_create (surface);
 
-		ListaEnc<Coordenada*> *lista = p->getListaMundo();
 		Elemento<Coordenada*> *elementoCoord = lista->getHead();
 		Coordenada* coord = elementoCoord->getInfo();	
 		//Coordenada* transformada = f->transformaViewport(coord,vpMax);

@@ -38,34 +38,34 @@ public:
 			switch (elemento->getTipo()) {
 				case PONTO: {
 					Coordenada* coordTransformada = model->transformaViewport((static_cast<Ponto*> (elemento))->getCoordenadaNormal(), viewportMax);
-					Ponto* pontoTransformado = new Ponto(elemento->getNome(), coordTransformada);
-					view->desenhaPonto(pontoTransformado);
-					free(pontoTransformado);
+					view->desenhaPonto(coordTransformada);
+					free(coordTransformada);
 					break;
 
 				} case RETA: {
 					Coordenada* coordIniTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaNormalInicial(), viewportMax);
 					Coordenada* coordFinTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaNormalFinal(), viewportMax);
 
-					Reta* retaTransformada = new Reta(elemento->getNome(), coordIniTransformada, coordFinTransformada);
-					view->desenhaReta(retaTransformada);
-					free(retaTransformada);
+					view->desenhaReta(coordIniTransformada, coordFinTransformada);
+					free(coordIniTransformada);
+					free(coordFinTransformada);
 					break;
 
 				} case POLIGONO: {
-					Poligono* poligonoTransformado = new Poligono(elemento->getNome());
 
 					ListaEnc<Coordenada*>* listaCoord = (static_cast<Poligono*> (elemento))->getListaNormal();
 					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+					
+					ListaEnc<Coordenada*>* listaCoordTransformada = new ListaEnc<Coordenada*>();
 
 					while (proxCoord != NULL) {
 						Coordenada* coord = proxCoord->getInfo();
 						Coordenada* coordTransformada = model->transformaViewport(coord, viewportMax);
-						poligonoTransformado->adicionarCoordenadaMundo(coordTransformada);
+						listaCoordTransformada->adiciona(coordTransformada);
 						proxCoord = proxCoord->getProximo();
 					}
-					view->desenhaPoligono(poligonoTransformado);
-					free(poligonoTransformado);
+					view->desenhaPoligono(listaCoordTransformada);
+					free(listaCoordTransformada);
 					break;
 				}
 			}

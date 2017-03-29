@@ -260,28 +260,29 @@ public:
 
 	//! Método que repassa a instrução de desenhar um ponto para o desenhista.
 	/*!
-		/param p é o ponto que sera desenhado.
+		/param coord é a coordenada do ponto a ser desenhado.
 	*/
-	void desenhaPonto(Ponto* p) {
-		desenhista->desenhaPonto(p);
+	void desenhaPonto(Coordenada* coord) {
+		desenhista->desenhaPonto(coord);
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);
 	}
 
 	//! Método que repassa a instrução de desenhar uma reta para o desenhista.
 	/*!
-		/param r é a reta que sera desenhada.
+		/param coordInicial é a coordenada inicial da reta.
+		/param coordFinal é a coordenada final da reta.
 	*/
-	void desenhaReta(Reta* r) {
-		desenhista->desenhaReta(r);
+	void desenhaReta(Coordenada* coordInicial, Coordenada* coordFinal) {
+		desenhista->desenhaReta(coordInicial, coordFinal);
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);
 	}
 
 	//! Método que repassa a instrução de desenhar um poligono para o desenhista.
 	/*!
-		/param p é o poligono que sera desenhado.
+		/param lista é a lista de coordenadas do poligono a ser desenhado.
 	*/
-	void desenhaPoligono(Poligono* p) {
-		desenhista->desenhaPoligono(p);
+	void desenhaPoligono(ListaEnc<Coordenada*>* lista) {
+		desenhista->desenhaPoligono(lista);
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);
 	}
 
