@@ -248,7 +248,6 @@ public:
 		}
 	}
 
-
 	//! Método que gira a window no sentido anti-horário.
 	void botaoGirarWindowEsquerdo() {
 		try {
@@ -274,7 +273,6 @@ public:
 			return;
 		}
 	}
-
 
 	//! Método que movimenta a window para cima.
 	void botaoMovimentoCima() {
@@ -366,6 +364,11 @@ public:
 		view->modifica_surface(cr);
 	}
 
+	void clippingAlterado() {
+		descricaoSCN();
+		atualizaDesenho();
+	}
+	
 	//! Método que adiciona um novo elemento.
 	void addNovoElemento() {
 		string nome = view->getNomeElemento();

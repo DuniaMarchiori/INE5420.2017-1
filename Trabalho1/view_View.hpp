@@ -33,8 +33,11 @@ private:
 	GtkEntry *zoom_Txt_Fator; /*!< Referência para a caixa de texto de Fator de zoom.*/
 	GtkButton *zoom_Btn_Menos, *zoom_Btn_Mais; /*!< Referência para os botões de mais e menos zoom.*/
 
-	GtkTextView *consoleWidget; /*!< Referência para a caixa de texto do console.*/
 	GtkWidget *viewport_DrawingArea; /*!< A área de desenho*/
+
+	GtkRadioButton *clipping_radio_0, *clipping_radio_1; /*!< Referência para os botões de seleção do tipo de clipping de reta.*/
+
+	GtkTextView *consoleWidget; /*!< Referência para a caixa de texto do console.*/
 
 	GtkWindow *window_NovoElemento; /*!< Referência para a janela de novo elemento.*/
 
@@ -55,7 +58,7 @@ private:
 
 	GtkEntry *editElmnt_rot_angulo; /*!< Referência para a caixa de texto do angulo de rotação.*/
 
-	GtkRadioButton *editElmnt_radio_0, *editElmnt_radio_1, *editElmnt_radio_2;
+	GtkRadioButton *editElmnt_radio_0, *editElmnt_radio_1, *editElmnt_radio_2; /*!< Referência para os botões de seleção do tipo de rotação.*/
 
 	GtkEntry *editElmnt_rot_X, *editElmnt_rot_Y; /*!< Referência para a caixa de texto do ponto arbitrário da rotação.*/
 
@@ -132,6 +135,9 @@ public:
 		poligono_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Del"));
 		gtk_widget_set_sensitive ((GtkWidget*) poligono_Btn_Del, FALSE); // Esse botão começa desativado.
 		consoleWidget = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
+
+		clipping_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Clipping_Radio_0"));
+		clipping_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Clipping_Radio_1"));
 
 		window_EditElemento = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_EditElmnt"));
 		g_signal_connect (window_EditElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
@@ -409,6 +415,22 @@ public:
 			}
 		}
 	}
+	
+	//! Metodo que retorna o tipo de clipping de reta.
+	/*!
+		/return inteiro correspondendo à um dos dois tipos de clipping de reta.
+	*/
+	int getTipoClippingReta() {
+		if (gtk_toggle_button_get_active((GtkToggleButton*) clipping_radio_0)) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+	
+	// ------------------------------------------------------------------------------------------------
+	// Comandos Da Janela de Novo Elemento
+
 
 	//! Metodo que retorna o valor contido na caixa de Nome do novo elemento.
 	/*!
@@ -653,7 +675,7 @@ public:
 			}
 		}
 	}
-	
+
 	//! Metodo que retorna o valor numérico contido na caixa de fator de Escala em Y.
 	/*!
 		/return o fator de escala em Y.
@@ -671,7 +693,7 @@ public:
 			}
 		}
 	}
-	
+
 	//! Metodo que retorna o valor numérico contido na caixa de angulo de rotacao.
 	/*!
 		/return o angulo a ser rotacionado.

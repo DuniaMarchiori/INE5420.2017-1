@@ -124,6 +124,21 @@ extern "C" G_MODULE_EXPORT gboolean Viewport_DrawingArea_draw_cb (GtkWidget *wid
 	return FALSE;
 }
 
+//! Método que é chamado ao pressionar o radio button do tipo de clippagem C-S.
+/*!
+	Redesenha todos os elementos, utilizando clipping C-S.
+*/
+extern "C" G_MODULE_EXPORT void Clipping_Radio_0_clicked_cb(){
+	controller->clippingAlterado();
+}
+
+//! Método que é chamado ao pressionar o radio button do tipo de clippagem L-B.
+/*!
+	Redesenha todos os elementos, utilizando clipping L-B.
+*/
+extern "C" G_MODULE_EXPORT void Clipping_Radio_1_clicked_cb(){
+	controller->clippingAlterado();
+}
 
 
 //--------------------------------------------------------------
