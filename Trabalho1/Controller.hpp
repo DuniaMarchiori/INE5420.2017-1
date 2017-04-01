@@ -37,35 +37,61 @@ public:
 			ElementoGrafico* elemento = proxElemento->getInfo();
 			switch (elemento->getTipo()) {
 				case PONTO: {
-					Coordenada* coordTransformada = model->transformaViewport((static_cast<Ponto*> (elemento))->getCoordenadaNormal(), viewportMax);
-					view->desenhaPonto(coordTransformada);
-					free(coordTransformada);
+
+					Ponto* pontoClippado = model->clippingDePonto((static_cast<Ponto*> (elemento)));
+
+					if (pontoClippado != NULL) {
+						Coordenada* coordTransformada = model->transformaViewport(pontoClippado->getCoordenadaNormal(), viewportMax);
+
+						view->desenhaPonto(coordTransformada);
+						free(coordTransformada);
+					}
+
 					break;
 
 				} case RETA: {
-					Coordenada* coordIniTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaNormalInicial(), viewportMax);
-					Coordenada* coordFinTransformada = model->transformaViewport((static_cast<Reta*> (elemento))->getCoordenadaNormalFinal(), viewportMax);
 
-					view->desenhaReta(coordIniTransformada, coordFinTransformada);
-					free(coordIniTransformada);
-					free(coordFinTransformada);
+					Reta* retaClippada;
+					switch (view->getTipoClippingReta()) {
+						case 0: {
+							retaClippada = model->clippingDeRetaCS((static_cast<Reta*> (elemento)));
+						} case 1: {
+							retaClippada = model->clippingDeRetaLB((static_cast<Reta*> (elemento)));
+						}
+					}
+
+					if (retaClippada != NULL) {
+						Coordenada* coordIniTransformada = model->transformaViewport(retaClippada->getCoordenadaNormalInicial(), viewportMax);
+						Coordenada* coordFinTransformada = model->transformaViewport(retaClippada->getCoordenadaNormalFinal(), viewportMax);
+
+
+						view->desenhaReta(coordIniTransformada, coordFinTransformada);
+						free(coordIniTransformada);
+						free(coordFinTransformada);
+					}
 					break;
 
 				} case POLIGONO: {
-
-					ListaEnc<Coordenada*>* listaCoord = (static_cast<Poligono*> (elemento))->getListaNormal();
-					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
 					
-					ListaEnc<Coordenada*>* listaCoordTransformada = new ListaEnc<Coordenada*>();
+					Poligono* poligonoClippado = model->clippingDePoligono((static_cast<Poligono*> (elemento)));
 
-					while (proxCoord != NULL) {
-						Coordenada* coord = proxCoord->getInfo();
-						Coordenada* coordTransformada = model->transformaViewport(coord, viewportMax);
-						listaCoordTransformada->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
+					if (poligonoClippado != NULL) {
+						//ListaEnc<Coordenada*>* listaCoord = (static_cast<Poligono*> (elemento))->getListaNormal();
+						ListaEnc<Coordenada*>* listaCoord = poligonoClippado->getListaNormal();
+
+						Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+
+						ListaEnc<Coordenada*>* listaCoordTransformada = new ListaEnc<Coordenada*>();
+
+						while (proxCoord != NULL) {
+							Coordenada* coord = proxCoord->getInfo();
+							Coordenada* coordTransformada = model->transformaViewport(coord, viewportMax);
+							listaCoordTransformada->adiciona(coordTransformada);
+							proxCoord = proxCoord->getProximo();
+						}
+						view->desenhaPoligono(listaCoordTransformada);
+						free(listaCoordTransformada);
 					}
-					view->desenhaPoligono(listaCoordTransformada);
-					free(listaCoordTransformada);
 					break;
 				}
 			}
@@ -368,7 +394,7 @@ public:
 		descricaoSCN();
 		atualizaDesenho();
 	}
-	
+
 	//! Método que adiciona um novo elemento.
 	void addNovoElemento() {
 		string nome = view->getNomeElemento();

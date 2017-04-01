@@ -11,6 +11,7 @@
 #include "model_Reta.hpp"
 #include "model_Poligono.hpp"
 #include "model_Transformacao.hpp"
+#include "model_Clipper.hpp"
 
 class Fachada {
 
@@ -19,6 +20,7 @@ private:
 	Viewport* viewport;
 	DisplayFile* displayFile;
 	Transformacao* transformacao;
+	Clipper* clipper;
 
 	//! Método que verifica a validade de um nome.
     /*!
@@ -27,7 +29,7 @@ private:
 		/return Retorna true se o nome é valido.
     */
 	bool nomeValido(string nome){
-		if ( !(nome.empty()) ) {	
+		if ( !(nome.empty()) ) {
 			return true;
 		} else {
 			return false;
@@ -63,7 +65,7 @@ private:
 			case POLIGONO:
 				{
 					Poligono* p = static_cast<Poligono*> (elem);
-					
+
 					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
 					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
 					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
@@ -80,7 +82,7 @@ private:
 				}
 		}
 	}
-	
+
 	//! Método que faz transformações em coordenadas normalizadas de um elemento.
 	/*!
 		Faz as transformações usando a matriz passada.
@@ -110,7 +112,7 @@ private:
 			case POLIGONO:
 				{
 					Poligono* p = static_cast<Poligono*> (elem);
-					
+
 					ListaEnc<Coordenada*>* listaCoord = p->getListaMundo();
 					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
 					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
@@ -137,12 +139,13 @@ public:
 		viewport = new Viewport();
 		displayFile = new DisplayFile();
 		transformacao = new Transformacao();
+		clipper = new Clipper();
 	}
-	
+
 	void rotacionarWindow(double graus) {
 		window->rotacionarWindow(graus);
 	}
-	
+
 	//! Método que manda a window se mover.
 	/*!
         /param fatX O quanto a janela deve se mover em X.
@@ -160,6 +163,42 @@ public:
 		window->zoom(fator);
 	}
 
+	//! Método que clippa um ponto.
+	/*!
+        /param ponto O ponto que será clippado.
+		/return o ponto clippado.
+    */
+	Ponto* clippingDePonto(Ponto* ponto) {
+		return clipper->clippingDePonto(ponto);
+	}
+
+	//! Método que clippa uma reta com o algoritmo Cohen-Sutherland.
+	/*!
+        /param reta A reta que será clippada.
+		/return a reta clippada.
+    */
+	Reta* clippingDeRetaCS(Reta* reta) {
+		return clipper->clippingDeRetaCS(reta);
+	}
+
+	//! Método que clippa uma reta com o algoritmo Liang-Barsky.
+	/*!
+        /param reta A reta que será clippada.
+		/return a reta clippada.
+    */
+	Reta* clippingDeRetaLB(Reta* reta) {
+		return clipper->clippingDeRetaLB(reta);
+	}
+	
+	//! Método que clippa um poligono.
+	/*!
+        /param poligono O poligono que será clippado.
+		/return o poligono clippado.
+    */
+	Poligono* clippingDePoligono(Poligono* poligono) {
+		return clipper->clippingDePoligono(poligono);
+	}
+	
 	//! Método que realiza a transformada de viewport.
 	/*!
         /param ponto uma coordenada do mundo que sera transformada.
@@ -189,12 +228,12 @@ public:
 		if (!nomeValido(nome)) {
 			throw -1;
 		}
-		
+
 		// Se os campos de coordenada não estão em branco
 		if ( !(coordX.empty()) && !(coordY.empty()) ) {
 			// Cria novo objeto
 			Coordenada* c = new Coordenada();
-			
+
 			// Verifica se os campos são números
 			try {
 				// stod = string to double
@@ -227,7 +266,7 @@ public:
 		}
 
 		// Se os campos de coordenada não estão em branco
-		if ( !(coordIniX.empty()) && !(coordIniY.empty()) && !(coordFinX.empty()) && !(coordFinY.empty()) ) { 
+		if ( !(coordIniX.empty()) && !(coordIniY.empty()) && !(coordFinX.empty()) && !(coordFinY.empty()) ) {
 			// Cria novo objeto
 			Coordenada* cI = new Coordenada();
 			Coordenada* cF = new Coordenada();
@@ -263,7 +302,7 @@ public:
 		if (!nomeValido(nome)) {
 			return -1;
 		}
-		
+
 		if ( !(listaCoordsPoligono->listaVazia()) ) {
 			Poligono *pol = new Poligono(nome, listaCoordsPoligono);
 			displayFile->inserirNovoPoligono(pol);
@@ -289,7 +328,7 @@ public:
 	ElementoGrafico* getElementoNoIndice(int index) {
 		displayFile->getElementoNoIndice(index);
 	}
-	
+
 	//! Método que realiza a translação em um elemento grafico.
 	/*!
         /param elem o elemento grafico que sera transladado.
@@ -314,7 +353,7 @@ public:
 
 		fazTransformacaoMundo(elem, resultado);
 	}
-	
+
 	//! Método que realiza a rotação de um elemento grafico.
 	/*!
         /param elem o elemento grafico que sera rotacionado.
@@ -327,7 +366,7 @@ public:
 		// Translada para o lugar de antes
 		resultado = transformacao->multiplicarMatrizes3x3(resultado, transformacao->novaMatrizTraslacao(coord->getX(), coord->getY()));
 
-		fazTransformacaoMundo(elem, resultado);		
+		fazTransformacaoMundo(elem, resultado);
 	}
 
 	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em todo o mundo.

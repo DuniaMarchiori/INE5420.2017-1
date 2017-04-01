@@ -24,7 +24,7 @@ public:
 		vpMax->setX(vpMax->getX() - 10);
 		vpMax->setY(vpMax->getY() - 10);
 		
-		vpMin = new Coordenada(10, 10);
+		Coordenada* vpMin = new Coordenada(10, 10);
 		transformada->setX ( ( (ponto->getX() - wMin->getX())/(wMax->getX() - wMin->getX()) ) * (vpMax->getX() - vpMin->getX()) );
 		transformada->setY ( ( 1 - ( (ponto->getY() - wMin->getY())/(wMax->getY() - wMin->getY()) ) ) * (vpMax->getY() - vpMin->getY()) );
 		return transformada;

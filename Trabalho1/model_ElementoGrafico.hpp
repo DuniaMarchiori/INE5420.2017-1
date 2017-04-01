@@ -1,7 +1,7 @@
 #ifndef ELEMENTOGRAFICO_HPP
 #define ELEMENTOGRAFICO_HPP
 
-#include<string>
+#include <string>
 #include "model_Tipo.hpp"
 //#include "Coordenada.hpp"
 
