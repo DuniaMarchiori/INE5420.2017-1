@@ -37,12 +37,16 @@ public:
 		/param coordFinal é a coordenada final da reta.
 	*/
 	void desenhaReta(Coordenada* coordInicial, Coordenada* coordFinal) {
-		cairo_t *c = cairo_create (surface);
+		if (coordInicial->getX() == coordFinal-> getX() && coordInicial->getY() == coordFinal-> getY()) {
+			desenhaPonto(coordInicial);
+		} else {
+			cairo_t *c = cairo_create (surface);
 
-		cairo_move_to(c, coordInicial->getX(), coordInicial->getY());
-		cairo_line_to(c, coordFinal->getX(), coordFinal->getY());
+			cairo_move_to(c, coordInicial->getX(), coordInicial->getY());
+			cairo_line_to(c, coordFinal->getX(), coordFinal->getY());
 
-		cairo_stroke(c);
+			cairo_stroke(c);
+		}
 	}
 
 	//! Método que desenha um polígono na tela.

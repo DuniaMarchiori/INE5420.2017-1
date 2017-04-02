@@ -206,7 +206,7 @@ public:
 		/return o ponto transformado.
     */
 	Coordenada* transformaViewport(Coordenada* ponto, Coordenada* vpMax) {
-		return viewport->transformaViewport(ponto, window, vpMax);
+		return viewport->transformaViewport(ponto, vpMax);
 	}
 
 	//! Método que retorna o primeiro elemento do display file.

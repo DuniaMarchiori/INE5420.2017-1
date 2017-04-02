@@ -1179,6 +1179,10 @@
                   <object class="GtkAlignment" id="alignment2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_left">5</property>
+                    <property name="margin_right">5</property>
+                    <property name="margin_top">5</property>
+                    <property name="margin_bottom">5</property>
                     <property name="left_padding">12</property>
                     <child>
                       <object class="GtkDrawingArea" id="Viewport_DrawingArea">
@@ -1186,10 +1190,6 @@
                         <property name="height_request">400</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_left">5</property>
-                        <property name="margin_right">5</property>
-                        <property name="margin_top">5</property>
-                        <property name="margin_bottom">5</property>
                         <signal name="configure-event" handler="Viewport_DrawingArea_configure_event_cb" swapped="no"/>
                         <signal name="draw" handler="Viewport_DrawingArea_draw_cb" swapped="no"/>
                       </object>

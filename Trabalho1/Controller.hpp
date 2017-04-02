@@ -45,18 +45,21 @@ public:
 
 						view->desenhaPonto(coordTransformada);
 						free(coordTransformada);
+						//free(pontoClippado); // Cuidado
 					}
 
 					break;
 
 				} case RETA: {
 
-					Reta* retaClippada;
+					Reta* retaClippada = NULL;
 					switch (view->getTipoClippingReta()) {
 						case 0: {
 							retaClippada = model->clippingDeRetaCS((static_cast<Reta*> (elemento)));
+							break;
 						} case 1: {
 							retaClippada = model->clippingDeRetaLB((static_cast<Reta*> (elemento)));
+							break;
 						}
 					}
 
@@ -68,6 +71,7 @@ public:
 						view->desenhaReta(coordIniTransformada, coordFinTransformada);
 						free(coordIniTransformada);
 						free(coordFinTransformada);
+						//free(retaClippada); // Cuidado
 					}
 					break;
 
@@ -91,6 +95,7 @@ public:
 						}
 						view->desenhaPoligono(listaCoordTransformada);
 						free(listaCoordTransformada);
+						//free(poligonoClippado); // Cuidado
 					}
 					break;
 				}

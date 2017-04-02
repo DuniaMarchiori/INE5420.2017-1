@@ -11,7 +11,10 @@ private:
 public:
 
 	//! Construtor
-	Coordenada () {}
+	Coordenada () {
+		x = 0;
+		y = 0;
+	}
 
 	//! Construtor
 	/*
@@ -21,6 +24,15 @@ public:
 	Coordenada(double _x, double _y) {
 		x = _x;
 		y = _y;
+	}
+	
+	//! Construtor
+	/*
+		/param coord é uma coordenada cujos valores serão copiados para esta.
+	*/
+	Coordenada(Coordenada* coord) {
+		x = coord->getX();
+		y = coord->getY();
 	}
 
 	//! Método que obtém o valor X da coordenada.

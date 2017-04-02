@@ -11,6 +11,15 @@ private:
 	Coordenada *coordenadaNormalInicial, *coordenadaNormalFinal; /*!< Coordenadas dos pontos inicial e final da reta normalizadas*/
 
 public:
+
+	//! Construtor
+	Reta() {
+		coordenadaMundoInicial = new Coordenada();
+		coordenadaMundoFinal = new Coordenada();
+		setNome("");
+		setTipo(RETA);
+	}
+
 	//! Construtor
 	/*!
 		/param nome é o nome da reta
