@@ -231,6 +231,10 @@ public:
 		q3 = ini->getY() - (-1);
 		q4 = 1 - ini->getY();
 
+		if ((p1 == 0 && q1 < 0) || (p2 == 0 && q2 < 0) || (p3 == 0 && q3 < 0) || (p4 == 0 && q4 < 0)) {  
+			return NULL;
+		}
+
 		if (p1 < 0) {
 			r1max = q1/p1;
 
