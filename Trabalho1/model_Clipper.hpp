@@ -127,13 +127,13 @@ private:
 		}
 	}
 
-	int maximo (int a, int b, int c) {
-		int max = (a < b) ? b : a;
+	double maximo (double a, double b, double c) {
+		double max = (a < b) ? b : a;
 		return ( (max < c) ? c : max );
 	}
 
-	int minimo (int a, int b, int c) {
-		int min = (a < b) ? a : b;
+	double minimo (double a, double b, double c) {
+		double min = (a < b) ? a : b;
 		return ( (min < c) ? min : c );
 	}
 
@@ -178,7 +178,6 @@ public:
 			// Reta esta completamente fora da window.
 			return NULL;
 		} else {
-			//cout << "Meio a meio" << endl;
 			double m = (P2->getY() - P1->getY()) / (P2->getX() - P1->getX());
 			Coordenada* novoP1 = NULL;
 			Coordenada* novoP2 = NULL;
@@ -205,10 +204,6 @@ public:
 				return retaClippada;
 			}
 		}
-
-
-
-		//return reta; // Retorno apenas para que o programa compile
 	}
 
 	//! Método que clippa uma reta com o algoritmo Liang-Barsky.
@@ -216,6 +211,8 @@ public:
         /param reta A reta que será clippada.
 		/return a reta clippada.
     */
+    #include <stdio.h>
+
 	Reta* clippingDeRetaLB(Reta* reta) {
 		Reta* retaClippada;
 		double p1, p2, p3, p4, q1, q2, q3, q4;
@@ -240,28 +237,34 @@ public:
 		} else if (p2 < 0) {
 			r1max = q2/p2;
 
-		} else if (p3 < 0) {
+		}
+
+		if (p3 < 0) {
 			r2max = q3/p3;
 
 		} else if (p4 < 0) {
 			r2max = q4/p4;
 
-		} else if (p1 > 0){
+		}
+
+		if (p1 > 0){
 			r1min = q1/p1;
 
 		} else if (p2 > 0) {
 			r1min = q2/p2;
 
-		} else if (p3 < 0) {
+		}
+
+		if (p3 > 0) {
 			r2min = q3/p3;
 
-		} else if (p4 < 0) {
+		} else if (p4 > 0) {
 			r2min = q4/p4;
 
 		}
 
-		z1 = maximo(0, r1max, r2max);
-		z2 = minimo(1, r1min, r2min);
+		z1 = maximo(0.0, r1max, r2max);
+		z2 = minimo(1.0, r1min, r2min);
 		Coordenada* novoP1 = NULL;
 		Coordenada* novoP2 = NULL;
 
