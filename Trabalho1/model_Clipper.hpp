@@ -127,6 +127,16 @@ private:
 		}
 	}
 
+	int maximo (int a, int b, int c) {
+		int max = (a < b) ? b : a;
+		return ( (max < c) ? c : max );
+	}
+
+	int minimo (int a, int b, int c) {
+		int min = (a < b) ? a : b;
+		return ( (min < c) ? min : c );
+	}
+
 public:
 	//! Método que clippa um ponto.
 	/*!
@@ -134,7 +144,10 @@ public:
 		/return o ponto clippado.
     */
 	Ponto* clippingDePonto(Ponto* ponto) {
-		return ponto; // Retorno apenas para que o programa compile
+		if (ponto->getCoordenadaNormal()->getX() < -1 || ponto->getCoordenadaNormal()->getX() > 1 || ponto->getCoordenadaNormal()->getY() < -1 || ponto->getCoordenadaNormal()->getY() > 1) {
+			return NULL;
+		}
+		return ponto; // Ponto está dentro da window
 	}
 
 	//! Método que clippa uma reta com o algoritmo Cohen-Sutherland.
@@ -204,7 +217,77 @@ public:
 		/return a reta clippada.
     */
 	Reta* clippingDeRetaLB(Reta* reta) {
-		return reta; // Retorno apenas para que o programa compile
+		Reta* retaClippada;
+		double p1, p2, p3, p4, q1, q2, q3, q4;
+		double r1max = 0, r2max = 0, r1min = 1, r2min = 1, z1 = 0, z2 = 0;
+
+		Coordenada* ini = reta->getCoordenadaNormalInicial();
+		Coordenada* fin = reta->getCoordenadaNormalFinal();
+
+		p1 = -(fin->getX() - ini->getX());
+		p2 = fin->getX() - ini->getX();
+		p3 = -(fin->getY() - ini->getY());
+		p4 = fin->getY() - ini->getY();
+
+		q1 = ini->getX() - (-1);
+		q2 = 1 - ini->getX();
+		q3 = ini->getY() - (-1);
+		q4 = 1 - ini->getY();
+
+		if (p1 < 0) {
+			r1max = q1/p1;
+
+		} else if (p2 < 0) {
+			r1max = q2/p2;
+
+		} else if (p3 < 0) {
+			r2max = q3/p3;
+
+		} else if (p4 < 0) {
+			r2max = q4/p4;
+
+		} else if (p1 > 0){
+			r1min = q1/p1;
+
+		} else if (p2 > 0) {
+			r1min = q2/p2;
+
+		} else if (p3 < 0) {
+			r2min = q3/p3;
+
+		} else if (p4 < 0) {
+			r2min = q4/p4;
+
+		}
+
+		z1 = maximo(0, r1max, r2max);
+		z2 = minimo(1, r1min, r2min);
+		Coordenada* novoP1 = NULL;
+		Coordenada* novoP2 = NULL;
+
+		if (z1 > z2) { // A linha está completamente fora
+			return NULL;
+		}
+
+		// A linha está total ou parcialmente visível
+		if (z1 != 0) {
+			novoP1 = new Coordenada( (ini->getX() + z1 * p2), (ini->getY() + z1 * p4) );
+
+		} else {
+			novoP1 = new Coordenada(ini->getX(), ini->getY());
+		}
+
+		if (z2 != 1) {
+			novoP2 = new Coordenada( (ini->getX() + z2 * p2), (ini->getY() + z2 * p4) );
+
+		} else {
+			novoP2 = new Coordenada(fin->getX(), fin->getY());
+		}
+
+		retaClippada = new Reta();
+		retaClippada->setCoordenadaNormalInicial(novoP1);
+		retaClippada->setCoordenadaNormalFinal(novoP2);
+		return retaClippada;
 	}
 
 	//! Método que clippa um poligono.
