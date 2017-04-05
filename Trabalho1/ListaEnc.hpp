@@ -315,13 +315,27 @@ class ListaEnc {
 	   }
 	}
 	
-	//! Método que retorna o primeiro elemento da lista
+	//! Método que retorna o primeiro objeto elemento da lista
     /*
-        Retorna o primeiro elemento da lista
+        Retorna o primeiro objeto elemento da lista
         \return retorna o primeiro elemento da lista
     */
 	Elemento<T>* getHead() {
 		return head;
+	}
+	
+	//! Método que retorna o ultimo objeto elemento da lista
+    /*
+        Retorna o ultimo objeto elemento da lista
+        \return retorna o ultimo elemento da lista
+    */
+	Elemento<T>* getUltimoElemento() {
+		if (listaVazia()) throw -1;
+	    Elemento<T>* atual = head;
+	    while (atual->getProximo() != NULL) {
+	        atual = atual->getProximo();
+	    }
+	    return atual;
 	}
 
  private:

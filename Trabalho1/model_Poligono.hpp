@@ -16,6 +16,17 @@ public:
 	/*
 		/param nome é o nome do polígono
 	*/
+	Poligono() {
+		listaMundo = new ListaEnc<Coordenada*>();
+		listaNormal = new ListaEnc<Coordenada*>();
+		setNome("");
+		setTipo(POLIGONO);
+		}
+	
+	//! Construtor
+	/*
+		/param nome é o nome do polígono
+	*/
 	Poligono(string nome) {
 		listaMundo = new ListaEnc<Coordenada*>();
 		listaNormal = new ListaEnc<Coordenada*>();

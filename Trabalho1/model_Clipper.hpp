@@ -1,13 +1,16 @@
 #include "model_Ponto.hpp"
 #include "model_Reta.hpp"
 #include "model_Poligono.hpp"
-
+#include <stdio.h>
+using namespace std;
 #ifndef CLIPPER_HPP
 #define CLIPPER_HPP
 
 class Clipper {
 
 private:
+	// Métodos auxiliares do CS
+
 	//! Método que obtem o Region Code de uma dada coordenada.
 	/*!
         /param coord A coordenada que se deseja saber o region code.
@@ -105,7 +108,7 @@ private:
 			x2 = -1;
 			yCalculado = true;
 		}
-		
+
 		if (xCalculado != yCalculado) {
 			if (xCalculado == true && x >= -1 && x <= 1) {
 				novoPonto = new Coordenada(x, y2);
@@ -135,6 +138,174 @@ private:
 	double minimo (double a, double b, double c) {
 		double min = (a < b) ? a : b;
 		return ( (min < c) ? min : c );
+	}
+
+	void auxClippingPoligonoVertical(bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado, Coordenada* coordAnterior, Coordenada* coordAtual) {
+		if (anteriorDentro && atualDentro) {
+			// Se a coordenada veio de dentro para dentro.
+			// 	Ele se adiciona ao novo poligono.
+			Coordenada* novaCoordenada = new Coordenada(coordAtual);
+			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
+		} else if (anteriorDentro && !atualDentro){
+			// Se a coordenada veio de dentro para fora.
+			// 	Ela se altera baseado na reta formada entre ela e a coordenada anterior.
+			Coordenada* novaCoordenada;
+
+			// y – y0 = m (x – x0)
+			// y = m (x - x0) + y0
+			double m = (coordAtual->getY() - coordAnterior->getY()) / (coordAtual->getX() - coordAnterior->getX());
+			double y = m * (limite - coordAtual->getX()) + coordAtual->getY();
+
+			novaCoordenada = new Coordenada(limite, y);
+			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
+
+		} else if (!anteriorDentro && atualDentro){
+			// Se a coordenada veio de fora para dentro.
+			// 	Ela cria uma nova coordenada baseado na reta formada entre ela e a coordenada anterior.
+			// 	E então se adiciona ao poligono final.
+			Coordenada* novaCoordenada;
+
+			// y – y0 = m (x – x0)
+			// y = m (x - x0) + y0
+			double m = (coordAtual->getY() - coordAnterior->getY()) / (coordAtual->getX() - coordAnterior->getX());
+			double y = m * (limite - coordAtual->getX()) + coordAtual->getY();
+
+			novaCoordenada = new Coordenada(limite, y);
+			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
+			novaCoordenada = new Coordenada(coordAtual);
+			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
+
+		} // Se for de fora pra fora, a coordenada simplesmente é ignorada.
+	}
+
+	Poligono* clippaPoligonoEsq(Poligono* poligonoAClipar) {
+		Poligono* poligonoClippado = new Poligono();
+
+		Elemento<Coordenada*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
+		Coordenada* coordAtual;
+
+		Coordenada* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
+
+		while (elementoAtual != NULL) {
+			coordAtual = elementoAtual->getInfo();
+
+			bool anteriorDentro = (coordAnterior->getX() >= -1);
+			bool atualDentro = (coordAtual->getX() >= -1);
+
+			auxClippingPoligonoVertical(anteriorDentro, atualDentro, -1, poligonoClippado, coordAnterior, coordAtual);
+
+			coordAnterior = elementoAtual->getInfo();
+			elementoAtual = elementoAtual->getProximo();
+		}
+
+		return poligonoClippado;
+	}
+
+	Poligono* clippaPoligonoDir(Poligono* poligonoAClipar) {
+		Poligono* poligonoClippado = new Poligono();
+
+		Elemento<Coordenada*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
+		Coordenada* coordAtual;
+
+		Coordenada* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
+
+		while (elementoAtual != NULL) {
+			coordAtual = elementoAtual->getInfo();
+
+			bool anteriorDentro = (coordAnterior->getX() <= 1);
+			bool atualDentro = (coordAtual->getX() <= 1);
+
+			auxClippingPoligonoVertical(anteriorDentro, atualDentro, 1, poligonoClippado, coordAnterior, coordAtual);
+
+			coordAnterior = elementoAtual->getInfo();
+			elementoAtual = elementoAtual->getProximo();
+		}
+
+		return poligonoClippado;
+	}
+
+	void auxClippingPoligonoHorizontal(bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado, Coordenada* coordAnterior, Coordenada* coordAtual) {
+		if (anteriorDentro && atualDentro) {
+			// Se a coordenada veio de dentro para dentro.
+			// 	Ele se adiciona ao novo poligono.
+			Coordenada* novaCoordenada = new Coordenada(coordAtual);
+			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
+		} else if (anteriorDentro && !atualDentro){
+			// Se a coordenada veio de dentro para fora.
+			// 	Ela se altera baseado na reta formada entre ela e a coordenada anterior.
+			Coordenada* novaCoordenada;
+
+			// y – y0 = m (x – x0)
+			// x = (y - y0) / m + x0
+			double m = (coordAtual->getY() - coordAnterior->getY()) / (coordAtual->getX() - coordAnterior->getX());
+			double x = ((limite - coordAtual->getY()) / m) + coordAtual->getX();
+
+			novaCoordenada = new Coordenada(x, limite);
+			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
+
+		} else if (!anteriorDentro && atualDentro){
+			// Se a coordenada veio de fora para dentro.
+			// 	Ela cria uma nova coordenada baseado na reta formada entre ela e a coordenada anterior.
+			// 	E então se adiciona ao poligono final.
+			Coordenada* novaCoordenada;
+
+			// y – y0 = m (x – x0)
+			// x = (y - y0) / m + x0
+			double m = (coordAtual->getY() - coordAnterior->getY()) / (coordAtual->getX() - coordAnterior->getX());
+			double x = ((limite - coordAtual->getY()) / m) + coordAtual->getX();
+
+			novaCoordenada = new Coordenada(x, limite);
+			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
+			novaCoordenada = new Coordenada(coordAtual);
+			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
+
+		} // Se for de fora pra fora, a coordenada simplesmente é ignorada.
+	}
+
+	Poligono* clippaPoligonoBaixo(Poligono* poligonoAClipar) {
+		Poligono* poligonoClippado = new Poligono();
+
+		Elemento<Coordenada*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
+		Coordenada* coordAtual;
+
+		Coordenada* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
+
+		while (elementoAtual != NULL) {
+			coordAtual = elementoAtual->getInfo();
+
+			bool anteriorDentro = (coordAnterior->getY() >= -1);
+			bool atualDentro = (coordAtual->getY() >= -1);
+
+			auxClippingPoligonoHorizontal(anteriorDentro, atualDentro, -1, poligonoClippado, coordAnterior, coordAtual);
+
+			coordAnterior = elementoAtual->getInfo();
+			elementoAtual = elementoAtual->getProximo();
+		}
+
+		return poligonoClippado;
+	}
+
+	Poligono* clippaPoligonoCima(Poligono* poligonoAClipar) {
+		Poligono* poligonoClippado = new Poligono();
+
+		Elemento<Coordenada*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
+		Coordenada* coordAtual;
+
+		Coordenada* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
+
+		while (elementoAtual != NULL) {
+			coordAtual = elementoAtual->getInfo();
+
+			bool anteriorDentro = (coordAnterior->getY() <= 1);
+			bool atualDentro = (coordAtual->getY() <= 1);
+
+			auxClippingPoligonoHorizontal(anteriorDentro, atualDentro, 1, poligonoClippado, coordAnterior, coordAtual);
+
+			coordAnterior = elementoAtual->getInfo();
+			elementoAtual = elementoAtual->getProximo();
+		}
+
+		return poligonoClippado;
 	}
 
 public:
@@ -211,7 +382,6 @@ public:
         /param reta A reta que será clippada.
 		/return a reta clippada.
     */
-    #include <stdio.h>
 
 	Reta* clippingDeRetaLB(Reta* reta) {
 		Reta* retaClippada;
@@ -231,7 +401,7 @@ public:
 		q3 = ini->getY() - (-1);
 		q4 = 1 - ini->getY();
 
-		if ((p1 == 0 && q1 < 0) || (p2 == 0 && q2 < 0) || (p3 == 0 && q3 < 0) || (p4 == 0 && q4 < 0)) {  
+		if ((p1 == 0 && q1 < 0) || (p2 == 0 && q2 < 0) || (p3 == 0 && q3 < 0) || (p4 == 0 && q4 < 0)) {
 			return NULL;
 		}
 
@@ -297,13 +467,44 @@ public:
 		return retaClippada;
 	}
 
+
+
 	//! Método que clippa um poligono.
 	/*!
         /param poligono O poligono que será clippado.
 		/return o poligono clippado.
     */
 	Poligono* clippingDePoligono(Poligono* poligono) {
-		return poligono; // Retorno apenas para que o programa compile
+		Poligono* poligonoClippado;
+		Poligono* poligonoAux;
+
+		poligonoClippado = clippaPoligonoEsq(poligono);
+		if (poligonoClippado->getListaNormal()->getHead() == NULL) {
+			return NULL;
+		}
+
+		poligonoAux = clippaPoligonoDir(poligonoClippado);
+		free(poligonoClippado);
+		poligonoClippado = poligonoAux;
+		if (poligonoClippado->getListaNormal()->getHead() == NULL) {
+			return NULL;
+		}
+
+		poligonoAux = clippaPoligonoBaixo(poligonoClippado);
+		free(poligonoClippado);
+		poligonoClippado = poligonoAux;
+		if (poligonoClippado->getListaNormal()->getHead() == NULL) {
+			return NULL;
+		}
+
+		poligonoAux = clippaPoligonoCima(poligonoClippado);
+		free(poligonoClippado);
+		poligonoClippado = poligonoAux;
+		if (poligonoClippado->getListaNormal()->getHead() == NULL) {
+			return NULL;
+		}
+
+		return poligonoClippado;
 	}
 
 };
