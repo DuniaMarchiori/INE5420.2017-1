@@ -72,6 +72,13 @@ private:
 		return eIgual;
 	}
 
+	//! Método auxiliar para o algoritmo de clipping de reta C-S.
+	/*!
+        /param RC a Region Code de uma das extremidades da reta.
+        /param coord a coordenada da extremidade da reta.
+        /param m é o coeficiente angular da reta.
+		/return a coordenada clippada da extremidade da reta.
+    */
 	Coordenada* auxiliarCSClipping (int* RC, Coordenada* coord, double m) {
 		Coordenada* novoPonto;
 		bool xCalculado = false;
@@ -129,17 +136,40 @@ private:
 		}
 	}
 
+	//! Método auxiliar para obter o valor maximo entre 3 variáveis.
+	/*!
+        /param a valor a ser comparado.
+        /param b valor a ser comparado.
+        /param c valor a ser comparado.
+		/return o maior valor dentre eles.
+    */
 	double maximo (double a, double b, double c) {
 		double max = (a < b) ? b : a;
 		return ( (max < c) ? c : max );
 	}
 
+	//! Método auxiliar para obter o valor minimo entre 3 variáveis.
+	/*!
+        /param a valor a ser comparado.
+        /param b valor a ser comparado.
+        /param c valor a ser comparado.
+		/return o menor valor dentre eles.
+    */
 	double minimo (double a, double b, double c) {
 		double min = (a < b) ? a : b;
 		return ( (min < c) ? min : c );
 	}
 
-	void auxClippingPoligonoVertical(bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado, Coordenada* coordAnterior, Coordenada* coordAtual) {
+	//! Método auxiliar para obter o clipping de um poligono nos eixos verticais.
+	/*!
+        /param coordAnterior A coordenada do ponto anterior ao ponto sendo analisado.
+        /param coordAtual A coordenada sendo analisada.
+        /param anteriorDentro valor booleano indicando se a coordenada anterior ao ponto analisado esta dentro ou fora da região.
+        /param atualDentro valor booleano indicando se a coordenada do ponto sendo analisado esta dentro ou fora da região.
+		/param limite variavel indicando qual o limite da window esta sendo analisado (-1 ou 1).
+		/param poligonoClippado ponteiro para o poligono que esta sendo construido nesta clippagem.
+    */
+	void auxClippingPoligonoVertical(Coordenada* coordAnterior, Coordenada* coordAtual, bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado) {
 		if (anteriorDentro && atualDentro) {
 			// Se a coordenada veio de dentro para dentro.
 			// 	Ele se adiciona ao novo poligono.
@@ -177,6 +207,11 @@ private:
 		} // Se for de fora pra fora, a coordenada simplesmente é ignorada.
 	}
 
+	//! Método que realiza o clipping de poligonos na borda esquerda da window.
+	/*!
+        /param poligonoAClipar ponteiro para o poligono que sera clippado.
+		/return o poligono clipado na borda esquerda da window.
+    */
 	Poligono* clippaPoligonoEsq(Poligono* poligonoAClipar) {
 		Poligono* poligonoClippado = new Poligono();
 
@@ -200,6 +235,11 @@ private:
 		return poligonoClippado;
 	}
 
+	//! Método que realiza o clipping de poligonos na borda direita da window.
+	/*!
+        /param poligonoAClipar ponteiro para o poligono que sera clippado.
+		/return o poligono clipado na borda direita da window.
+    */
 	Poligono* clippaPoligonoDir(Poligono* poligonoAClipar) {
 		Poligono* poligonoClippado = new Poligono();
 
@@ -223,6 +263,15 @@ private:
 		return poligonoClippado;
 	}
 
+	//! Método auxiliar para obter o clipping de um poligono nos eixos horizontais.
+	/*!
+        /param coordAnterior A coordenada do ponto anterior ao ponto sendo analisado.
+        /param coordAtual A coordenada sendo analisada.
+        /param anteriorDentro valor booleano indicando se a coordenada anterior ao ponto analisado esta dentro ou fora da região.
+        /param atualDentro valor booleano indicando se a coordenada do ponto sendo analisado esta dentro ou fora da região.
+		/param limite variavel indicando qual o limite da window esta sendo analisado (-1 ou 1).
+		/param poligonoClippado ponteiro para o poligono que esta sendo construido nesta clippagem.
+    */
 	void auxClippingPoligonoHorizontal(bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado, Coordenada* coordAnterior, Coordenada* coordAtual) {
 		if (anteriorDentro && atualDentro) {
 			// Se a coordenada veio de dentro para dentro.
@@ -261,6 +310,11 @@ private:
 		} // Se for de fora pra fora, a coordenada simplesmente é ignorada.
 	}
 
+	//! Método que realiza o clipping de poligonos na borda inferior da window.
+	/*!
+        /param poligonoAClipar ponteiro para o poligono que sera clippado.
+		/return o poligono clipado na borda inferior da window.
+    */
 	Poligono* clippaPoligonoBaixo(Poligono* poligonoAClipar) {
 		Poligono* poligonoClippado = new Poligono();
 
@@ -284,6 +338,11 @@ private:
 		return poligonoClippado;
 	}
 
+	//! Método que realiza o clipping de poligonos na borda superior da window.
+	/*!
+        /param poligonoAClipar ponteiro para o poligono que sera clippado.
+		/return o poligono clipado na borda superior da window.
+    */
 	Poligono* clippaPoligonoCima(Poligono* poligonoAClipar) {
 		Poligono* poligonoClippado = new Poligono();
 
