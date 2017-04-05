@@ -1,8 +1,7 @@
 #include "model_Ponto.hpp"
 #include "model_Reta.hpp"
 #include "model_Poligono.hpp"
-#include <stdio.h>
-using namespace std;
+
 #ifndef CLIPPER_HPP
 #define CLIPPER_HPP
 
