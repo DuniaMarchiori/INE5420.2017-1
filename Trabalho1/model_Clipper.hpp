@@ -226,7 +226,7 @@ private:
 			bool anteriorDentro = (coordAnterior->getX() >= -1);
 			bool atualDentro = (coordAtual->getX() >= -1);
 
-			auxClippingPoligonoVertical(anteriorDentro, atualDentro, -1, poligonoClippado, coordAnterior, coordAtual);
+			auxClippingPoligonoVertical(coordAnterior, coordAtual, anteriorDentro, atualDentro, -1, poligonoClippado);
 
 			coordAnterior = elementoAtual->getInfo();
 			elementoAtual = elementoAtual->getProximo();
@@ -254,7 +254,7 @@ private:
 			bool anteriorDentro = (coordAnterior->getX() <= 1);
 			bool atualDentro = (coordAtual->getX() <= 1);
 
-			auxClippingPoligonoVertical(anteriorDentro, atualDentro, 1, poligonoClippado, coordAnterior, coordAtual);
+			auxClippingPoligonoVertical(coordAnterior, coordAtual, anteriorDentro, atualDentro, 1, poligonoClippado);
 
 			coordAnterior = elementoAtual->getInfo();
 			elementoAtual = elementoAtual->getProximo();
@@ -272,7 +272,7 @@ private:
 		/param limite variavel indicando qual o limite da window esta sendo analisado (-1 ou 1).
 		/param poligonoClippado ponteiro para o poligono que esta sendo construido nesta clippagem.
     */
-	void auxClippingPoligonoHorizontal(bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado, Coordenada* coordAnterior, Coordenada* coordAtual) {
+	void auxClippingPoligonoHorizontal(Coordenada* coordAnterior, Coordenada* coordAtual, bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado) {
 		if (anteriorDentro && atualDentro) {
 			// Se a coordenada veio de dentro para dentro.
 			// 	Ele se adiciona ao novo poligono.
@@ -329,7 +329,7 @@ private:
 			bool anteriorDentro = (coordAnterior->getY() >= -1);
 			bool atualDentro = (coordAtual->getY() >= -1);
 
-			auxClippingPoligonoHorizontal(anteriorDentro, atualDentro, -1, poligonoClippado, coordAnterior, coordAtual);
+			auxClippingPoligonoHorizontal(coordAnterior, coordAtual, anteriorDentro, atualDentro, -1, poligonoClippado);
 
 			coordAnterior = elementoAtual->getInfo();
 			elementoAtual = elementoAtual->getProximo();
@@ -357,7 +357,7 @@ private:
 			bool anteriorDentro = (coordAnterior->getY() <= 1);
 			bool atualDentro = (coordAtual->getY() <= 1);
 
-			auxClippingPoligonoHorizontal(anteriorDentro, atualDentro, 1, poligonoClippado, coordAnterior, coordAtual);
+			auxClippingPoligonoHorizontal(coordAnterior, coordAtual, anteriorDentro, atualDentro, 1, poligonoClippado);
 
 			coordAnterior = elementoAtual->getInfo();
 			elementoAtual = elementoAtual->getProximo();
