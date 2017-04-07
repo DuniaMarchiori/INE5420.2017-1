@@ -102,6 +102,8 @@ public:
 			}
 			proxElemento = proxElemento->getProximo();
 		}
+		
+		view->desenhaMargem();
 	}
 
 	//! Método que realiza a translação em um elemento grafico.

@@ -91,6 +91,22 @@ public:
 	  cairo_destroy (cr);
 	}
 
+	//! Desenha a margem para a observação do clipping.
+	void desenhaMargem(Coordenada* coord) {
+		// Diferença entre a window e o máximo da viewport é 20 pixels.
+		int margem = 20;
+		cairo_t *c = cairo_create (surface);
+		cairo_set_source_rgb (c, 1, 0, 0); // linha vermelha
+
+		cairo_move_to(c, margem, margem);
+		cairo_line_to(c, (coord->getX() - margem) , margem);
+		cairo_line_to(c, (coord->getX() - margem), (coord->getY() - margem));
+		cairo_line_to(c, margem, (coord->getY() - margem));
+		cairo_close_path(c);
+
+		cairo_stroke(c);
+	}
+
 	//! Método que altera a surface do cairo usada.
 	/*!
 		/param cr é um objeto cairo_t utilizado para desenhar.

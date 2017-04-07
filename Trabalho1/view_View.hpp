@@ -248,6 +248,11 @@ public:
 		desenhista->clear_surface();
 	}
 
+	//! Desenha a margem para a observação do clipping.
+	void desenhaMargem() {
+		desenhista->desenhaMargem(getViewportMax());
+	}
+
 	//! Método que altera a surface do cairo usada.
 	/*!
 		/param cr é um objeto cairo_t utilizado para desenhar.
