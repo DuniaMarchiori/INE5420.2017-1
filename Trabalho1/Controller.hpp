@@ -165,6 +165,7 @@ public:
 				try {
 					c = new Coordenada(view->getTransX(), view->getTransY());
 					fazTranslacao(elemento, c);
+					//descricaoSCN(elemento);
 					view->limparTextoTranslacao();
 					view->focusTransX();
 					view->inserirTextoConsole("Elemento transladado.");
@@ -179,6 +180,7 @@ public:
 				try {
 					c = new Coordenada(view->getEscalFatorX(), view->getEscalFatorY());
 					fazEscalonamento(elemento, c);
+					//descricaoSCN(elemento);
 					view->limparTextoEscalonamento();
 					view->focusEscalX();
 					view->inserirTextoConsole("Elemento escalonado.");
@@ -208,6 +210,7 @@ public:
 					case 0: // Opção de rotação em relação à origem
 						c = new Coordenada(0, 0);
 						fazRotacao(elemento, c, angulo);
+						//descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor da origem.");
 						view->focusRotAngulo();
 						view->limparTextoRotacao();
@@ -216,6 +219,7 @@ public:
 					case 1: // Opção de rotação em relação ao centro do elemento
 						c = new Coordenada(elemento->getCentroGeometrico()->getX(), elemento->getCentroGeometrico()->getY());
 						fazRotacao(elemento, c, angulo);
+						//descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");
 						view->focusRotAngulo();
 						view->limparTextoRotacao();
@@ -225,6 +229,7 @@ public:
 						try {
 							c = new Coordenada(view->getRotRelativoAX(), view->getRotRelativoAY());
 							fazRotacao(elemento, c, angulo);
+							//descricaoSCN(elemento);
 							view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
 							view->focusRotAngulo();
 							view->limparTextoRotacao();
