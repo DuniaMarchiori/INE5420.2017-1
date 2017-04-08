@@ -21,7 +21,7 @@ public:
 		listaNormal = new ListaEnc<Coordenada*>();
 		setNome("");
 		setTipo(POLIGONO);
-		}
+	}
 	
 	//! Construtor
 	/*

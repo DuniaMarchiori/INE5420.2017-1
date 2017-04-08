@@ -141,7 +141,8 @@ extern "C" G_MODULE_EXPORT void Clipping_Radio_1_clicked_cb(){
 }
 
 
-//--------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------
 // Métodos da janela de novo elemento
 
 
@@ -189,7 +190,7 @@ extern "C" G_MODULE_EXPORT void Window_NovoElmnt_hide_cb(){
 
 
 
-//--------------------------------------------------------------
+//------------------------------------------------------------------------------------------
 // Métodos da janela de editar elementos
 
 //! Método que é chamado ao pressionar o botão de aplicar na janela de edição de elementos.

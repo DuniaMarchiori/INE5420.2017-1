@@ -7,15 +7,11 @@
 class DisplayFile {
 	
 private:
-
 	ListaEnc<ElementoGrafico*> *displayFile; /*!< Lista encadeada de Elementos Graficos representando a display file.*/
 	
 public:
 	
 	//! Construtor
-	/*
-		/param listBox É uma referência para a listBox que mostrará a display file.
-	*/
 	DisplayFile () {
 		displayFile = new ListaEnc<ElementoGrafico*>();
 	}

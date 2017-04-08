@@ -17,11 +17,11 @@
 class Fachada {
 
 private:
-	Window* window;
-	Viewport* viewport;
-	DisplayFile* displayFile;
-	Transformacao* transformacao;
-	Clipper* clipper;
+	Window* window; /*!< É a window.*/
+	Viewport* viewport; /*!< É a viewport.*/
+	DisplayFile* displayFile; /*!< É a display file*/
+	Transformacao* transformacao; /*!< É um objeto da classe Tranformacao*/
+	Clipper* clipper; /*!< É um objeto da classe Clipper*/
 
 	//! Método que verifica a validade de um nome.
     /*!
@@ -49,6 +49,10 @@ public:
 		clipper = new Clipper();
 	}
 
+	//! Método que rotaciona a window.
+	/*!
+        /param graus indica quantos graus a window deve rotacionar.
+    */
 	void rotacionarWindow(double graus) {
 		window->rotacionarWindow(graus);
 	}
@@ -64,7 +68,7 @@ public:
 
 	//! Método que manda a window executar um zoom.
 	/*!
-        /param fator O quanto a janela deve dar zoom.
+        /param fator é o  quanto a janela deve dar zoom.
     */
 	void zoom(double fator) {
 		window->zoom(fator);
@@ -130,6 +134,7 @@ public:
         /param nome O nome do novo ponto.
 		/param coordX A coordenada em X desse ponto.
 		/param coordY A coordenada em Y desse ponto.
+		/return retorna o ponto que foi inserido.
     */
 	Ponto* inserirNovoPonto(string nome, string coordX, string coordY) {
 		if (!nomeValido(nome)) {
@@ -167,6 +172,7 @@ public:
 		/param coordIniY A coordenada inicial em Y dessa reta.
 		/param coordFinX A coordenada final em X dessa reta.
 		/param coordFinY A coordenada final em Y dessa reta.
+		/return retorna a reta que foi inserida.
     */
 	Reta* inserirNovaReta(string nome, string coordIniX, string coordIniY, string coordFinX, string coordFinY) {
 		if (!nomeValido(nome)) {
@@ -205,7 +211,7 @@ public:
 		Verifica se o nome e as coordenadas são válidas e então cria um ponto tanto no display file quanto uma referência para ele na list box.
         /param nome O nome do novo ponto.
 		/param listaCoordsPoligono Uma lista de coordenadas que contém todos os pontos do poligono.
-		/return Um valor inteiro com o resultado da operação.
+		/return retorna o polígono que foi inserido.
     */
 	Poligono* inserirNovoPoligono(string nome, ListaEnc<Coordenada*>* listaCoordsPoligono) {
 		if (!nomeValido(nome)) {

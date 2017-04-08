@@ -6,7 +6,7 @@ class Matriz {
 
 private:
 	T** matriz; /*!< Matriz que armazena os dados.*/
-	int nLinhas, nColunas;
+	int nLinhas, nColunas; /*!< Número de linhas e colunas da matriz, respectivamente.*/
 public:
 
 
@@ -26,33 +26,46 @@ public:
 	}
 
 	//! Método que retorna o numero de linhas da matriz.
+	/*!
+		/return o numero de linhas da matriz.
+	*/
 	int getNumLinhas() {
 		return nLinhas;
 	}
 
 	//! Método que retorna o numero de colunas da matriz.
+	/*!
+		/return o numero de colunas da matriz.
+	*/
 	int getNumColunas() {
 		return nColunas;
 	}
 
 	//! Método que retorna um valor da matriz.
 	/*!
-		/param x é a posição x onde esta o valor na matriz.
-		/param y é a posição y onde esta o valor na matriz.
+		/param x é a linha onde esta o valor na matriz.
+		/param y é a coluna onde esta o valor na matriz.
+		/return retona o valor na posição.
 	*/
 	T getValor(int x, int y) {
 		return matriz[x][y];
 	}
 
-	//! Método que altura um valor da matriz.
+	//! Método que altera um valor da matriz.
 	/*!
-		/param x é a posição em x onde o valor sera alterado.
-		/param y é a posição em y onde o valor sera alterado.
+		/param x é a linha onde o valor sera alterado.
+		/param y é a coluna onde o valor sera alterado.
+		/param novoValor é o valor para o qual será feita a alteração.
 	*/
 	void setValor(int x, int y, T novoValor) {
 		matriz[x][y] = novoValor;
 	}
 
+	//! Método que multiplica a matriz por outra.
+	/*!
+		/param matriz2 é a matriz com a qual será feita a multiplicação.
+		/return a matriz resultante da multiplicação.
+	*/
 	Matriz* multiplica(Matriz* matriz2) {
 		if (this->getNumColunas() == matriz2->getNumLinhas()) {
 			Matriz<T>* matrizResultado = new Matriz<T>(this->getNumLinhas(), matriz2->getNumColunas());

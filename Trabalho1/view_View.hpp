@@ -473,7 +473,7 @@ public:
 
 	//! Metodo que retorna o valor contido na caixa de coordenada X Inicial da criação de uma reta.
 	/*!
-		/return a coordenada X Incial dessa nova reta.
+		/return a coordenada X Inicial dessa nova reta.
 	*/
 	string getCoordIniXNovaReta() {
 		string entradaXini = gtk_entry_get_text(textoRetaInicialX);
@@ -482,7 +482,7 @@ public:
 
 	//! Metodo que retorna o valor contido na caixa de coordenada Y Inicial da criação de uma reta.
 	/*!
-		/return a coordenada Y Incial dessa nova reta.
+		/return a coordenada Y Inicial dessa nova reta.
 	*/
 	string getCoordIniYNovaReta() {
 		string entradaYini = gtk_entry_get_text(textoRetaInicialY);

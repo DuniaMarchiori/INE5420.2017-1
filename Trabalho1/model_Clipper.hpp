@@ -8,7 +8,7 @@
 class Clipper {
 
 private:
-	// Métodos auxiliares do CS
+	// Métodos auxiliares do método de clipping de reta C-S ------------------------
 
 	//! Método que obtem o Region Code de uma dada coordenada.
 	/*!
@@ -54,7 +54,7 @@ private:
 		return eZero;
 	}
 
-	//! Método que diz se duas Region Codes são iguais.
+	//! Método que verifica se duas Region Codes são iguais.
 	/*!
         /param RC1 Uma das Region Codes a ser comparada.
         /param RC2 A outra das Region Codes a ser comparada.
@@ -136,7 +136,9 @@ private:
 		}
 	}
 
-	//! Método auxiliar para obter o valor maximo entre 3 variáveis.
+	// Fim dos métodos auxiliares para o método de clipping de reta C-S. -------------------------
+
+	//! Método que obtem o valor maximo entre 3 variáveis.
 	/*!
         /param a valor a ser comparado.
         /param b valor a ser comparado.
@@ -148,7 +150,7 @@ private:
 		return ( (max < c) ? c : max );
 	}
 
-	//! Método auxiliar para obter o valor minimo entre 3 variáveis.
+	//! Método que obtem o valor minimo entre 3 variáveis.
 	/*!
         /param a valor a ser comparado.
         /param b valor a ser comparado.
@@ -159,6 +161,8 @@ private:
 		double min = (a < b) ? a : b;
 		return ( (min < c) ? min : c );
 	}
+
+	// Métodos auxiliares do método de clipping de polígono -----------------------------------
 
 	//! Método auxiliar para obter o clipping de um poligono nos eixos verticais.
 	/*!
@@ -365,12 +369,13 @@ private:
 
 		return poligonoClippado;
 	}
+	// Fim dos métodos auxiliares para o método de clipping de polígono. ------------------------------------------------
 
 public:
-	//! Método que clippa um ponto.
+	//! Método que faz clipping de ponto.
 	/*!
-        /param ponto O ponto que será clippado.
-		/return o ponto clippado.
+        /param ponto é o ponto que será clippado.
+		/return o ponto depois do clipping.
     */
 	Ponto* clippingDePonto(Ponto* ponto) {
 		if (ponto->getCoordenadaNormal()->getX() < -1 || ponto->getCoordenadaNormal()->getX() > 1 || ponto->getCoordenadaNormal()->getY() < -1 || ponto->getCoordenadaNormal()->getY() > 1) {
@@ -379,10 +384,10 @@ public:
 		return ponto; // Ponto está dentro da window
 	}
 
-	//! Método que clippa uma reta com o algoritmo Cohen-Sutherland.
+	//! Método que faz clipping de reta com o algoritmo Cohen-Sutherland.
 	/*!
-        /param reta A reta que será clippada.
-		/return a reta clippada.
+        /param reta é a reta que será clippada.
+		/return a reta depois do clipping.
     */
 	Reta* clippingDeRetaCS(Reta* reta) {
 		Reta* retaClippada;
@@ -435,10 +440,10 @@ public:
 		}
 	}
 
-	//! Método que clippa uma reta com o algoritmo Liang-Barsky.
+	//! Método que faz clipping de reta com o algoritmo Liang-Barsky.
 	/*!
-        /param reta A reta que será clippada.
-		/return a reta clippada.
+        /param reta é a reta que será clippada.
+		/return a reta depois do clipping.
     */
 
 	Reta* clippingDeRetaLB(Reta* reta) {
@@ -527,10 +532,10 @@ public:
 
 
 
-	//! Método que clippa um poligono.
+	//! Método que faz clipping de um poligono.
 	/*!
-        /param poligono O poligono que será clippado.
-		/return o poligono clippado.
+        /param poligono é o poligono que será clippado.
+		/return o poligono depois do clipping.
     */
 	Poligono* clippingDePoligono(Poligono* poligono) {
 		Poligono* poligonoClippado;

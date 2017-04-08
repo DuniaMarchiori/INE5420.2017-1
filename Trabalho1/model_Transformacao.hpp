@@ -131,7 +131,7 @@ public:
 	//! Método que realiza a translação em um elemento grafico.
 	/*!
         /param elem o elemento grafico que sera transladado.
-		/param coord uma coordenada contendo a quantidade de translação que sera aplicada em X e Y.
+		/param coord é uma coordenada contendo a quantidade de translação que sera aplicada em X e Y.
     */
 	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
 		Matriz<double> *resultado = novaMatrizTraslacao(coord->getX(), coord->getY());
@@ -142,7 +142,7 @@ public:
 	//! Método que realiza o escalonamento de um elemento grafico.
 	/*!
         /param elem o elemento grafico que sera escalonado.
-		/param fator uma coordenada contendo a quantidade de escalonamento que sera aplicada em X e Y.
+		/param fator é uma coordenada contendo a quantidade de escalonamento que sera aplicada em X e Y.
     */
 	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
 		Coordenada* centro = elem->getCentroGeometrico();
@@ -193,6 +193,12 @@ public:
 	}
 
 	//! Método que calcula a matriz para a tranformação de sistemas de coordenadas normalizadas.
+	/*!
+		/param angulo é o angulo da window.
+		/param fator é o fator de escalonamento.
+		/param centroWin é a coordenada que indica o centro da window.
+		/return a matriz para a transformação de sistemas de coordenadas normalizadas.
+	*/
 	Matriz<double>* matrizSistemaCoordenadasNormalizadas(double angulo, Coordenada* fator, Coordenada* centroWin) {
 		Matriz<double> *resultadoAux, *resultado, *translacaoAteCentro, *rotacao, *translacaoVoltaDeCentro;
 		translacaoAteCentro = novaMatrizTraslacao(-(centroWin->getX()), -(centroWin->getY()));

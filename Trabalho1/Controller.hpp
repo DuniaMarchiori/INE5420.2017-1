@@ -11,11 +11,12 @@
 class Controller {
 
 private:
-	View* view;
-	Fachada* model;
+	View* view; /*!< É a fachada da camada view.*/
+	Fachada* model; /*!< É a fachada da camada model*/
 
 public:
 
+	//! Construtor
 	Controller() {
 		model = new Fachada();
 		view = new View();
@@ -121,10 +122,7 @@ public:
 		/param fator uma coordenada contendo a quantidade de escalonamento que sera aplicada em X e Y.
     */
 	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
-		/*Coordenada* centro = elem->getCentroGeometrico();
-		fazTranslacaoParaOrigem(elem);*/
 		model->fazEscalonamento(elem, fator);
-		//fazTranslacao(elem, centro);
 	}
 
 	//! Método que realiza a rotação de um elemento grafico.
@@ -134,11 +132,7 @@ public:
 		/param angulo quantos graus o elemento sera rotacionado.
     */
 	void fazRotacao(ElementoGrafico* elem, Coordenada* coord, double angulo) {
-		/*Coordenada* coordNegativa = new Coordenada( -(coord->getX()), -(coord->getY()) );
-		fazTranslacao(elem, coordNegativa);*/
 		model->fazRotacao(elem, coord, angulo);
-		/*fazTranslacao(elem, coord);
-		free(coordNegativa);*/
 	}
 
 	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em todo o mundo.
@@ -148,7 +142,7 @@ public:
 
 	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em um elemento.
 	/*!
-		/param elem o elemento que será feita a transformação.
+		/param elem é o elemento que será feita a transformação.
 	*/
 	void descricaoSCN(ElementoGrafico* elem) {
 		model->sistemaCoordenadasNormalizadas(elem);
@@ -406,6 +400,7 @@ public:
 		view->modifica_surface(cr);
 	}
 
+	//! Método que redesenha os elementos quando o tipo de clipping de reta é alterado.
 	void clippingAlterado() {
 		descricaoSCN();
 		atualizaDesenho();
