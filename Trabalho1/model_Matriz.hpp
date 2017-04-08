@@ -19,9 +19,9 @@ public:
 		nLinhas = numLinhas;
 		nColunas = numColunas;
 
-		matriz = new T*[numLinhas];
+		matriz = new T*[numLinhas]();
 		for(int i = 0; i < numLinhas; ++i) {
-			matriz[i] = new T[numColunas];
+			matriz[i] = new T[numColunas]();
 		}
 	}
 

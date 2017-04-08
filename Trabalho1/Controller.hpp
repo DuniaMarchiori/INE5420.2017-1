@@ -166,7 +166,7 @@ public:
 					c = new Coordenada(view->getTransX(), view->getTransY());
 					fazTranslacao(elemento, c);
 					//descricaoSCN(elemento);
-					view->limparTextoTranslacao();
+					//view->limparTextoTranslacao();
 					view->focusTransX();
 					view->inserirTextoConsole("Elemento transladado.");
 				} catch (int erro) {
@@ -181,7 +181,7 @@ public:
 					c = new Coordenada(view->getEscalFatorX(), view->getEscalFatorY());
 					fazEscalonamento(elemento, c);
 					//descricaoSCN(elemento);
-					view->limparTextoEscalonamento();
+					//view->limparTextoEscalonamento();
 					view->focusEscalX();
 					view->inserirTextoConsole("Elemento escalonado.");
 				} catch (int erro) {
@@ -213,7 +213,7 @@ public:
 						//descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor da origem.");
 						view->focusRotAngulo();
-						view->limparTextoRotacao();
+						//view->limparTextoRotacao();
 						break;
 
 					case 1: // Opção de rotação em relação ao centro do elemento
@@ -222,7 +222,7 @@ public:
 						//descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");
 						view->focusRotAngulo();
-						view->limparTextoRotacao();
+						//view->limparTextoRotacao();
 						break;
 
 					case 2: // Opção de rotação em relação a um ponto qualquer
@@ -232,7 +232,7 @@ public:
 							//descricaoSCN(elemento);
 							view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
 							view->focusRotAngulo();
-							view->limparTextoRotacao();
+							//view->limparTextoRotacao();
 							break;
 						} catch (int erro) {
 							if (erro == -1) {

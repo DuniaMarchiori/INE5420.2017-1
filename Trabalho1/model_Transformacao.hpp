@@ -65,11 +65,7 @@ public:
 		Matriz<double> *matriz= new Matriz<double>(3,3);
 		
 		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				if (i == j) {
-					matriz->setValor(i, j, 1);
-				}			
-			}
+			matriz->setValor(i, i, 1);
 		}
 
 		matriz->setValor(2, 0, Dx);
@@ -126,6 +122,8 @@ public:
 		Matriz<double>* resultado = vetor->multiplica(matriz);
 		
 		transformada = new Coordenada(resultado->getValor(0,0), resultado->getValor(0,1));
+		free(vetor);
+		free(resultado);
 		return transformada;
 
 	}
@@ -138,6 +136,7 @@ public:
 	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
 		Matriz<double> *resultado = novaMatrizTraslacao(coord->getX(), coord->getY());
 		fazTransformacaoMundo(elem, resultado);
+		free(resultado);
 	}
 
 	//! Método que realiza o escalonamento de um elemento grafico.
@@ -147,12 +146,23 @@ public:
     */
 	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
 		Coordenada* centro = elem->getCentroGeometrico();
+		Matriz<double> *resultadoAux, *resultado, *translacaoOrigem, *escalonamento, *translacaoVolta;
+		translacaoOrigem = novaMatrizTraslacao(-(centro->getX()), -(centro->getY()));
+		escalonamento = novaMatrizEscalonamento(fator->getX(), fator->getY());
+		translacaoVolta = novaMatrizTraslacao(centro->getX(), centro->getY());
+
 		// Traslada para a origem e escalona
-		Matriz<double>* resultadoAux = (novaMatrizTraslacao(-(centro->getX()), -(centro->getY())))->multiplica(novaMatrizEscalonamento(fator->getX(), fator->getY()));
+		resultadoAux = translacaoOrigem->multiplica(escalonamento);
 		// Translada para o lugar de antes
-		Matriz<double>* resultado = resultadoAux->multiplica(novaMatrizTraslacao(centro->getX(), centro->getY()));
+		resultado = resultadoAux->multiplica(translacaoVolta);
 
 		fazTransformacaoMundo(elem, resultado);
+
+		free(resultado);
+		free(resultadoAux);
+		free(translacaoVolta);
+		free(translacaoOrigem);
+		free(escalonamento);
 	}
 
 	//! Método que realiza a rotação de um elemento grafico.
@@ -162,21 +172,44 @@ public:
 		/param angulo quantos graus o elemento sera rotacionado.
     */
 	void fazRotacao(ElementoGrafico* elem, Coordenada* coord, double angulo) {
+		Matriz<double> *resultadoAux, *resultado, *translacaoAteCoord, *rotacao, *translacaoVoltaDeCoord;
+		translacaoAteCoord = novaMatrizTraslacao(-(coord->getX()), -(coord->getY()));
+		rotacao = novaMatrizRotacao(angulo);
+		translacaoVoltaDeCoord = novaMatrizTraslacao(coord->getX(), coord->getY());
+
 		// Traslada para o ponto arbitrário e rotaciona
-		Matriz<double>* resultadoAux = novaMatrizTraslacao(-(coord->getX()), -(coord->getY()))->multiplica(novaMatrizRotacao(angulo));
+		resultadoAux = translacaoAteCoord->multiplica(rotacao);
 		// Translada para o lugar de antes
-		Matriz<double>* resultado = resultadoAux->multiplica(novaMatrizTraslacao(coord->getX(), coord->getY()));
+		resultado = resultadoAux->multiplica(translacaoVoltaDeCoord);
 
 		fazTransformacaoMundo(elem, resultado);
+
+		free(resultado);
+		free(resultadoAux);
+		free(translacaoAteCoord);
+		free(translacaoVoltaDeCoord);
+		free(rotacao);
 	}
 
 	//! Método que calcula a matriz para a tranformação de sistemas de coordenadas normalizadas.
 	Matriz<double>* matrizSistemaCoordenadasNormalizadas(double angulo, Coordenada* fator, Coordenada* centroWin) {
+		Matriz<double> *resultadoAux, *resultado, *translacaoAteCentro, *rotacao, *translacaoVoltaDeCentro;
+		translacaoAteCentro = novaMatrizTraslacao(-(centroWin->getX()), -(centroWin->getY()));
+		rotacao = novaMatrizRotacao(-angulo);
+		translacaoVoltaDeCentro = novaMatrizEscalonamento(fator->getX(), fator->getY());
+
 		// Matriz de transformação
 		// Traslada para o centro da window e rotaciona
-		Matriz<double>* resultado = novaMatrizTraslacao(-(centroWin->getX()), -(centroWin->getY()))->multiplica(novaMatrizRotacao(-angulo));
+		resultadoAux = translacaoAteCentro->multiplica(rotacao);
 		// Escalona
-		return resultado->multiplica(novaMatrizEscalonamento(fator->getX(), fator->getY()));		
+		resultado = resultadoAux->multiplica(translacaoVoltaDeCentro);		
+
+		free(resultadoAux);
+		free(translacaoAteCentro);
+		free(translacaoVoltaDeCentro);
+		free(rotacao);
+
+		return resultado;
 	}
 
 	//! Método que faz transformações em coordenadas normalizadas de um elemento.
