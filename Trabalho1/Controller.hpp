@@ -165,10 +165,11 @@ public:
 				try {
 					c = new Coordenada(view->getTransX(), view->getTransY());
 					fazTranslacao(elemento, c);
-					//descricaoSCN(elemento);
+					descricaoSCN(elemento);
 					//view->limparTextoTranslacao();
 					view->focusTransX();
 					view->inserirTextoConsole("Elemento transladado.");
+					free(c);
 				} catch (int erro) {
 					if (erro == -1) {
 						view->inserirTextoConsole("ERRO: Você deve inserir um valor numérico como quantidade de translação.");
@@ -180,10 +181,11 @@ public:
 				try {
 					c = new Coordenada(view->getEscalFatorX(), view->getEscalFatorY());
 					fazEscalonamento(elemento, c);
-					//descricaoSCN(elemento);
+					descricaoSCN(elemento);
 					//view->limparTextoEscalonamento();
 					view->focusEscalX();
 					view->inserirTextoConsole("Elemento escalonado.");
+					free(c);
 				} catch (int erro) {
 					if (erro == -1) {
 						view->inserirTextoConsole("ERRO: Você deve inserir um valor numérico como fator de escalonamento.");
@@ -210,18 +212,20 @@ public:
 					case 0: // Opção de rotação em relação à origem
 						c = new Coordenada(0, 0);
 						fazRotacao(elemento, c, angulo);
-						//descricaoSCN(elemento);
+						descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor da origem.");
 						view->focusRotAngulo();
+						free(c);
 						//view->limparTextoRotacao();
 						break;
 
 					case 1: // Opção de rotação em relação ao centro do elemento
-						c = new Coordenada(elemento->getCentroGeometrico()->getX(), elemento->getCentroGeometrico()->getY());
+						c = new Coordenada(elemento->getCentroGeometrico());
 						fazRotacao(elemento, c, angulo);
-						//descricaoSCN(elemento);
+						descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");
 						view->focusRotAngulo();
+						free(c);
 						//view->limparTextoRotacao();
 						break;
 
@@ -229,9 +233,10 @@ public:
 						try {
 							c = new Coordenada(view->getRotRelativoAX(), view->getRotRelativoAY());
 							fazRotacao(elemento, c, angulo);
-							//descricaoSCN(elemento);
+							descricaoSCN(elemento);
 							view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
 							view->focusRotAngulo();
+							free(c);
 							//view->limparTextoRotacao();
 							break;
 						} catch (int erro) {
@@ -244,9 +249,8 @@ public:
 				break;
 		}
 
-		descricaoSCN();
+		//descricaoSCN();
 		atualizaDesenho();
-
 	}
 
 	//! Método que fecha o programa.
@@ -416,9 +420,10 @@ public:
 				string coordX = view->getCoordXNovoPonto();
 				string coordY = view->getCoordYNovoPonto();
 				try {
-					model->inserirNovoPonto(nome, coordX, coordY);
+					Ponto* p =model->inserirNovoPonto(nome, coordX, coordY);
 					view->limparTextoNovoPonto();
 					view->adicionaElementoListbox(nome, "Ponto");
+					descricaoSCN(p);
 					view->inserirTextoConsole("Novo ponto adicionado.");
 				} catch (int erro) {
 					if (erro == -1) {
@@ -438,9 +443,10 @@ public:
 				string coordFinY = view->getCoordFinYNovaReta();
 
 				try {
-					model->inserirNovaReta(nome, coordIniX, coordIniY, coordFinX, coordFinY);
+					Reta* r = model->inserirNovaReta(nome, coordIniX, coordIniY, coordFinX, coordFinY);
 					view->limparTextoNovaReta();
 					view->adicionaElementoListbox(nome, "Reta");
+					descricaoSCN(r);
 					view->inserirTextoConsole("Nova reta adicionada.");
 				} catch (int erro) {
 					if (erro == -1) {
@@ -457,10 +463,11 @@ public:
 				ListaEnc<Coordenada*>* lista = view->getListaCoordsPoligono();
 
 				try {
-					model->inserirNovoPoligono(nome, lista);
+					Poligono* pol = model->inserirNovoPoligono(nome, lista);
 					view->resetarListaCoordenadasPoligono();
 					view->limparTextoNovoPoligono();
 					view->adicionaElementoListbox(nome, "Polígono");
+					descricaoSCN(pol);
 					view->inserirTextoConsole("Novo poligono adicionado.");
 				} catch (int erro) {
 					if (erro == -1) {
@@ -474,7 +481,7 @@ public:
 			}
 		}
 
-		descricaoSCN();
+		//descricaoSCN();
 		atualizaDesenho();
 		view->setPoligono_Btn_DelSensitive(FALSE);
 		view->focusNome();

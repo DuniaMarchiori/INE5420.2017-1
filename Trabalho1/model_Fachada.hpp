@@ -131,7 +131,7 @@ public:
 		/param coordX A coordenada em X desse ponto.
 		/param coordY A coordenada em Y desse ponto.
     */
-	void inserirNovoPonto(string nome, string coordX, string coordY) {
+	Ponto* inserirNovoPonto(string nome, string coordX, string coordY) {
 		if (!nomeValido(nome)) {
 			throw -1;
 		}
@@ -153,6 +153,7 @@ public:
 			Ponto *p = new Ponto(nome, c);
 			// Adiciona objeto na display file
 			displayFile->inserirNovoPonto(p);
+			return p;
 		} else {
 			throw -3;
 		}
@@ -167,7 +168,7 @@ public:
 		/param coordFinX A coordenada final em X dessa reta.
 		/param coordFinY A coordenada final em Y dessa reta.
     */
-	void inserirNovaReta(string nome, string coordIniX, string coordIniY, string coordFinX, string coordFinY) {
+	Reta* inserirNovaReta(string nome, string coordIniX, string coordIniY, string coordFinX, string coordFinY) {
 		if (!nomeValido(nome)) {
 			throw -1;
 		}
@@ -193,6 +194,7 @@ public:
 			Reta *r = new Reta(nome, cI, cF);
 			// Adiciona objeto na display file
 			displayFile->inserirNovaReta(r);
+			return r;
 		} else {
 			throw -3;
 		}
@@ -205,17 +207,17 @@ public:
 		/param listaCoordsPoligono Uma lista de coordenadas que contém todos os pontos do poligono.
 		/return Um valor inteiro com o resultado da operação.
     */
-	int inserirNovoPoligono(string nome, ListaEnc<Coordenada*>* listaCoordsPoligono) {
+	Poligono* inserirNovoPoligono(string nome, ListaEnc<Coordenada*>* listaCoordsPoligono) {
 		if (!nomeValido(nome)) {
-			return -1;
+			throw -1;
 		}
 
 		if ( !(listaCoordsPoligono->listaVazia()) ) {
 			Poligono *pol = new Poligono(nome, listaCoordsPoligono);
 			displayFile->inserirNovoPoligono(pol);
-			return 1;
+			return pol;
 		} else {
-			return -3;
+			throw -3;
 		}
 	}
 
@@ -276,6 +278,9 @@ public:
 			transformacao->fazTransformacaoNormalizada(elementoLista->getInfo(), resultado);
 			elementoLista = elementoLista->getProximo();
 		}
+
+		free(fator);
+		free(resultado);
 	}
 
 	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em um elemento.
@@ -288,6 +293,9 @@ public:
 		Matriz<double>* resultado = transformacao->matrizSistemaCoordenadasNormalizadas(angulo, fator, window->getCentro());
 
 		transformacao->fazTransformacaoNormalizada(elem, resultado);
+
+		free(fator);
+		free(resultado);
 	}
 };
 

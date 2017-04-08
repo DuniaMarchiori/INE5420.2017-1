@@ -158,6 +158,7 @@ public:
 
 		fazTransformacaoMundo(elem, resultado);
 
+		free(centro);
 		free(resultado);
 		free(resultadoAux);
 		free(translacaoVolta);

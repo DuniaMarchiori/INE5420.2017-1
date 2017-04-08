@@ -59,7 +59,8 @@ public:
 		/return uma Coordenada que indica o centro geométrico do ponto.
 	*/
 	Coordenada* getCentroGeometrico() override {
-		return coordenadaMundo;
+		Coordenada* retorno = new Coordenada(coordenadaMundo);
+		return retorno;
 	}
 };
 
