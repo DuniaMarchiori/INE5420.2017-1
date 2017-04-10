@@ -211,15 +211,17 @@ public:
 		Verifica se o nome e as coordenadas são válidas e então cria um ponto tanto no display file quanto uma referência para ele na list box.
         /param nome O nome do novo ponto.
 		/param listaCoordsPoligono Uma lista de coordenadas que contém todos os pontos do poligono.
+		/param preenchido True caso o poligono deva ser preenchido.
 		/return retorna o polígono que foi inserido.
     */
-	Poligono* inserirNovoPoligono(string nome, ListaEnc<Coordenada*>* listaCoordsPoligono) {
+	Poligono* inserirNovoPoligono(string nome, ListaEnc<Coordenada*>* listaCoordsPoligono, bool preenchido) {
 		if (!nomeValido(nome)) {
 			throw -1;
 		}
 
 		if ( !(listaCoordsPoligono->listaVazia()) ) {
 			Poligono *pol = new Poligono(nome, listaCoordsPoligono);
+			pol->setPreenchido(preenchido);
 			displayFile->inserirNovoPoligono(pol);
 			return pol;
 		} else {

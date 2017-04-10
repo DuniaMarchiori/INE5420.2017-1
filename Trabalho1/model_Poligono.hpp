@@ -10,6 +10,7 @@ class Poligono: public ElementoGrafico {
 private:
 	ListaEnc<Coordenada*> *listaMundo; /*!< Lista encadeada de coordenadas do polígono no mundo.*/
 	ListaEnc<Coordenada*> *listaNormal; /*!< Lista encadeada de coordenadas do polígono normalizadas.*/
+	bool preenchido; /*!< Valor que indica se este poligono é preenchido ou não.*/
 
 public:
 	//! Construtor
@@ -19,10 +20,11 @@ public:
 	Poligono() {
 		listaMundo = new ListaEnc<Coordenada*>();
 		listaNormal = new ListaEnc<Coordenada*>();
+		preenchido = false;
 		setNome("");
 		setTipo(POLIGONO);
 	}
-	
+
 	//! Construtor
 	/*
 		/param nome é o nome do polígono
@@ -30,6 +32,7 @@ public:
 	Poligono(string nome) {
 		listaMundo = new ListaEnc<Coordenada*>();
 		listaNormal = new ListaEnc<Coordenada*>();
+		preenchido = false;
 		setNome(nome);
 		setTipo(POLIGONO);
 	}
@@ -41,6 +44,7 @@ public:
 	*/
 	Poligono(string nome, ListaEnc<Coordenada*> *novaLista) {
 		setListaMundo(novaLista);
+		preenchido = false;
 		setNome(nome);
 		setTipo(POLIGONO);
 	}
@@ -71,6 +75,22 @@ public:
     */
 	ListaEnc<Coordenada*>* getListaMundo() {
 		return listaMundo;
+	}
+
+	//! Método que modifica a propriedade de preenchimento do poligono.
+    /*!
+        /param _preenchido deve ser true caso o poligono deva passar a ser preenchido.
+    */
+	void setPreenchido(bool _preenchido) {
+		preenchido = _preenchido;
+	}
+
+	//! Método que retorna a propriedade de preenchimento do poligono.
+    /*!
+        /return true caso o poligono deva ser preenchido.
+    */
+	bool getPreenchido() {
+		return preenchido;
 	}
 
 	// Coordenadas Normalizadas

@@ -46,7 +46,8 @@ private:
 			*textoRetaFinalX, *textoRetaFinalY, *textoPoligonoX, *textoPoligonoY; /*!< Referência para as caixas de texto que recebem valores de coordenadas.*/
 
 	GtkButton *poligono_Btn_Add, *poligono_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de poligono.*/
-	GtkListBox *poligono_Listbox; /*!< Referência para a listbox coma s coordenadas do poligono.*/
+	GtkListBox *poligono_Listbox; /*!< Referência para a listbox com as coordenadas do poligono.*/
+	GtkCheckButton *poligono_Preenchido; /*!< Caixa que marca se o poligono cirado deve ou não ser preenchido.*/
 
 	GtkNotebook *novoElmnt_Notebook; /*!< Referência para o notebook na criação de elemento.*/
 
@@ -131,6 +132,7 @@ public:
 		textoPoligonoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_X"));
 		textoPoligonoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Y"));
 		poligono_Listbox = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Pol"));
+		poligono_Preenchido = GTK_CHECK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Preenchido"));
 		novoElmnt_Notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
 		poligono_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Del"));
 		gtk_widget_set_sensitive ((GtkWidget*) poligono_Btn_Del, FALSE); // Esse botão começa desativado.
@@ -291,9 +293,10 @@ public:
 	//! Método que repassa a instrução de desenhar um poligono para o desenhista.
 	/*!
 		/param lista é a lista de coordenadas do poligono a ser desenhado.
+		/param preenchido é um valor booleado que diz se este poligono deve ser preenchido ou não.
 	*/
-	void desenhaPoligono(ListaEnc<Coordenada*>* lista) {
-		desenhista->desenhaPoligono(lista);
+	void desenhaPoligono(ListaEnc<Coordenada*>* lista, bool preenchido) {
+		desenhista->desenhaPoligono(lista, preenchido);
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);
 	}
 
@@ -555,6 +558,14 @@ public:
 		listaCoordsPoligono->retiraDaPosicao(getIndexElementoDeletado(poligono_Listbox));
 		setPoligono_Btn_DelSensitive(FALSE);
 	}
+	
+	//! Método que retorna se a caixa de Preenchimento na criação de poligono esta marcada.
+	/*!
+		/return true se a caixa esta marcada.
+	*/
+	bool poligonoPreenchido() {
+		return gtk_toggle_button_get_active((GtkToggleButton*) poligono_Preenchido);
+	}
 
 	//! Método que reinicia todos os valores da janela de novo elemento para seus valores iniciais.
 	void resetarJanelaNovoElemento() {
@@ -563,6 +574,7 @@ public:
 		limparTextoNovaReta();
 		limparTextoNovoPoligono();
 		setPoligono_Btn_DelSensitive(FALSE);
+		gtk_toggle_button_set_active((GtkToggleButton*) poligono_Preenchido, FALSE);
 		gtk_notebook_set_current_page(novoElmnt_Notebook, 0);
 		free(listaCoordsPoligono);
 	}

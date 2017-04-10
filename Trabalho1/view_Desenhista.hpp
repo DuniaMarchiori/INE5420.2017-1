@@ -52,8 +52,9 @@ public:
 	//! Método que desenha um polígono na tela.
 	/*!
 		/param lista é a lista de coordenadas do poligono a ser desenhado.
+		/param preenchido é um valor booleado que diz se este poligono deve ser preenchido ou não.
 	*/
-	void desenhaPoligono(ListaEnc<Coordenada*>* lista) {
+	void desenhaPoligono(ListaEnc<Coordenada*>* lista, bool preenchido) {
 		cairo_t *c = cairo_create (surface);
 
 		Elemento<Coordenada*> *elementoCoord = lista->getHead();
@@ -75,6 +76,9 @@ public:
 			}
 		}
 		cairo_close_path(c);
+		if (preenchido) {
+			cairo_fill(c);
+		}
 
 		cairo_stroke(c);
 	}

@@ -78,6 +78,7 @@ public:
 
 				} case POLIGONO: {
 					
+					bool ePreenchido = (static_cast<Poligono*> (elemento))->getPreenchido();
 					Poligono* poligonoClippado = model->clippingDePoligono((static_cast<Poligono*> (elemento)));
 
 					if (poligonoClippado != NULL) {
@@ -94,7 +95,7 @@ public:
 							listaCoordTransformada->adiciona(coordTransformada);
 							proxCoord = proxCoord->getProximo();
 						}
-						view->desenhaPoligono(listaCoordTransformada);
+						view->desenhaPoligono(listaCoordTransformada, ePreenchido);
 						free(listaCoordTransformada);
 						//free(poligonoClippado); // Cuidado
 					}
@@ -458,7 +459,7 @@ public:
 				ListaEnc<Coordenada*>* lista = view->getListaCoordsPoligono();
 
 				try {
-					Poligono* pol = model->inserirNovoPoligono(nome, lista);
+					Poligono* pol = model->inserirNovoPoligono(nome, lista, view->poligonoPreenchido());
 					view->resetarListaCoordenadasPoligono();
 					view->limparTextoNovoPoligono();
 					view->adicionaElementoListbox(nome, "Polígono");
