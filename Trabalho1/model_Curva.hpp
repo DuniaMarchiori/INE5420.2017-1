@@ -5,51 +5,46 @@
 #include "model_Coordenada.hpp"
 #include "ListaEnc.hpp"
 
-class Poligono: public ElementoGrafico {
+class Curva: public ElementoGrafico {
 
 private:
-	ListaEnc<Coordenada*> *listaMundo; /*!< Lista encadeada de coordenadas do polígono no mundo.*/
-	ListaEnc<Coordenada*> *listaNormal; /*!< Lista encadeada de coordenadas do polígono normalizadas.*/
-	bool preenchido; /*!< Valor que indica se este poligono é preenchido ou não.*/
+	ListaEnc<Coordenada*> *listaMundo; /*!< Lista encadeada de coordenadas da curva no mundo.*/
+	ListaEnc<Coordenada*> *listaNormal; /*!< Lista encadeada de coordenadas da curva normalizadas.*/
 
 public:
 	//! Construtor
-	Poligono() {
+	Curva() {
 		listaMundo = new ListaEnc<Coordenada*>();
 		listaNormal = new ListaEnc<Coordenada*>();
-		preenchido = false;
 		setNome("");
-		setTipo(POLIGONO);
+		//setTipo(POLIGONO);
 	}
 
 	//! Construtor
 	/*
-		/param nome é o nome do polígono
+		/param nome é o nome da curva
 	*/
-	Poligono(string nome) {
+	Curva(string nome) {
 		listaMundo = new ListaEnc<Coordenada*>();
 		listaNormal = new ListaEnc<Coordenada*>();
-		preenchido = false;
 		setNome(nome);
-		setTipo(POLIGONO);
+		//setTipo(POLIGONO);
 	}
 
 	//! Construtor
 	/*
-		/param nome é o nome do polígono
-		/param novaLista é a lista de coordenadas do polígono
+		/param nome é o nome da curva
+		/param novaLista é a lista de coordenadas da curva
 	*/
-	Poligono(string nome, ListaEnc<Coordenada*> *novaLista) {
+	Curva(string nome, ListaEnc<Coordenada*> *novaLista) {
 		setListaMundo(novaLista);
-		preenchido = false;
 		setNome(nome);
-		setTipo(POLIGONO);
+		//setTipo(POLIGONO);
 	}
 
 	// Coordenadas no Mundo.
 
-
-	//! Método que adiciona coordenadas do mundo ao polígono
+	//! Método que adiciona coordenadas do mundo à curva
     /*!
         Adiciona coordenadas à lista de coordenadas
         /param p é a coordenada a ser adicionada.
@@ -58,7 +53,7 @@ public:
 		listaMundo->adiciona(p);
 	}
 
-	//! Método que modifica a lista de coordenadas do mundo do polígono
+	//! Método que modifica a lista de coordenadas do mundo da curva
     /*!
         /param novaLista é a lista de coordenadas que substituirá a anterior.
     */
@@ -66,33 +61,17 @@ public:
 		listaMundo = novaLista;
 	}
 
-	//! Método que retorna a lista de coordenadas do mundo do polígono
+	//! Método que retorna a lista de coordenadas do mundo da curva
     /*!
-        /return uma lista encadeada das coordenadas do polígono.
+        /return uma lista encadeada das coordenadas da curva.
     */
 	ListaEnc<Coordenada*>* getListaMundo() {
 		return listaMundo;
 	}
 
-	//! Método que modifica a propriedade de preenchimento do poligono.
-    /*!
-        /param _preenchido deve ser true caso o poligono deva passar a ser preenchido.
-    */
-	void setPreenchido(bool _preenchido) {
-		preenchido = _preenchido;
-	}
-
-	//! Método que retorna a propriedade de preenchimento do poligono.
-    /*!
-        /return true caso o poligono deva ser preenchido.
-    */
-	bool getPreenchido() {
-		return preenchido;
-	}
-
 	// Coordenadas Normalizadas
 
-	//! Método que adiciona coordenadas normalizadas ao polígono
+	//! Método que adiciona coordenadas normalizadas à curva
     /*!
         Adiciona coordenadas à lista de coordenadas
         /param p é a coordenada a ser adicionada.
@@ -101,7 +80,7 @@ public:
 		listaNormal->adiciona(p);
 	}
 
-	//! Método que modifica a lista de coordenadas normalizadas do polígono
+	//! Método que modifica a lista de coordenadas normalizadas da curva
     /*!
         /param novaLista é a lista de coordenadas que substituirá a anterior.
     */
@@ -109,24 +88,24 @@ public:
 		listaNormal = novaLista;
 	}
 
-	//! Método que retorna a lista de coordenadas normalizadas do polígono
+	//! Método que retorna a lista de coordenadas normalizadas da curva
     /*!
-        /return uma lista encadeada das coordenadas do polígono.
+        /return uma lista encadeada das coordenadas da curva.
     */
 	ListaEnc<Coordenada*>* getListaNormal() {
 		return listaNormal;
 	}
 
 
-	//! Método que retorna o centro geométrico do polígono.
+	//! Método que retorna o centro geométrico da curva.
 	/*!
-		/return uma Coordenada que indica o centro geométrico do polígono.
+		/return uma Coordenada que indica o centro geométrico da curva.
 	*/
 	Coordenada* getCentroGeometrico() override{
 		Coordenada* coord;
 
 		if (listaMundo->listaVazia()) {
-			coord = new Coordenada(-1, -1); // Se não há pontos no polígono
+			coord = new Coordenada(-1, -1); // Se não há pontos na curva
 		} else {
 			int n = 0;
 			double somaX = 0, somaY = 0;
@@ -144,6 +123,14 @@ public:
 
 		return coord;
 	}
+
+	//! Método que retorna os pontos da curva.
+	/*!
+		/param segmentos em quantos segmentos a curva sera dividida.
+		/return uma lista de coordenadas
+	*/
+	virtual ListaEnc<Coordenada*>* getCurvaFinal(int segmentos) {}
+
 };
 
 #endif

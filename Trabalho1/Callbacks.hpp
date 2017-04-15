@@ -160,7 +160,7 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Adicionar_clicked_cb() {
 	Adiciona uma nova coordenada à lista de coordenadas e à list box.
 */
 extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Add_clicked_cb() {
-	controller->addNovaCoordenadaPolinomio();
+	controller->addNovaCoordenadaPoligono();
 }
 
 //! Método que é chamado ao pressionar o botão de deletar coordenada na criação de um polígono.
@@ -168,7 +168,7 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Add_clicked_cb() {
 	Remove a coordenada selecionada na list box de coordenadas do novo poligono.
 */
 extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Del_clicked_cb(){
-	controller->delCoordenadaPolinomio();
+	controller->delCoordenadaPoligono();
 }
 
 //! Método que é chamado ao selecionar uma coordenada da list box de criação de poligono.
@@ -176,8 +176,53 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Pol_Del_clicked_cb(){
 	Ativa o botão de deletar coordenada.
 */
 extern "C" G_MODULE_EXPORT void NovoElmnt_Listbox_Pol_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
-	controller->selecionaCoordenadaListBox();
+	controller->selecionaListBoxPoligono();
 }
+
+
+
+
+
+
+
+
+
+
+//! Método que é chamado ao pressionar o botão de nova coordenada na criação de uma curva.
+/*!
+	Adiciona uma nova coordenada à lista de coordenadas e à list box.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Curv_Add_clicked_cb() {
+	controller->addNovaCoordenadaCurva();
+}
+
+//! Método que é chamado ao pressionar o botão de deletar coordenada na criação de uma curva.
+/*!
+	Remove a coordenada selecionada na list box de coordenadas da nova curva.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Curv_Del_clicked_cb(){
+	controller->delCoordenadaCurva();
+}
+
+//! Método que é chamado ao selecionar uma coordenada da list box de criação de curvas.
+/*!
+	Ativa o botão de deletar coordenada.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Listbox_Curv_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
+	controller->selecionaListBoxCurva();
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //! Método que é ativado ao fechar a janela de novo elemento.

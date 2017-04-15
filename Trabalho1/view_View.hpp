@@ -20,6 +20,7 @@ private:
 	Console* console; /*!< Uma instância do administrador do Console da interface grafica.*/
 	Desenhista* desenhista; /*!< Uma instância da classe que desenha os objetos na tela.*/
 	ListaEnc<Coordenada*> *listaCoordsPoligono; /*!< Uma lista de coordenadas para criar novos poligonos.*/
+	ListaEnc<Coordenada*> *listaCoordsCurva; /*!< Uma lista de coordenadas para criar novas curvas.*/
 
 	// Objetos relacionados à interface
 	GtkWidget *window_Main; /*!< Referência para a janela principal.*/
@@ -43,11 +44,15 @@ private:
 
 	GtkEntry *textoNomeElemento; /*!< Referência para a caixa de texto de inserção de nome para um elemento.*/
 	GtkEntry *textoPontoX, *textoPontoY, *textoRetaInicialX, *textoRetaInicialY,
-			*textoRetaFinalX, *textoRetaFinalY, *textoPoligonoX, *textoPoligonoY; /*!< Referência para as caixas de texto que recebem valores de coordenadas.*/
+			*textoRetaFinalX, *textoRetaFinalY, *textoPoligonoX, *textoPoligonoY, *textoCurvaX, *textoCurvaY; /*!< Referência para as caixas de texto que recebem valores de coordenadas.*/
 
-	GtkButton *poligono_Btn_Add, *poligono_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de poligono.*/
+	GtkButton *poligono_Btn_Add, *poligono_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de um poligono.*/
 	GtkListBox *poligono_Listbox; /*!< Referência para a listbox com as coordenadas do poligono.*/
 	GtkCheckButton *poligono_Preenchido; /*!< Caixa que marca se o poligono cirado deve ou não ser preenchido.*/
+
+	GtkButton *curva_Btn_Add, *curva_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de uma curva.*/
+	GtkListBox *curva_Listbox; /*!< Referência para a listbox com as coordenadas da curva.*/
+	GtkRadioButton *curva_radio_0, *curva_radio_1; /*!< Referência para os botões de seleção do tipo de clipping de reta.*/
 
 	GtkNotebook *novoElmnt_Notebook; /*!< Referência para o notebook na criação de elemento.*/
 
@@ -123,19 +128,31 @@ public:
 		g_signal_connect (window_NovoElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL); // Essa janela não se deletará ao fechá-la, apenas esconderá.
 
 		textoNomeElemento = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Nome"));
+
 		textoPontoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_X"));
 		textoPontoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_Y"));
+
 		textoRetaInicialX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_X1"));
 		textoRetaInicialY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_Y1"));
 		textoRetaFinalX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_X2"));
 		textoRetaFinalY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_Y2"));
+
 		textoPoligonoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_X"));
 		textoPoligonoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Y"));
 		poligono_Listbox = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Pol"));
 		poligono_Preenchido = GTK_CHECK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Preenchido"));
-		novoElmnt_Notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
 		poligono_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Del"));
 		gtk_widget_set_sensitive ((GtkWidget*) poligono_Btn_Del, FALSE); // Esse botão começa desativado.
+
+		textoCurvaX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_X"));
+		textoCurvaY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Y"));
+		curva_Listbox = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Curv"));
+		curva_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Del"));
+		gtk_widget_set_sensitive ((GtkWidget*) curva_Btn_Del, FALSE); // Esse botão começa desativado.
+		curva_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Radio_0"));
+		curva_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Radio_1"));
+
+		novoElmnt_Notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
 		consoleWidget = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
 
 		clipping_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Clipping_Radio_0"));
@@ -222,6 +239,7 @@ public:
 		gtk_entry_set_text(textoPoligonoY, "");
 	}
 
+
 	//! Método que limpa as caixas de texto de polígono da janela de novo objeto.
 	void limparTextoNovoPoligono() {
 		limparTextoNomeNovoElmnt();
@@ -231,6 +249,25 @@ public:
 		while (row != NULL) {
 			gtk_container_remove((GtkContainer*) poligono_Listbox, (GtkWidget*) row);
 			row = gtk_list_box_get_row_at_index (poligono_Listbox, 0);
+		}
+	}
+
+	//! Método que limpa as caixa de texto da coordenada de um novo poligono.
+	void limparTextoCoordCurva() {
+		gtk_entry_set_text(textoCurvaX, "");
+		gtk_entry_set_text(textoCurvaY, "");
+	}
+
+
+	//! Método que limpa as caixas de texto de polígono da janela de novo objeto.
+	void limparTextoNovaCurva() {
+		limparTextoNomeNovoElmnt();
+		limparTextoCoordCurva();
+		// Limpa a listBox
+		GtkListBoxRow* row = gtk_list_box_get_row_at_index (curva_Listbox, 0);
+		while (row != NULL) {
+			gtk_container_remove((GtkContainer*) curva_Listbox, (GtkWidget*) row);
+			row = gtk_list_box_get_row_at_index (curva_Listbox, 0);
 		}
 	}
 
@@ -301,7 +338,7 @@ public:
 	}
 
 	//! Método que insere em uma lista as coordenadas do polígono a ser criado.
-	void inserirCoordListaEnc() {
+	void inserirCoordListaEncPoligono() {
 		// Pega coordenadas
 		string polX = gtk_entry_get_text(textoPoligonoX);
 		string polY = gtk_entry_get_text(textoPoligonoY);
@@ -323,6 +360,35 @@ public:
 
 			string nomeNaLista = "(" + polX + "," + polY + ")";
 			addToListBox(poligono_Listbox, nomeNaLista);
+		} else {
+			console->inserirTexto("ERRO: não é possível inserir coordenada sem valor X ou Y.");
+			throw -2;
+		}
+	}
+
+	//! Método que insere em uma lista as coordenadas da curva a ser criada.
+	void inserirCoordListaEncCurva() {
+		// Pega coordenadas
+		string polX = gtk_entry_get_text(textoCurvaX);
+		string polY = gtk_entry_get_text(textoCurvaY);
+
+		/// Se os campos de coordenada não estão em branco
+		if ( !(polX.empty()) && !(polY.empty()) ) {
+			// Cria novo objeto
+			Coordenada* c = new Coordenada();
+			// Verifica se os campos são números
+			try {
+				// stod = string to double
+				c->setX(stod(polX));
+				c->setY(stod(polY));
+			} catch (const invalid_argument& e) {
+				console->inserirTexto("ERRO: coordenadas devem ser valores numéricos.");
+				throw -1;
+			}
+			listaCoordsCurva->adiciona(c);
+
+			string nomeNaLista = "(" + polX + "," + polY + ")";
+			addToListBox(curva_Listbox, nomeNaLista);
 		} else {
 			console->inserirTexto("ERRO: não é possível inserir coordenada sem valor X ou Y.");
 			throw -2;
@@ -353,6 +419,7 @@ public:
 	//! Metodo que exibe a janela de novo elemento.
 	void elmnt_Btn_Novo_Clicado() {
 		listaCoordsPoligono = new ListaEnc<Coordenada*>();
+		listaCoordsCurva = new ListaEnc<Coordenada*>();
 		gtk_widget_show((GtkWidget*) window_NovoElemento);
 	}
 
@@ -423,7 +490,7 @@ public:
 			}
 		}
 	}
-	
+
 	//! Metodo que retorna o tipo de clipping de reta.
 	/*!
 		/return inteiro correspondendo à um dos dois tipos de clipping de reta.
@@ -435,7 +502,7 @@ public:
 			return 1;
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------------------------------
 	// Comandos Da Janela de Novo Elemento
 
@@ -543,6 +610,26 @@ public:
 		gtk_widget_set_sensitive((GtkWidget*) poligono_Btn_Del, valor);
 	}
 
+	//! Método que altera a sensibilidade do botao de deletar na criação de curvas.
+	/*!
+		/param valor é o novo valor da sensibilidade do botao (TRUE ou FALSE).
+	*/
+	void setCurva_Btn_DelSensitive(gboolean valor) {
+		gtk_widget_set_sensitive((GtkWidget*) curva_Btn_Del, valor);
+	}
+	
+	//! Metodo que retorna o tipo de curva sendo criada.
+	/*!
+		/return inteiro correspondendo à um dos dois tipos de curva.
+	*/
+	int getTipoCurva() {
+		if (gtk_toggle_button_get_active((GtkToggleButton*) curva_radio_0)) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+
 	//! Método que passa o foco do cursor para a caixa de Nome na janela de novo elemento.
 	void focusNome() {
 		gtk_widget_grab_focus((GtkWidget*) textoNomeElemento);
@@ -553,12 +640,23 @@ public:
 		gtk_widget_grab_focus((GtkWidget*) textoPoligonoX);
 	}
 
+	//! Método que passa o foco do cursor para a caixa de Coordenada X na janela de criação de curva.
+	void focusCoordCurva() {
+		gtk_widget_grab_focus((GtkWidget*) textoCurvaX);
+	}
+
 	//! Método que deleta a coordenada selecionada na janela de criação de poligono.
-	void deletarCoordPoligono () {
+	void deletarCoordPoligono() {
 		listaCoordsPoligono->retiraDaPosicao(getIndexElementoDeletado(poligono_Listbox));
 		setPoligono_Btn_DelSensitive(FALSE);
 	}
-	
+
+	//! Método que deleta a coordenada selecionada na janela de criação de poligono.
+	void deletarCoordCurva() {
+		listaCoordsCurva->retiraDaPosicao(getIndexElementoDeletado(curva_Listbox));
+		setCurva_Btn_DelSensitive(FALSE);
+	}
+
 	//! Método que retorna se a caixa de Preenchimento na criação de poligono esta marcada.
 	/*!
 		/return true se a caixa esta marcada.
@@ -573,10 +671,13 @@ public:
 		limparTextoNovoPonto();
 		limparTextoNovaReta();
 		limparTextoNovoPoligono();
+		limparTextoNovaCurva();
 		setPoligono_Btn_DelSensitive(FALSE);
+		setCurva_Btn_DelSensitive(FALSE);
 		gtk_toggle_button_set_active((GtkToggleButton*) poligono_Preenchido, FALSE);
 		gtk_notebook_set_current_page(novoElmnt_Notebook, 0);
 		free(listaCoordsPoligono);
+		free(listaCoordsCurva);
 	}
 
 	//! Método que reinicia a lista de coordenadas na janela de ciração de poligono.

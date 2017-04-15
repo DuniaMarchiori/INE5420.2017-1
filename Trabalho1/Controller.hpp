@@ -77,7 +77,7 @@ public:
 					break;
 
 				} case POLIGONO: {
-					
+
 					bool ePreenchido = (static_cast<Poligono*> (elemento))->getPreenchido();
 					Poligono* poligonoClippado = model->clippingDePoligono((static_cast<Poligono*> (elemento)));
 
@@ -104,7 +104,7 @@ public:
 			}
 			proxElemento = proxElemento->getProximo();
 		}
-		
+
 		view->desenhaMargem();
 	}
 
@@ -463,6 +463,7 @@ public:
 					view->resetarListaCoordenadasPoligono();
 					view->limparTextoNovoPoligono();
 					view->adicionaElementoListbox(nome, "Polígono");
+					view->setPoligono_Btn_DelSensitive(FALSE);
 					descricaoSCN(pol);
 					view->inserirTextoConsole("Novo poligono adicionado.");
 				} catch (int erro) {
@@ -479,14 +480,13 @@ public:
 
 		//descricaoSCN();
 		atualizaDesenho();
-		view->setPoligono_Btn_DelSensitive(FALSE);
 		view->focusNome();
 	}
 
 	//! Método que adiciona uma coordenada ao poligono sendo criado.
-	void addNovaCoordenadaPolinomio() {
+	void addNovaCoordenadaPoligono() {
 		try {
-			view->inserirCoordListaEnc();
+			view->inserirCoordListaEncPoligono();
 			view->limparTextoCoordPoligono();
 			view->focusCoordPoligono();
 		} catch (...){
@@ -495,14 +495,54 @@ public:
 	}
 
 	//! Método que remove a coordenada selecionada na criação de poligono.
-	void delCoordenadaPolinomio() {
+	void delCoordenadaPoligono() {
 		view->deletarCoordPoligono();
 	}
 
 	//! Método que é chamado ao selecionar um elemento na list box de elementos.
-	void selecionaCoordenadaListBox() {
+	void selecionaListBoxPoligono() {
 		view->setPoligono_Btn_DelSensitive(TRUE);
 	}
+
+
+
+
+
+
+
+
+
+	//! Método que adiciona uma coordenada à curva sendo criado.
+	void addNovaCoordenadaCurva() {
+		try {
+			view->inserirCoordListaEncCurva();
+			view->limparTextoCoordCurva();
+			view->focusCoordCurva();
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que remove a coordenada selecionada na criação de curva.
+	void delCoordenadaCurva() {
+		view->deletarCoordCurva();
+	}
+
+	//! Método que é chamado ao selecionar um elemento na list box de elementos.
+	void selecionaListBoxCurva() {
+		view->setCurva_Btn_DelSensitive(TRUE);
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 	//! Método que é chamado ao fechar a janela de novo elemento.
 	void janelaNovoElementoHide() {
