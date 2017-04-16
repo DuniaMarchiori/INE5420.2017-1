@@ -523,7 +523,7 @@ public:
 					if (erro == -1) {
 						view->inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
 					} else if (erro == -3) {
-						view->inserirTextoConsole("ERRO: a curva deve ter pelo menos 3*n + 1 coordenadas, com n <> 0.");
+						view->inserirTextoConsole("ERRO: a curva deve ter 3*n + 1 coordenadas, com n > 0.");
 					}
 				}
 
