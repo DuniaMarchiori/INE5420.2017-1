@@ -323,6 +323,14 @@ class ListaEnc {
 	Elemento<T>* getHead() {
 		return head;
 	}
+
+	//! Método que retorna o tamanho da lista
+    /*
+        \return retorna a quantidade de elementos na lista
+    */
+	int getSize() {
+		return size+1;
+	}
 	
 	//! Método que retorna o ultimo objeto elemento da lista
     /*

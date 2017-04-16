@@ -3,6 +3,7 @@
 
 #include "ListaEnc.hpp"
 #include "model_ElementoGrafico.hpp"
+#include "model_Curva.hpp"
 
 class DisplayFile {
 	
@@ -46,6 +47,14 @@ public:
     */
 	void inserirNovoPoligono(Poligono* pol) {
 		displayFile->adiciona(pol);
+	}
+
+	//! Método que insere uma curva na display file.
+    /*!
+        /param c é a curva a ser adicionada à display file.
+    */
+	void inserirNovaCurva(Curva* c) {
+		displayFile->adiciona(c);
 	}
 	
 	//! Método que deleta um elemento da display file.

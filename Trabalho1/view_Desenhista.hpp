@@ -83,6 +83,28 @@ public:
 		cairo_stroke(c);
 	}
 
+	//! Método que desenha uma curva na tela.
+	/*!
+		/param lista é a lista de coordenadas da curva a ser desenhada.
+	*/
+	void desenhaCurva(ListaEnc<Coordenada*>* lista) {
+		cairo_t *c = cairo_create (surface);
+
+		Elemento<Coordenada*> *elementoCoord = lista->getHead();
+		Coordenada* coord = elementoCoord->getInfo();	
+
+		cairo_move_to(c, coord->getX(), coord->getY());
+		elementoCoord = elementoCoord->getProximo();
+
+		while (elementoCoord != NULL) {
+			coord = elementoCoord->getInfo();
+			cairo_line_to(c, coord->getX(), coord->getY());
+			elementoCoord = elementoCoord->getProximo();
+		}
+		
+		cairo_stroke(c);
+	}
+
 	//! Método que limpa a tela(pintando-a de branco).
 	static void clear_surface (){
 	  cairo_t *cr;

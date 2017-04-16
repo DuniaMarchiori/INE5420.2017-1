@@ -13,6 +13,8 @@
 #include "model_Transformacao.hpp"
 #include "model_Clipper.hpp"
 #include "model_Matriz.hpp"
+#include "model_Curva.hpp"
+#include "model_CurvaBezier.hpp"
 
 class Fachada {
 
@@ -110,6 +112,38 @@ public:
 		return clipper->clippingDePoligono(poligono);
 	}
 	
+	//! Método que clippa uma lista retas com o algoritmo Cohen-Sutherland.
+	/*!
+        /param lista é a lista de retas que será clippada.
+		/return a lista de retas depois do clipping.
+    */
+	ListaEnc<Reta*>* clippingDeCurvaLB(ListaEnc<Reta*>* lista) {
+		Elemento<Reta*>* proxElemento = lista->getHead();
+		ListaEnc<Reta*>* listaClipping = new ListaEnc<Reta*>();
+
+		while(proxElemento != NULL) {
+			listaClipping->adiciona(clippingDeRetaLB(proxElemento->getInfo()));
+			proxElemento = proxElemento->getProximo();
+		}
+		return listaClipping;
+	}
+
+	//! Método que clippa uma lista retas com o algoritmo Liang-Barsky.
+	/*!
+        /param lista é a lista de retas que será clippada.
+		/return a lista de retas depois do clipping.
+    */
+	ListaEnc<Reta*>* clippingDeCurvaCS(ListaEnc<Reta*>* curva) {
+		Elemento<Reta*>* proxElemento = curva->getHead();
+		ListaEnc<Reta*>* listaClipping = new ListaEnc<Reta*>();
+
+		while(proxElemento != NULL) {
+			listaClipping->adiciona(clippingDeRetaCS(proxElemento->getInfo()));
+			proxElemento = proxElemento->getProximo();
+		}
+		return listaClipping;
+	}
+
 	//! Método que realiza a transformada de viewport.
 	/*!
         /param ponto uma coordenada do mundo que sera transformada.
@@ -224,6 +258,27 @@ public:
 			pol->setPreenchido(preenchido);
 			displayFile->inserirNovoPoligono(pol);
 			return pol;
+		} else {
+			throw -3;
+		}
+	}
+
+	//! Método que insere uma curva de Bézier na display file.
+    /*!
+		Verifica se o nome e as coordenadas são válidas.
+        /param nome O nome da nova curva.
+		/param listaCoordCurva Uma lista de coordenadas que contém todos os pontos da curva.
+		/return retorna a curva que foi inserida.
+    */
+	CurvaBezier* inserirNovaCurvaBezier(string nome, ListaEnc<Coordenada*>* listaCoordCurva) {
+		if (!nomeValido(nome)) {
+			throw -1;
+		}
+
+		if ( (listaCoordCurva->getSize()%3 == 1) && listaCoordCurva->getSize() > 3) {
+			CurvaBezier* cb = new CurvaBezier(nome, listaCoordCurva);
+			displayFile->inserirNovaCurva(cb);
+			return cb;
 		} else {
 			throw -3;
 		}

@@ -48,6 +48,25 @@ private:
 					free(listaCoord);
 					break;
 				}
+
+			case CURVA:
+				{
+					Curva* c = static_cast<Curva*> (elem);
+
+					ListaEnc<Coordenada*>* listaCoord = c->getListaMundo();
+					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
+
+					while (proxCoord != NULL) {
+						Coordenada* coordCurva = proxCoord->getInfo();
+						Coordenada* coordTransformada = transformaCoordenada(coordCurva, matrizResultado);
+						listaNovasCoord->adiciona(coordTransformada);
+						proxCoord = proxCoord->getProximo();
+					}
+					c->setListaMundo(listaNovasCoord);
+					free(listaCoord);
+					break;
+				}
 		}
 	}
 
@@ -261,6 +280,23 @@ public:
 					}
 					p->setListaNormal(listaNovasCoord);
 					//free(listaCoord);
+					break;
+				}
+			case CURVA:
+				{
+					Curva* c = static_cast<Curva*> (elem);
+
+					ListaEnc<Coordenada*>* listaCoord = c->getListaMundo();
+					Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+					ListaEnc<Coordenada*>* listaNovasCoord = new ListaEnc<Coordenada*>();
+
+					while (proxCoord != NULL) {
+						Coordenada* coordCurva = proxCoord->getInfo();
+						Coordenada* coordTransformada = transformaCoordenada(coordCurva, matrizResultado);
+						listaNovasCoord->adiciona(coordTransformada);
+						proxCoord = proxCoord->getProximo();
+					}
+					c->setListaNormal(listaNovasCoord);
 					break;
 				}
 		}

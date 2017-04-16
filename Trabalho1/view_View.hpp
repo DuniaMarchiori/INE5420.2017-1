@@ -337,6 +337,15 @@ public:
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);
 	}
 
+	//! Método que desenha uma curva.
+	/*!
+		/param lista é a lista de coordenadas da curva a ser desenhado.
+	*/
+	void desenhaCurva(ListaEnc<Coordenada*>* lista) {
+		desenhista->desenhaCurva(lista);
+		gtk_widget_queue_draw ((GtkWidget*) window_Main);
+	}
+
 	//! Método que insere em uma lista as coordenadas do polígono a ser criado.
 	void inserirCoordListaEncPoligono() {
 		// Pega coordenadas
@@ -593,6 +602,14 @@ public:
 		return listaCoordsPoligono;
 	}
 
+	//! Metodo que retorna a lista de coordenadas na criação de uma nova curva.
+	/*!
+		/return a lista de coordenadas da nova curva.
+	*/
+	ListaEnc<Coordenada*>* getListaCoordsCurva() {
+		return listaCoordsCurva;
+	}
+
 	//! Metodo que adiciona o nome de um elemento à listbox de elementos.
 	/*!
 		/param nome o nome desse novo elemento.
@@ -680,9 +697,14 @@ public:
 		free(listaCoordsCurva);
 	}
 
-	//! Método que reinicia a lista de coordenadas na janela de ciração de poligono.
+	//! Método que reinicia a lista de coordenadas na janela de criação de poligono.
 	void resetarListaCoordenadasPoligono() {
 		listaCoordsPoligono = new ListaEnc<Coordenada*>();
+	}
+
+	//! Método que reinicia a lista de coordenadas na janela de criação de curvas.
+	void resetarListaCoordenadasCurva() {
+		listaCoordsCurva = new ListaEnc<Coordenada*>();
 	}
 
 	// ------------------------------------------------------------------------------------------------

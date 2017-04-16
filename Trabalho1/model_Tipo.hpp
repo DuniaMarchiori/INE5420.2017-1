@@ -2,6 +2,6 @@
 #define TIPO_HPP
 
 //! Enum dos tipos de desenhos disponíveis
-enum Tipo {PONTO, RETA, POLIGONO, CURVABEZIER, CURVABSPLINE};
+enum Tipo {PONTO, RETA, POLIGONO, CURVA};
 
 #endif

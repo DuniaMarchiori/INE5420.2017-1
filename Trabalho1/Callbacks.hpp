@@ -179,15 +179,6 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Listbox_Pol_row_selected_cb (GtkListBo
 	controller->selecionaListBoxPoligono();
 }
 
-
-
-
-
-
-
-
-
-
 //! Método que é chamado ao pressionar o botão de nova coordenada na criação de uma curva.
 /*!
 	Adiciona uma nova coordenada à lista de coordenadas e à list box.
@@ -211,18 +202,6 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Curv_Del_clicked_cb(){
 extern "C" G_MODULE_EXPORT void NovoElmnt_Listbox_Curv_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
 	controller->selecionaListBoxCurva();
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //! Método que é ativado ao fechar a janela de novo elemento.

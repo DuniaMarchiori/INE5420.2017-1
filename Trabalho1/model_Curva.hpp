@@ -1,5 +1,5 @@
-#ifndef POLIGONO_HPP
-#define POLIGONO_HPP
+#ifndef CURVA_HPP
+#define CURVA_HPP
 
 #include "model_ElementoGrafico.hpp"
 #include "model_Coordenada.hpp"
@@ -7,7 +7,7 @@
 
 class Curva: public ElementoGrafico {
 
-private:
+protected:
 	ListaEnc<Coordenada*> *listaMundo; /*!< Lista encadeada de coordenadas da curva no mundo.*/
 	ListaEnc<Coordenada*> *listaNormal; /*!< Lista encadeada de coordenadas da curva normalizadas.*/
 
@@ -17,7 +17,7 @@ public:
 		listaMundo = new ListaEnc<Coordenada*>();
 		listaNormal = new ListaEnc<Coordenada*>();
 		setNome("");
-		//setTipo(POLIGONO);
+		setTipo(CURVA);
 	}
 
 	//! Construtor
@@ -28,7 +28,7 @@ public:
 		listaMundo = new ListaEnc<Coordenada*>();
 		listaNormal = new ListaEnc<Coordenada*>();
 		setNome(nome);
-		//setTipo(POLIGONO);
+		setTipo(CURVA);
 	}
 
 	//! Construtor
@@ -39,7 +39,7 @@ public:
 	Curva(string nome, ListaEnc<Coordenada*> *novaLista) {
 		setListaMundo(novaLista);
 		setNome(nome);
-		//setTipo(POLIGONO);
+		setTipo(CURVA);
 	}
 
 	// Coordenadas no Mundo.

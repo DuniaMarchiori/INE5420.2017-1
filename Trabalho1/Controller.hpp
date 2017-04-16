@@ -100,6 +100,67 @@ public:
 						//free(poligonoClippado); // Cuidado
 					}
 					break;
+				} case CURVA: {
+					Curva * curva = (static_cast<Curva*> (elemento));
+			
+					ListaEnc<Reta*>* listaClipping = new ListaEnc<Reta*>();
+					ListaEnc<Reta*>* listaRetas = new ListaEnc<Reta*>();
+
+					ListaEnc<Coordenada*>* listaCoord = curva->getCurvaFinal(5); // calcular numero de seguimentos para a curva final
+
+					Elemento<Coordenada*>* elementoAtual = listaCoord->getHead();
+					Coordenada* coordAtual = elementoAtual->getInfo();
+					Coordenada* coordAnterior = coordAtual;
+					Elemento<Coordenada*>* elementoAnterior = elementoAtual->getProximo();
+					coordAtual = elementoAnterior->getInfo();
+					// criando lista de retas
+					while (elementoAtual != NULL) {	
+						Reta * r = new Reta("", coordAnterior, coordAtual);
+						listaRetas->adiciona(r);
+						
+						coordAnterior = coordAtual;
+						elementoAtual = elementoAtual->getProximo();
+						coordAtual = elementoAtual->getInfo();
+					}
+					
+					// fazendo clipping nas retas
+					switch (view->getTipoClippingReta()) {
+						case 0: {
+							listaClipping = model->clippingDeCurvaCS(listaRetas);
+							break;
+						} case 1: {
+							listaClipping = model->clippingDeCurvaLB(listaRetas);
+							break;
+						}
+					}
+
+					free(listaCoord);
+					// transformada de viewport nas retas e criando lista de coordenadas finais(com clipping)
+					Elemento<Reta*>* proxReta = listaClipping->getHead();
+					ListaEnc<Reta*>* listaRetaTransformada = new ListaEnc<Reta*>();
+					bool primeiroLoop = true;
+					listaCoord = new ListaEnc<Coordenada*>();
+
+					while (proxReta != NULL) {
+						Reta* reta = proxReta->getInfo();
+						Coordenada* coordIniTransformada = model->transformaViewport(reta->getCoordenadaNormalInicial(), viewportMax);
+						Coordenada* coordFinTransformada = model->transformaViewport(reta->getCoordenadaNormalFinal(), viewportMax);
+						
+						if (!primeiroLoop){ // para coordenadas comuns não serem repetidas na lista
+							listaCoord->adiciona(coordFinTransformada);
+						} else {
+							listaCoord->adiciona(coordIniTransformada);
+							listaCoord->adiciona(coordFinTransformada);
+						}
+
+						proxReta = proxReta->getProximo();
+						primeiroLoop = false;
+					}
+					
+					view->desenhaCurva(listaCoord);
+					free(listaRetas);
+					free(listaClipping);
+					free(listaCoord);
 				}
 			}
 			proxElemento = proxElemento->getProximo();
@@ -475,6 +536,31 @@ public:
 				}
 
 				break;
+			} case 3: { // A page 3 corresponde à aba de Curva
+				ListaEnc<Coordenada*>* lista = view->getListaCoordsCurva();
+
+				try { 
+					if (view->getTipoCurva() == 0) { // 0 corresponde a opção de curva de Bézier
+						CurvaBezier* cb = model->inserirNovaCurvaBezier(nome, lista);
+						std::cout << "criou" << std::endl;
+						descricaoSCN(cb);
+						std::cout << "descrição" << std::endl;
+					}
+
+					view->resetarListaCoordenadasCurva();
+					view->limparTextoNovaCurva();
+					view->adicionaElementoListbox(nome, "Curva");
+					view->setCurva_Btn_DelSensitive(FALSE);
+					view->inserirTextoConsole("Nova curva adicionada.");
+				} catch (int erro) {
+					if (erro == -1) {
+						view->inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
+					} else if (erro == -3) {
+						view->inserirTextoConsole("ERRO: a curva deve ter pelo menos 3*n + 1 coordenadas, com n <> 0.");
+					}
+				}
+
+				break;
 			}
 		}
 
@@ -504,14 +590,6 @@ public:
 		view->setPoligono_Btn_DelSensitive(TRUE);
 	}
 
-
-
-
-
-
-
-
-
 	//! Método que adiciona uma coordenada à curva sendo criado.
 	void addNovaCoordenadaCurva() {
 		try {
@@ -532,17 +610,6 @@ public:
 	void selecionaListBoxCurva() {
 		view->setCurva_Btn_DelSensitive(TRUE);
 	}
-
-
-
-
-
-
-
-
-
-
-
 
 	//! Método que é chamado ao fechar a janela de novo elemento.
 	void janelaNovoElementoHide() {
