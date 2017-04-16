@@ -151,6 +151,8 @@ public:
 		gtk_widget_set_sensitive ((GtkWidget*) curva_Btn_Del, FALSE); // Esse botão começa desativado.
 		curva_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Radio_0"));
 		curva_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Radio_1"));
+		gtk_widget_hide((GtkWidget*) curva_radio_0);
+		gtk_widget_hide((GtkWidget*) curva_radio_1);
 
 		novoElmnt_Notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
 		consoleWidget = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
