@@ -1,7 +1,4 @@
 #include <stdlib.h>
-
-#include <stdio.h>
-
 #include "view_View.hpp"
 #include "model_Fachada.hpp"
 
@@ -101,66 +98,38 @@ public:
 					}
 					break;
 				} case CURVA: {
-					Curva * curva = (static_cast<Curva*> (elemento));
-			
-					ListaEnc<Reta*>* listaClipping = new ListaEnc<Reta*>();
-					ListaEnc<Reta*>* listaRetas = new ListaEnc<Reta*>();
-
-					ListaEnc<Coordenada*>* listaCoord = curva->getCurvaFinal(5); // calcular numero de seguimentos para a curva final
-
-					Elemento<Coordenada*>* elementoAtual = listaCoord->getHead();
-					Coordenada* coordAtual = elementoAtual->getInfo();
-					Coordenada* coordAnterior = coordAtual;
-					Elemento<Coordenada*>* elementoAnterior = elementoAtual->getProximo();
-					coordAtual = elementoAnterior->getInfo();
-					// criando lista de retas
-					while (elementoAtual != NULL) {	
-						Reta * r = new Reta("", coordAnterior, coordAtual);
-						listaRetas->adiciona(r);
-						
-						coordAnterior = coordAtual;
-						elementoAtual = elementoAtual->getProximo();
-						coordAtual = elementoAtual->getInfo();
-					}
+					Curva* curva = (static_cast<Curva*> (elemento));
+					ListaEnc<Coordenada*>* pontosCurva = curva->getCurvaFinal(10); // Quantos segmentos baseado no zoom;
+					ListaEnc<Reta*>* listaRetas;
 					
-					// fazendo clipping nas retas
 					switch (view->getTipoClippingReta()) {
 						case 0: {
-							listaClipping = model->clippingDeCurvaCS(listaRetas);
+							listaRetas = model->clippingDeCurvaCS(pontosCurva);
 							break;
 						} case 1: {
-							listaClipping = model->clippingDeCurvaLB(listaRetas);
+							listaRetas = model->clippingDeCurvaLB(pontosCurva);
 							break;
 						}
 					}
 
-					free(listaCoord);
-					// transformada de viewport nas retas e criando lista de coordenadas finais(com clipping)
-					Elemento<Reta*>* proxReta = listaClipping->getHead();
-					ListaEnc<Reta*>* listaRetaTransformada = new ListaEnc<Reta*>();
-					bool primeiroLoop = true;
-					listaCoord = new ListaEnc<Coordenada*>();
-
-					while (proxReta != NULL) {
-						Reta* reta = proxReta->getInfo();
-						Coordenada* coordIniTransformada = model->transformaViewport(reta->getCoordenadaNormalInicial(), viewportMax);
-						Coordenada* coordFinTransformada = model->transformaViewport(reta->getCoordenadaNormalFinal(), viewportMax);
+					if (listaRetas != NULL) {
 						
-						if (!primeiroLoop){ // para coordenadas comuns não serem repetidas na lista
-							listaCoord->adiciona(coordFinTransformada);
-						} else {
-							listaCoord->adiciona(coordIniTransformada);
-							listaCoord->adiciona(coordFinTransformada);
+						Elemento<Reta*>* elementoLista = listaRetas->getHead();
+						while (elementoLista != NULL) {
+							Reta* retaAtual = elementoLista->getInfo();
+														
+							retaAtual->setCoordenadaNormalInicial(model->transformaViewport(retaAtual->getCoordenadaNormalInicial(), viewportMax));
+							retaAtual->setCoordenadaNormalFinal(model->transformaViewport(retaAtual->getCoordenadaNormalFinal(), viewportMax));
+							
+							elementoLista = elementoLista->getProximo();
 						}
-
-						proxReta = proxReta->getProximo();
-						primeiroLoop = false;
+						
+						view->desenhaCurva(listaRetas);
+						
+						free(listaRetas);
 					}
 					
-					view->desenhaCurva(listaCoord);
-					free(listaRetas);
-					free(listaClipping);
-					free(listaCoord);
+					free(pontosCurva);
 				}
 			}
 			proxElemento = proxElemento->getProximo();
@@ -539,12 +508,10 @@ public:
 			} case 3: { // A page 3 corresponde à aba de Curva
 				ListaEnc<Coordenada*>* lista = view->getListaCoordsCurva();
 
-				try { 
+				try {
 					if (view->getTipoCurva() == 0) { // 0 corresponde a opção de curva de Bézier
 						CurvaBezier* cb = model->inserirNovaCurvaBezier(nome, lista);
-						std::cout << "criou" << std::endl;
 						descricaoSCN(cb);
-						std::cout << "descrição" << std::endl;
 					}
 
 					view->resetarListaCoordenadasCurva();

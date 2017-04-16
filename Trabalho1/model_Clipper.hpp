@@ -371,6 +371,54 @@ private:
 	}
 	// Fim dos métodos auxiliares para o método de clipping de polígono. ------------------------------------------------
 
+	// Métodos auxiliares do método de clipping de curva -----------------------------------
+
+	//! Método que faz clipping de uma curva.
+	/*!
+        /param pontosCurva São os pontos que compões a curva que será clippada.
+		/param tipoClippingReta é o tipo de clipping de reta. (0 = C-S; 1 = L-B.)
+		/return as retas da curva depois do clipping.
+    */
+	ListaEnc<Reta*>* clippingDeCurvaAux(ListaEnc<Coordenada*>* pontosCurva, int tipoClippingReta) {
+		ListaEnc<Reta*>* retasFinais = new ListaEnc<Reta*>();
+		Elemento<Coordenada*>* elementoAtual = pontosCurva->getHead();
+		Coordenada* coordAnterior = elementoAtual->getInfo();
+		elementoAtual = elementoAtual->getProximo();
+		Coordenada* coordAtual;
+
+		while (elementoAtual != NULL) {
+			coordAtual = elementoAtual->getInfo();
+			Reta* r = new Reta();
+			r->setCoordenadaNormalInicial(new Coordenada(coordAnterior));
+			r->setCoordenadaNormalFinal(new Coordenada(coordAtual));
+			Reta* retaClippada = NULL;
+			switch (tipoClippingReta) {
+				case 0: {
+					retaClippada = clippingDeRetaCS(r);
+					break;
+				} case 1: {
+					retaClippada = clippingDeRetaLB(r);
+					break;
+				}
+			}
+			if (retaClippada != NULL) {
+				free(r);
+				retasFinais->adiciona(retaClippada);
+			}
+			coordAnterior = coordAtual;
+			elementoAtual = elementoAtual->getProximo();
+		}
+
+		if (retasFinais->getHead() == NULL) {
+			free(retasFinais);
+			return NULL;
+		}
+
+		return retasFinais;
+	}
+
+	// Fim dos métodos auxiliares para o método de clipping de curva. ------------------------------------------------
+
 public:
 	//! Método que faz clipping de ponto.
 	/*!
@@ -531,7 +579,6 @@ public:
 	}
 
 
-
 	//! Método que faz clipping de um poligono.
 	/*!
         /param poligono é o poligono que será clippado.
@@ -568,6 +615,24 @@ public:
 		}
 
 		return poligonoClippado;
+	}
+
+	//! Método que faz clipping de uma curva através da clippagem de reta Cohen-Sutherland.
+	/*!
+        /param pontosCurva São os pontos que serão ligador para formar a curva.
+		/return O conjunto final de retas.
+    */
+	ListaEnc<Reta*>* clippingDeCurvaCS(ListaEnc<Coordenada*>* pontosCurva) {
+		return clippingDeCurvaAux(pontosCurva, 0);
+	}
+
+	//! Método que faz clipping de uma curva através da clippagem de reta Liang-Barsky.
+	/*!
+        /param pontosCurva São os pontos que serão ligador para formar a curva.
+		/return O conjunto final de retas.
+    */
+	ListaEnc<Reta*>* clippingDeCurvaLB(ListaEnc<Coordenada*>* pontosCurva) {
+		return clippingDeCurvaAux(pontosCurva, 1);
 	}
 
 };

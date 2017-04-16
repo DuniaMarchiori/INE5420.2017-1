@@ -112,38 +112,33 @@ public:
 		return clipper->clippingDePoligono(poligono);
 	}
 	
-	//! Método que clippa uma lista retas com o algoritmo Cohen-Sutherland.
+	
+	
+	
+	
+	
+	//! Método que clippa uma curva, com clipping de retas Cohen-Sutherland.
 	/*!
-        /param lista é a lista de retas que será clippada.
+        /param pontosCurva São os pontos que serão ligador para formar a curva.
 		/return a lista de retas depois do clipping.
     */
-	ListaEnc<Reta*>* clippingDeCurvaLB(ListaEnc<Reta*>* lista) {
-		Elemento<Reta*>* proxElemento = lista->getHead();
-		ListaEnc<Reta*>* listaClipping = new ListaEnc<Reta*>();
-
-		while(proxElemento != NULL) {
-			listaClipping->adiciona(clippingDeRetaLB(proxElemento->getInfo()));
-			proxElemento = proxElemento->getProximo();
-		}
-		return listaClipping;
+	ListaEnc<Reta*>* clippingDeCurvaCS(ListaEnc<Coordenada*>* pontosCurva) {
+		return clipper->clippingDeCurvaCS(pontosCurva);
 	}
-
-	//! Método que clippa uma lista retas com o algoritmo Liang-Barsky.
+	
+	//! Método que clippa uma curva, com clipping de retas Liang-Barsky.
 	/*!
-        /param lista é a lista de retas que será clippada.
+        /param pontosCurva São os pontos que serão ligador para formar a curva.
 		/return a lista de retas depois do clipping.
     */
-	ListaEnc<Reta*>* clippingDeCurvaCS(ListaEnc<Reta*>* curva) {
-		Elemento<Reta*>* proxElemento = curva->getHead();
-		ListaEnc<Reta*>* listaClipping = new ListaEnc<Reta*>();
-
-		while(proxElemento != NULL) {
-			listaClipping->adiciona(clippingDeRetaCS(proxElemento->getInfo()));
-			proxElemento = proxElemento->getProximo();
-		}
-		return listaClipping;
+	ListaEnc<Reta*>* clippingDeCurvaLB(ListaEnc<Coordenada*>* pontosCurva) {
+		return clipper->clippingDeCurvaLB(pontosCurva);
 	}
-
+	
+	
+	
+	
+	
 	//! Método que realiza a transformada de viewport.
 	/*!
         /param ponto uma coordenada do mundo que sera transformada.

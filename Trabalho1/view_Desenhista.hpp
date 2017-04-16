@@ -5,7 +5,6 @@
 #include "model_Poligono.hpp"
 #include "model_Fachada.hpp"
 
-#include <iostream>
 using namespace std;
 
 #ifndef DESENHISTA_HPP
@@ -58,7 +57,7 @@ public:
 		cairo_t *c = cairo_create (surface);
 
 		Elemento<Coordenada*> *elementoCoord = lista->getHead();
-		Coordenada* coord = elementoCoord->getInfo();	
+		Coordenada* coord = elementoCoord->getInfo();
 		//Coordenada* transformada = f->transformaViewport(coord,vpMax);
 
 		cairo_move_to(c, coord->getX(), coord->getY());
@@ -85,13 +84,23 @@ public:
 
 	//! Método que desenha uma curva na tela.
 	/*!
-		/param lista é a lista de coordenadas da curva a ser desenhada.
+		/param lista é a lista de retas da curva a ser desenhada.
 	*/
+	void desenhaCurva(ListaEnc<Reta*>* lista) {
+		Elemento<Reta*> *elementoLista = lista->getHead();
+		while (elementoLista != NULL) {
+			Reta* reta = elementoLista->getInfo();
+			desenhaReta(reta->getCoordenadaNormalInicial(), reta->getCoordenadaNormalFinal());
+			
+			elementoLista = elementoLista->getProximo();
+		}
+	}
+	/*
 	void desenhaCurva(ListaEnc<Coordenada*>* lista) {
 		cairo_t *c = cairo_create (surface);
 
 		Elemento<Coordenada*> *elementoCoord = lista->getHead();
-		Coordenada* coord = elementoCoord->getInfo();	
+		Coordenada* coord = elementoCoord->getInfo();
 
 		cairo_move_to(c, coord->getX(), coord->getY());
 		elementoCoord = elementoCoord->getProximo();
@@ -101,9 +110,10 @@ public:
 			cairo_line_to(c, coord->getX(), coord->getY());
 			elementoCoord = elementoCoord->getProximo();
 		}
-		
+
 		cairo_stroke(c);
 	}
+	*/
 
 	//! Método que limpa a tela(pintando-a de branco).
 	static void clear_surface (){
@@ -144,7 +154,7 @@ public:
 
 	//! Método que inicializa a surface do cairo usada.
 	/*!
-		/param widget é a window que será feita a nova "surface". 
+		/param widget é a window que será feita a nova "surface".
 	*/
 	void nova_surface(GtkWidget *widget) {
 		if (surface) {

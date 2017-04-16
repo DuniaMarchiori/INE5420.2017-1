@@ -339,12 +339,18 @@ public:
 
 	//! Método que desenha uma curva.
 	/*!
-		/param lista é a lista de coordenadas da curva a ser desenhado.
+		/param lista é a lista de retas da curva a ser desenhada.
 	*/
+	void desenhaCurva(ListaEnc<Reta*>* lista) {
+		desenhista->desenhaCurva(lista);
+		gtk_widget_queue_draw ((GtkWidget*) window_Main);
+	}
+	/*
 	void desenhaCurva(ListaEnc<Coordenada*>* lista) {
 		desenhista->desenhaCurva(lista);
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);
 	}
+	*/
 
 	//! Método que insere em uma lista as coordenadas do polígono a ser criado.
 	void inserirCoordListaEncPoligono() {
