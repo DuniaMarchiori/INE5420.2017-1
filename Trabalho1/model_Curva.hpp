@@ -4,6 +4,7 @@
 #include "model_ElementoGrafico.hpp"
 #include "model_Coordenada.hpp"
 #include "ListaEnc.hpp"
+#include <math.h>
 
 class Curva: public ElementoGrafico {
 
@@ -96,7 +97,6 @@ public:
 		return listaNormal;
 	}
 
-
 	//! Método que retorna o centro geométrico da curva.
 	/*!
 		/return uma Coordenada que indica o centro geométrico da curva.
@@ -112,7 +112,7 @@ public:
 			Elemento<Coordenada*>* proxCoord = listaMundo->getHead();
 
 			while (proxCoord != NULL) {
-				++n;
+				n++;
 				somaX += proxCoord->getInfo()->getX();
 				somaY += proxCoord->getInfo()->getY();
 				proxCoord = proxCoord->getProximo();
@@ -123,6 +123,44 @@ public:
 
 		return coord;
 	}
+
+
+
+
+
+
+
+	//! Método que retorna a distancia média dos pontos ao centro geométrico da curva.
+	/*!
+		/return a distância média dos pontos até o centro da curva
+	*/
+	double distanciaMediaDoCentro() {
+		Coordenada* centro = getCentroGeometrico();
+
+		double distMedia;
+		double soma = 0;
+		int n = 0;
+
+		Elemento<Coordenada*>* proxCoord = listaMundo->getHead();
+
+		while (proxCoord != NULL) {
+			Coordenada* coordAtual = proxCoord->getInfo();
+			soma += sqrt(pow((coordAtual->getX() - centro->getX()), 2) + pow((coordAtual->getY() - centro->getY()), 2));
+			n++;
+
+			proxCoord = proxCoord->getProximo();
+		}
+
+		distMedia = soma / n;
+
+		free(centro);
+		return distMedia;
+	}
+
+
+
+
+
 
 	//! Método que retorna os pontos da curva.
 	/*!

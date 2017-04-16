@@ -2,6 +2,8 @@
 #include "view_View.hpp"
 #include "model_Fachada.hpp"
 
+#include <stdio.h>
+
 #ifndef CONTROLLER_HPP
 #define CONTROLLER_HPP
 
@@ -99,9 +101,27 @@ public:
 					break;
 				} case CURVA: {
 					Curva* curva = (static_cast<Curva*> (elemento));
-					ListaEnc<Coordenada*>* pontosCurva = curva->getCurvaFinal(10); // Quantos segmentos baseado no zoom;
-					ListaEnc<Reta*>* listaRetas;
+
+					Coordenada* proporcoesWindow = model->getProporcoesWindow();
+					double maiorProporcao = 0;
+					if (proporcoesWindow->getX() >= proporcoesWindow->getY()) {
+						maiorProporcao = proporcoesWindow->getX();
+					} else {
+						maiorProporcao = proporcoesWindow->getY();
+					}
+					free(proporcoesWindow);
+
+					double distMedia = curva->distanciaMediaDoCentro();
+					int numSegmentos = (distMedia/maiorProporcao)*100;
+					if (numSegmentos > 2000) {
+						numSegmentos = 2000;
+					}
+
+					std::cout << numSegmentos << std::endl;
 					
+					ListaEnc<Coordenada*>* pontosCurva = curva->getCurvaFinal(numSegmentos); // Quantos segmentos baseado no zoom;
+					ListaEnc<Reta*>* listaRetas;
+
 					switch (view->getTipoClippingReta()) {
 						case 0: {
 							listaRetas = model->clippingDeCurvaCS(pontosCurva);
@@ -113,22 +133,22 @@ public:
 					}
 
 					if (listaRetas != NULL) {
-						
+
 						Elemento<Reta*>* elementoLista = listaRetas->getHead();
 						while (elementoLista != NULL) {
 							Reta* retaAtual = elementoLista->getInfo();
-														
+
 							retaAtual->setCoordenadaNormalInicial(model->transformaViewport(retaAtual->getCoordenadaNormalInicial(), viewportMax));
 							retaAtual->setCoordenadaNormalFinal(model->transformaViewport(retaAtual->getCoordenadaNormalFinal(), viewportMax));
-							
+
 							elementoLista = elementoLista->getProximo();
 						}
-						
+
 						view->desenhaCurva(listaRetas);
-						
+
 						free(listaRetas);
 					}
-					
+
 					free(pontosCurva);
 				}
 			}

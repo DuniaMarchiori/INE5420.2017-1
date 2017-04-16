@@ -347,7 +347,7 @@ public:
 	*/
 	void sistemaCoordenadasNormalizadas(ElementoGrafico* elem) {
 		double angulo = window->getAngulo();
-		Coordenada* fator = new Coordenada( (1/window->getLargura()), (1/window->getAltura()) );
+		Coordenada* fator = new Coordenada( (2/window->getLargura()), (2/window->getAltura()) );
 		Matriz<double>* resultado = transformacao->matrizSistemaCoordenadasNormalizadas(angulo, fator, window->getCentro());
 
 		transformacao->fazTransformacaoNormalizada(elem, resultado);
@@ -355,6 +355,15 @@ public:
 		free(fator);
 		free(resultado);
 	}
+	
+	//! Método que devolve a largura e altura da window.
+	/*!
+		/return coordenada com a altura e largura da window.
+	*/
+	Coordenada* getProporcoesWindow() {
+		return new Coordenada(window->getLargura(), window->getAltura());
+	}
+	
 };
 
 #endif
