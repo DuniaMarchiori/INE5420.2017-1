@@ -327,7 +327,7 @@ public:
 	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em todo o mundo.
 	void sistemaCoordenadasNormalizadas() {
 		double angulo = window->getAngulo();
-		Coordenada* fator = new Coordenada( (1/window->getLargura()), (1/window->getAltura()) );
+		Coordenada* fator = new Coordenada( (2/window->getLargura()), (2/window->getAltura()) );
 		Matriz<double>* resultado = transformacao->matrizSistemaCoordenadasNormalizadas(angulo, fator, window->getCentro());
 
 		// Faz a transformação em todo o mundo

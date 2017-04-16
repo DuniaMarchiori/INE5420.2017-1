@@ -2,8 +2,6 @@
 #include "view_View.hpp"
 #include "model_Fachada.hpp"
 
-#include <stdio.h>
-
 #ifndef CONTROLLER_HPP
 #define CONTROLLER_HPP
 
@@ -115,10 +113,10 @@ public:
 					int numSegmentos = (distMedia/maiorProporcao)*100;
 					if (numSegmentos > 2000) {
 						numSegmentos = 2000;
+					} else if (numSegmentos < 2) {
+						numSegmentos = 2;
 					}
 
-					std::cout << numSegmentos << std::endl;
-					
 					ListaEnc<Coordenada*>* pontosCurva = curva->getCurvaFinal(numSegmentos); // Quantos segmentos baseado no zoom;
 					ListaEnc<Reta*>* listaRetas;
 
