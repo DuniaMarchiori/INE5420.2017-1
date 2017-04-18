@@ -237,8 +237,8 @@ public:
 
 	//! Método que insere um poligono no display file.
     /*!
-		Verifica se o nome e as coordenadas são válidas e então cria um ponto tanto no display file quanto uma referência para ele na list box.
-        /param nome O nome do novo ponto.
+		Verifica se o nome e as coordenadas são válidas e então cria um poligono tanto no display file quanto uma referência para ele na list box.
+        /param nome O nome do novo poligono.
 		/param listaCoordsPoligono Uma lista de coordenadas que contém todos os pontos do poligono.
 		/param preenchido True caso o poligono deva ser preenchido.
 		/return retorna o polígono que foi inserido.
