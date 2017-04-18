@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <math.h>
 #include "view_View.hpp"
 #include "model_Fachada.hpp"
 
@@ -101,21 +102,12 @@ public:
 					Curva* curva = (static_cast<Curva*> (elemento));
 
 					Coordenada* proporcoesWindow = model->getProporcoesWindow();
-					double maiorProporcao = 0;
-					if (proporcoesWindow->getX() >= proporcoesWindow->getY()) {
-						maiorProporcao = proporcoesWindow->getX();
-					} else {
-						maiorProporcao = proporcoesWindow->getY();
-					}
+					double maiorProporcao = fmax(proporcoesWindow->getX(), proporcoesWindow->getY());
 					free(proporcoesWindow);
 
 					double distMedia = curva->distanciaMediaDoCentro();
 					int numSegmentos = (distMedia/maiorProporcao)*100;
-					if (numSegmentos > 2000) {
-						numSegmentos = 2000;
-					} else if (numSegmentos < 2) {
-						numSegmentos = 2;
-					}
+					numSegmentos = fmax(2, fmin(numSegmentos, 2000)); // Mantém o numero no intervalo [2, 2000].
 
 					ListaEnc<Coordenada*>* pontosCurva = curva->getCurvaFinal(numSegmentos); // Quantos segmentos baseado no zoom;
 					ListaEnc<Reta*>* listaRetas;

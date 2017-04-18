@@ -36,7 +36,7 @@ public:
 		/return uma lista de coordenadas
 	*/
 	ListaEnc<Coordenada*>* getCurvaFinal(int segmentos) override{
-		double d = 1.0/(double)segmentos;
+		float d = 1.0/(float)segmentos;
 		ListaEnc<Coordenada*>* curvaB = new ListaEnc<Coordenada*>();
 		double x, y, p1x, p2x, p3x, p4x, p1y, p2y, p3y, p4y, quantidadePontos;
 		int indice = 0;
@@ -56,14 +56,16 @@ public:
 			p4x = listaNormal->elementoNoIndice(indice + 3)->getX();
 			p4y = listaNormal->elementoNoIndice(indice + 3)->getY();
 
-			for (double i = 0; i <= 1.0; i += d) {
-				x = blendingFunction(p1x, p2x, p3x, p4x, i);
-				y = blendingFunction(p1y, p2y, p3y, p4y, i);
+			double passo = 0;
+			for (int i = 0; i <= segmentos; i++) {
+				x = blendingFunction(p1x, p2x, p3x, p4x, passo);
+				y = blendingFunction(p1y, p2y, p3y, p4y, passo);
 
-				if ( !(indice != 0 && i == 0.0) ) { // para não adicionar duas vezes os pontos comuns de duas sub-curvas
+				if ( !(indice != 0 && passo == 0.0) ) { // para não adicionar duas vezes os pontos comuns de duas sub-curvas
 					Coordenada* coord = new Coordenada(x, y);
 					curvaB->adiciona(coord);
 				}
+				passo += d;
 			}
 
 			indice += 3;
