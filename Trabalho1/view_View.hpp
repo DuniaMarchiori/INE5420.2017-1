@@ -1,7 +1,6 @@
 #include <gtk/gtk.h>
 #include <string>
 #include <stdexcept>
-//#include <iostream>
 #include "view_Console.hpp"
 #include "view_Desenhista.hpp"
 
