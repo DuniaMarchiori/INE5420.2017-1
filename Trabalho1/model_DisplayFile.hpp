@@ -3,6 +3,9 @@
 
 #include "ListaEnc.hpp"
 #include "model_ElementoGrafico.hpp"
+#include "model_Ponto.hpp"
+#include "model_Reta.hpp"
+#include "model_Poligono.hpp"
 #include "model_Curva.hpp"
 
 class DisplayFile {

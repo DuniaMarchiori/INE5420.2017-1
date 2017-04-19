@@ -3,7 +3,7 @@
 
 #include <string>
 #include "model_Tipo.hpp"
-//#include "Coordenada.hpp"
+#include "model_Coordenada.hpp"
 
 using std::string;
 

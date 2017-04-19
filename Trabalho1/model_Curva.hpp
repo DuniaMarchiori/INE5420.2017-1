@@ -124,12 +124,6 @@ public:
 		return coord;
 	}
 
-
-
-
-
-
-
 	//! Método que retorna a distancia média dos pontos ao centro geométrico da curva.
 	/*!
 		/return a distância média dos pontos até o centro da curva

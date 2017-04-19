@@ -1,5 +1,3 @@
-#include <gtk/gtk.h>
-
 #include "Controller.hpp"
 
 Controller* controller;

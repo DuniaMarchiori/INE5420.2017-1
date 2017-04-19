@@ -1,20 +1,25 @@
 #ifndef FACHADA_HPP
 #define FACHADA_HPP
 
+#include "model_Matriz.hpp"
+
+#include "model_Tipo.hpp"
+
 #include "model_Coordenada.hpp"
 #include "model_ElementoGrafico.hpp"
-#include "model_DisplayFile.hpp"
-#include "model_Window.hpp"
-#include "model_Viewport.hpp"
-#include "model_Tipo.hpp"
+
 #include "model_Ponto.hpp"
 #include "model_Reta.hpp"
 #include "model_Poligono.hpp"
-#include "model_Transformacao.hpp"
-#include "model_Clipper.hpp"
-#include "model_Matriz.hpp"
 #include "model_Curva.hpp"
 #include "model_CurvaBezier.hpp"
+
+#include "model_Window.hpp"
+#include "model_DisplayFile.hpp"
+
+#include "model_Viewport.hpp"
+#include "model_Transformacao.hpp"
+#include "model_Clipper.hpp"
 
 class Fachada {
 

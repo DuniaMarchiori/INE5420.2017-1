@@ -3,7 +3,6 @@
 #include "model_Ponto.hpp"
 #include "model_Reta.hpp"
 #include "model_Poligono.hpp"
-#include "model_Fachada.hpp"
 
 using namespace std;
 
