@@ -13,6 +13,7 @@
 #include "model_Poligono.hpp"
 #include "model_Curva.hpp"
 #include "model_CurvaBezier.hpp"
+#include "model_CurvaBSpline.hpp"
 
 #include "model_Window.hpp"
 #include "model_DisplayFile.hpp"
@@ -283,6 +284,42 @@ public:
 			throw -3;
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//! Método que insere uma curva B-Spline na display file.
+    /*!
+		Verifica se o nome e as coordenadas são válidas.
+        /param nome O nome da nova curva.
+		/param listaCoordCurva Uma lista de coordenadas que contém todos os pontos da curva.
+		/return retorna a curva que foi inserida.
+    */
+	CurvaBSpline* inserirNovaCurvaBSpline(string nome, ListaEnc<Coordenada*>* listaCoordCurva) {
+		if (!nomeValido(nome)) {
+			throw -1;
+		}
+
+		if ( listaCoordCurva->getSize() > 3) {
+			CurvaBSpline* cb = new CurvaBSpline(nome, listaCoordCurva);
+			displayFile->inserirNovaCurva(cb);
+			return cb;
+		} else {
+			throw -3;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	//! Método que deleta um elemento da display file.
 	/*!

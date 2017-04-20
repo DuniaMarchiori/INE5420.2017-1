@@ -522,6 +522,9 @@ public:
 					if (view->getTipoCurva() == 0) { // 0 corresponde a opção de curva de Bézier
 						CurvaBezier* cb = model->inserirNovaCurvaBezier(nome, lista);
 						descricaoSCN(cb);
+					} else {
+						CurvaBSpline* cb = model->inserirNovaCurvaBSpline(nome, lista);
+						descricaoSCN(cb);
 					}
 
 					view->resetarListaCoordenadasCurva();
@@ -533,7 +536,12 @@ public:
 					if (erro == -1) {
 						view->inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
 					} else if (erro == -3) {
-						view->inserirTextoConsole("ERRO: a curva deve ter 3*n + 1 coordenadas, com n > 0.");
+						if (view->getTipoCurva() == 0) { // 0 corresponde a opção de curva de Bézier
+							view->inserirTextoConsole("ERRO: a curva deve ter 3*n + 1 coordenadas, com n > 0.");
+						} else {
+							view->inserirTextoConsole("ERRO: a curva deve ter pelo menos 4 coordenadas.");
+						}
+						
 					}
 				}
 

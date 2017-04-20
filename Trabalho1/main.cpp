@@ -1,3 +1,5 @@
+// Copyright [2017] <Dúnia Marchiori e Vinicius Steffani Schweitzer>
+
 #include "Controller.hpp"
 
 Controller* controller;
