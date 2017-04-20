@@ -1,5 +1,3 @@
-#include <iostream>
-
 #ifndef CURVABSPLINE_HPP
 #define CURVABSPLINE_HPP
 
@@ -18,7 +16,6 @@ private:
 		xVelho = x;
 		yVelho = y;
 
-		std::cout << x << ", " << y << std::endl;
 		Coordenada* c = new Coordenada(x, y);
 		lista->adiciona(c);
 
@@ -33,7 +30,6 @@ private:
 
 			Coordenada* c = new Coordenada(x, y);
 			lista->adiciona(c);
-			std::cout << x << ", " << y << std::endl;
 
 			xVelho = x;
 			yVelho = y;
@@ -71,8 +67,6 @@ public:
 	*/
 	ListaEnc<Coordenada*>* getCurvaFinal(int segmentos) override{
 		ListaEnc<Coordenada*>* listaFinal = new ListaEnc<Coordenada*>();
-
-		std::cout << "A" << std::endl;
 
 		double d = 1.0/(double)segmentos; // deltinha
 
@@ -115,10 +109,7 @@ public:
 
 		elementoLista = elementoLista->getProximo();
 
-		std::cout << "A" << std::endl;
-
 		while (elementoLista != NULL) {
-			std::cout << "B" << std::endl;
 			C4 = elementoLista->getInfo();
 
 			Matriz<double>* gx = new Matriz<double>(4, 1);
@@ -154,17 +145,13 @@ public:
 			d2y = colunaDeFy->getValor(2, 0);
 			d3y = colunaDeFy->getValor(3, 0);
 
-			std::cout << n << std::endl;
 			desenhaCurvaFwdDiff(n, x, dx, d2x, d3x, y, dy, d2y, d3y, listaFinal);
 
 			C1 = C2;
 			C2 = C3;
 			C3 = C4;
 			elementoLista = elementoLista->getProximo();
-			std::cout << "C" << std::endl;
 		}
-
-		std::cout << "A" << std::endl;
 
 		if (listaFinal->getHead() == NULL) {
 			free(listaFinal);

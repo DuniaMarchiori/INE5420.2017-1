@@ -285,14 +285,6 @@ public:
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
 	//! Método que insere uma curva B-Spline na display file.
     /*!
 		Verifica se o nome e as coordenadas são válidas.
@@ -314,13 +306,6 @@ public:
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-
 	//! Método que deleta um elemento da display file.
 	/*!
         /param index a posicao do elemento a ser deletado.
