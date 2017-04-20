@@ -102,7 +102,7 @@ public:
 		eDelta->setValor(2, 1, 2*dQuad);
 		eDelta->setValor(3, 0, 6*dCubo);
 
-		Elemento<Coordenada*>* elementoLista = getListaMundo()->getHead();
+		Elemento<Coordenada*>* elementoLista = getListaNormal()->getHead();
 		Coordenada *C1, *C2, *C3, *C4;
 
 		C1 = elementoLista->getInfo();
