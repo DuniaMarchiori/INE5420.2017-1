@@ -1,5 +1,8 @@
 #include <stdlib.h>
 #include <math.h>
+
+#include <iostream>
+
 #include "view_View.hpp"
 #include "model_Fachada.hpp"
 

@@ -22,7 +22,7 @@ private:
 	ListaEnc<Coordenada*> *listaCoordsCurva; /*!< Uma lista de coordenadas para criar novas curvas.*/
 
 	// Objetos relacionados à interface
-	GtkWidget *window_Main; /*!< Referência para a janela principal.*/
+	GtkWindow *window_Main; /*!< Referência para a janela principal.*/
 
 	GtkListBox *elmnt_List; /*!< Referência para a lista de elementos.*/
 	GtkButton *elmnt_Btn_Novo, *elmnt_Btn_Del, *elmnt_Btn_Edit; /*!< Referência para os botões de novo, deletar e editar elementos.*/
@@ -108,7 +108,7 @@ public:
 		//gtk_builder_add_from_file(gtkBuilder, "janela.glade", NULL);
 		gtkBuilder = gtk_builder_new_from_file("janela.glade");
 
-		window_Main = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_Main"));
+		window_Main = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_Main"));
 
 		viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
 
@@ -179,7 +179,7 @@ public:
 		desenhista = new Desenhista();
 
 		gtk_builder_connect_signals(gtkBuilder, NULL);
-		gtk_widget_show_all(window_Main);
+		gtk_widget_show_all((GtkWidget*) window_Main);
 		gtk_main ();
 
 	}
@@ -344,12 +344,6 @@ public:
 		desenhista->desenhaCurva(lista);
 		gtk_widget_queue_draw ((GtkWidget*) window_Main);
 	}
-	/*
-	void desenhaCurva(ListaEnc<Coordenada*>* lista) {
-		desenhista->desenhaCurva(lista);
-		gtk_widget_queue_draw ((GtkWidget*) window_Main);
-	}
-	*/
 
 	//! Método que insere em uma lista as coordenadas do polígono a ser criado.
 	void inserirCoordListaEncPoligono() {
@@ -639,7 +633,7 @@ public:
 	void setCurva_Btn_DelSensitive(gboolean valor) {
 		gtk_widget_set_sensitive((GtkWidget*) curva_Btn_Del, valor);
 	}
-	
+
 	//! Metodo que retorna o tipo de curva sendo criada.
 	/*!
 		/return inteiro correspondendo à um dos dois tipos de curva.
@@ -903,6 +897,57 @@ public:
 				return 0;
 			}
 		}
+	}
+
+	//! Metodo que abre uma janela para escolher um arquivo.
+	/*!
+		/return O caminho para um arquivo.
+	*/
+	string selecionarArquivo() {
+		string arquivo;
+		GtkWidget *dialog;
+
+		dialog = gtk_file_chooser_dialog_new ("Selecione um arquivo", window_Main, GTK_FILE_CHOOSER_ACTION_OPEN, "Cancelar", GTK_RESPONSE_CANCEL, "Selecionar", GTK_RESPONSE_ACCEPT, NULL);
+
+		int res = gtk_dialog_run (GTK_DIALOG (dialog));
+		if (res == GTK_RESPONSE_ACCEPT) {
+			GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+			arquivo = gtk_file_chooser_get_filename (chooser);
+		} else {
+			throw -1;
+		}
+
+		gtk_widget_destroy (dialog);
+		
+		return arquivo;
+	}
+
+	//! Metodo que abre uma janela para salvar um arquivo.
+	/*!
+		/return O caminho para o arquivo que será salvo.
+	*/
+	string salvarArquivo() {
+		string arquivo;
+		GtkWidget *dialog;
+
+		dialog = gtk_file_chooser_dialog_new ("Salvar arquivo", window_Main, GTK_FILE_CHOOSER_ACTION_SAVE, "Cancelar", GTK_RESPONSE_CANCEL, "Salvar", GTK_RESPONSE_ACCEPT, NULL);
+
+		GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+
+		gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+
+		gtk_file_chooser_set_current_name (chooser, "NovoObjeto");
+
+		int res = gtk_dialog_run (GTK_DIALOG (dialog));
+		if (res == GTK_RESPONSE_ACCEPT) {
+			arquivo = gtk_file_chooser_get_filename (chooser);
+		} else {
+			throw -1;
+		}
+
+		gtk_widget_destroy (dialog);
+
+		return arquivo;
 	}
 
 };
