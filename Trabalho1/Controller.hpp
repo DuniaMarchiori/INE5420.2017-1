@@ -1,8 +1,5 @@
 #include <stdlib.h>
 #include <math.h>
-
-#include <iostream>
-
 #include "view_View.hpp"
 #include "model_Fachada.hpp"
 
@@ -448,6 +445,43 @@ public:
 	void clippingAlterado() {
 		descricaoSCN();
 		atualizaDesenho();
+	}
+	
+	//! Método que carrega um arquivo .obj.
+	void carregarObj() {
+		try {
+			string path = view->selecionarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo.obj
+			// model->descritorObj->carregar(path); ? Não sei se é assim que funfa
+			descricaoSCN();
+			atualizaDesenho();
+		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
+			return;
+		}
+	}
+	
+	//! Método que salva um elemento em .obj.
+	void salvarElementoObj() {
+		try {
+			string path = view->salvarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo
+			// model->descritorObj->salvarElemento(path); ? Não sei se é assim que funfa
+			descricaoSCN();
+			atualizaDesenho();
+		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
+			return;
+		}
+	}
+	
+	//! Método que salva o mundo em .obj.
+	void salvarMundoObj() {
+		try {
+			string path = view->salvarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo
+			
+			// model->descritorObj->salvarMundo(path); ? Não sei se é assim que funfa
+			descricaoSCN();
+			atualizaDesenho();
+		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
+			return;
+		}
 	}
 
 	//! Método que adiciona um novo elemento.

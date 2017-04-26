@@ -140,6 +140,30 @@ extern "C" G_MODULE_EXPORT void Clipping_Radio_1_clicked_cb(){
 	controller->clippingAlterado();
 }
 
+//! Método que é chamado ao pressionar o botao do menu bar de carregar um .obj.
+/*!
+	Carrega um elemento em formato .obj.
+*/
+extern "C" G_MODULE_EXPORT void MenuBar_Carregar_Obj_activate_cb(){
+	controller->carregarObj();
+}
+
+//! Método que é chamado ao pressionar o botao do menu bar de salvar elemento em .obj.
+/*!
+	Carrega um elemento em formato .obj.
+*/
+extern "C" G_MODULE_EXPORT void MenuBar_Salvar_Obj_Elemento_activate_cb(){
+	controller->salvarElementoObj();
+}
+
+//! Método que é chamado ao pressionar o botao do menu bar de salvar o mundo em .obj.
+/*!
+	Carrega um elemento em formato .obj.
+*/
+extern "C" G_MODULE_EXPORT void MenuBar_Salvar_Obj_Mundo_activate_cb(){
+	controller->salvarMundoObj();
+}
+
 
 
 //----------------------------------------------------------------------------------------------------
