@@ -295,6 +295,7 @@ public:
 
 	//! Método que é chamado ao selecionar um elemento na list box de elementos.
 	void selecionaElementoListBox() {
+		view->setMenuBar_Salvar_Elemento_ObjSensitive(TRUE);
 		view->setElmnt_Btn_DelSensitive(TRUE);
 		view->setElmnt_Btn_EditSensitive(TRUE);
 	}
@@ -316,6 +317,7 @@ public:
 			model->deletarElemento(index);
 			atualizaDesenho();
 			view->inserirTextoConsole("Elemento excluído.");
+			view->setMenuBar_Salvar_Elemento_ObjSensitive(FALSE);
 			view->setElmnt_Btn_DelSensitive(FALSE);
 			view->setElmnt_Btn_EditSensitive(FALSE);
 		} catch (int erro) {

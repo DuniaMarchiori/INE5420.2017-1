@@ -23,6 +23,8 @@ private:
 
 	// Objetos relacionados à interface
 	GtkWindow *window_Main; /*!< Referência para a janela principal.*/
+	
+	GtkMenuItem *menuBar_Salvar_Elemento_Obj; /*!< Referência para a janela principal.*/
 
 	GtkListBox *elmnt_List; /*!< Referência para a lista de elementos.*/
 	GtkButton *elmnt_Btn_Novo, *elmnt_Btn_Del, *elmnt_Btn_Edit; /*!< Referência para os botões de novo, deletar e editar elementos.*/
@@ -109,6 +111,9 @@ public:
 		gtkBuilder = gtk_builder_new_from_file("janela.glade");
 
 		window_Main = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_Main"));
+		
+		menuBar_Salvar_Elemento_Obj = GTK_MENU_ITEM(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "MenuBar_Salvar_Obj_Elemento"));
+		gtk_widget_set_sensitive ((GtkWidget*) menuBar_Salvar_Elemento_Obj, FALSE); // Esse botão começa desativado.
 
 		viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
 
@@ -406,6 +411,14 @@ public:
 	//! Método que fecha o programa.
 	void fecharPrograma() {
 		gtk_main_quit();
+	}
+	
+	//! Método que altera a sensibilidade do botao de salvar elemento.
+	/*!
+		/param valor é o novo valor da sensibilidade do botao (TRUE ou FALSE).
+	*/
+	void setMenuBar_Salvar_Elemento_ObjSensitive(gboolean valor) {
+		gtk_widget_set_sensitive ((GtkWidget*) menuBar_Salvar_Elemento_Obj, valor);
 	}
 
 	//! Método que altera a sensibilidade do botao de deletar.
