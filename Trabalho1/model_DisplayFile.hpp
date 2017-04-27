@@ -28,6 +28,10 @@ public:
 		return displayFile->getHead();
 	}
 
+	//! Método que insere um elemento gráfico no display file.
+    /*!
+        /param elemento é o elemento gráfico a ser adicionado à display file.
+    */
 	void insereElementoGrafico(ElementoGrafico* elemento) {
 		displayFile->adiciona(elemento);
 	}
