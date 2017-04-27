@@ -186,10 +186,10 @@ private:
 
 public:
 	WavefrontOBJ () {
-		nomeArquivoCriado = "elementosSalvos";
+		//nomeArquivoCriado = "elementosSalvos";
 		indiceArquivos = 1;
 		quantidadeVertices = 0;
-		nomeArquivoFinal = nomeArquivoCriado + ".obj";
+		//nomeArquivoFinal = nomeArquivoCriado + ".obj";
 	}
 
 	ListaEnc<ElementoGrafico*>* carregarOBJ(string nomeArquivo) {
@@ -323,7 +323,7 @@ public:
 					nomeElemento += palavra;
 				}
 
-			} else if (palavra != "#") { // '#' indica comentário. se o que sobrar não foi um comentário, então é um comando inválido
+			} else if (palavra != "#" or palavra != "") { // '#' indica comentário. se o que sobrar não foi um comentário, então é um comando inválido
 				free(listaVertices);
 				throw numeroLinha; 
 				// console "comando 'palavra' não é suportado pelo sistema."
@@ -336,7 +336,19 @@ public:
 		return listaRetorno;
 	}
 
-	void criaNovoArquivo() {
+	void criaNovoArquivo(string caminhoArquivo) {
+		int pos = caminhoArquivo.find_last_of("/");
+		if (pos != string::npos) {
+			nomeArquivoCriado = caminhoArquivo.substr(pos + 1, caminhoArquivo.size() - 1);
+		}
+
+		int ponto = nomeArquivoCriado.find_last_of(".");
+		if (ponto != string::npos) {
+			nomeArquivoCriado = nomeArquivoCriado.substr(0, ponto);;
+		} 
+
+		nomeArquivoFinal = nomeArquivoCriado + ".obj";
+
 		while (arquivoExiste(nomeArquivoFinal)) {
 			nomeArquivoFinal = nomeArquivoCriado + "-"+ std::to_string(indiceArquivos) + ".obj";
 			indiceArquivos++;

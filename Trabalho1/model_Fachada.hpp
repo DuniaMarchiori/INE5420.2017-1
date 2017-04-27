@@ -395,14 +395,14 @@ public:
 		return new Coordenada(window->getLargura(), window->getAltura());
 	}
 
-	void salvaElementoParaOBJ(ElementoGrafico* elemento) {
-		obj->criaNovoArquivo();
+	void salvaElementoParaOBJ(std::string arquivo, ElementoGrafico* elemento) {
+		obj->criaNovoArquivo(arquivo);
 		obj->salvaVerticesNoArquivo(elemento);
 		obj->salvaElementosNoArquivo();
 	}
 
-	void salvaMundoParaOBJ() {
-		obj->criaNovoArquivo();
+	void salvaMundoParaOBJ(std::string arquivo) {
+		obj->criaNovoArquivo(arquivo);
 		Elemento<ElementoGrafico*>* elementoLista = displayFile->getHead();
 		while (elementoLista != NULL) {
 			obj->salvaVerticesNoArquivo(elementoLista->getInfo());

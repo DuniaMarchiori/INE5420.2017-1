@@ -467,7 +467,7 @@ public:
 			string path = view->salvarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo
 			int index = view->getIndexLinhaElementosSelecionada();
 			ElementoGrafico* elemento = model->getElementoNoIndice(index);
-			model->salvaElementoParaOBJ(elemento);
+			model->salvaElementoParaOBJ(path, elemento);
 			view->inserirTextoConsole("Elemento salvo.");
 		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
 			return;
@@ -478,7 +478,7 @@ public:
 	void salvarMundoObj() {
 		try {
 			string path = view->salvarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo
-			model->salvaMundoParaOBJ();
+			model->salvaMundoParaOBJ(path);
 			view->inserirTextoConsole("Mundo salvo.");
 		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
 			return;
