@@ -323,7 +323,7 @@ public:
 					nomeElemento += palavra;
 				}
 
-			} else if (palavra != "#" or palavra != "") { // '#' indica comentário. se o que sobrar não foi um comentário, então é um comando inválido
+			} else if (palavra != "#" && palavra != "") { // '#' indica comentário. se o que sobrar não foi um comentário, então é um comando inválido
 				free(listaVertices);
 				throw numeroLinha; 
 				// console "comando 'palavra' não é suportado pelo sistema."
