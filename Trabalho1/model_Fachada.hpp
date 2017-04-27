@@ -167,6 +167,10 @@ public:
 		return displayFile->getHead();
 	}
 
+	void insereElementoGrafico(ElementoGrafico* elemento) {
+		displayFile->insereElementoGrafico(elemento);
+	}
+
 	//! Método que insere um ponto no display file.
     /*!
 		Verifica se o nome e as coordenadas são válidas e então cria um ponto tanto no display file quanto uma referência para ele na list box.
@@ -411,9 +415,9 @@ public:
 		obj->salvaElementosNoArquivo();
 	}
 
-	void carregaOBJ(std::string nomeArquivo) {
-		ListaEnc<ElementoGrafico*>* lista = obj->carregarOBJ(nomeArquivo);
-		displayFile->insereLista(lista);
+	ListaEnc<ElementoGrafico*>* elementosCarregadosArquivoOBJ(std::string nomeArquivo) {
+		return obj->carregarOBJ(nomeArquivo);
+		//displayFile->insereLista(lista);
 	}
 	
 };

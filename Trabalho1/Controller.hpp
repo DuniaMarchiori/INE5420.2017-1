@@ -453,7 +453,31 @@ public:
 	void carregarObj() {
 		try {
 			string path = view->selecionarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo.obj
-			model->carregaOBJ(path);
+			ListaEnc<ElementoGrafico*>* lista = model->elementosCarregadosArquivoOBJ(path);
+
+			string tipoElementoParaListBox = "";
+			Elemento<ElementoGrafico*>* elementoLista = lista->getHead();
+			while (elementoLista != NULL) {
+				model->insereElementoGrafico(elementoLista->getInfo());
+				switch (elementoLista->getInfo()->getTipo()) {
+					case PONTO:
+						tipoElementoParaListBox = "Ponto";
+						break;
+					case RETA:
+						tipoElementoParaListBox = "Reta";
+						break;
+					case POLIGONO:
+						tipoElementoParaListBox = "Polígono";
+						break;
+					case CURVA:
+						tipoElementoParaListBox = "Curva";
+						break;
+				}
+
+				view->adicionaElementoListbox(elementoLista->getInfo()->getNome(), tipoElementoParaListBox);
+				elementoLista = elementoLista->getProximo();
+			}
+
 			descricaoSCN();
 			atualizaDesenho();
 		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
@@ -494,7 +518,7 @@ public:
 				string coordX = view->getCoordXNovoPonto();
 				string coordY = view->getCoordYNovoPonto();
 				try {
-					Ponto* p =model->inserirNovoPonto(nome, coordX, coordY);
+					Ponto* p = model->inserirNovoPonto(nome, coordX, coordY);
 					view->limparTextoNovoPonto();
 					view->adicionaElementoListbox(nome, "Ponto");
 					descricaoSCN(p);
