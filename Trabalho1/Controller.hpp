@@ -453,7 +453,7 @@ public:
 	void carregarObj() {
 		try {
 			string path = view->selecionarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo.obj
-			// model->descritorObj->carregar(path); ? Não sei se é assim que funfa
+			model->carregaOBJ(path);
 			descricaoSCN();
 			atualizaDesenho();
 		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
@@ -465,9 +465,10 @@ public:
 	void salvarElementoObj() {
 		try {
 			string path = view->salvarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo
-			// model->descritorObj->salvarElemento(path); ? Não sei se é assim que funfa
-			descricaoSCN();
-			atualizaDesenho();
+			int index = view->getIndexLinhaElementosSelecionada();
+			ElementoGrafico* elemento = model->getElementoNoIndice(index);
+			model->salvaElementoParaOBJ(elemento);
+			view->inserirTextoConsole("Elemento salvo.");
 		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
 			return;
 		}
@@ -477,10 +478,8 @@ public:
 	void salvarMundoObj() {
 		try {
 			string path = view->salvarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo
-			
-			// model->descritorObj->salvarMundo(path); ? Não sei se é assim que funfa
-			descricaoSCN();
-			atualizaDesenho();
+			model->salvaMundoParaOBJ();
+			view->inserirTextoConsole("Mundo salvo.");
 		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
 			return;
 		}

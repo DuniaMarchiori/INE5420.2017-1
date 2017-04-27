@@ -1,8 +1,10 @@
 #ifndef FACHADA_HPP
 #define FACHADA_HPP
 
-#include "model_Matriz.hpp"
+#include <string>
 
+#include "model_Matriz.hpp"
+#include "model_WavefrontOBJ.hpp"
 #include "model_Tipo.hpp"
 
 #include "model_Coordenada.hpp"
@@ -30,6 +32,7 @@ private:
 	DisplayFile* displayFile; /*!< É a display file*/
 	Transformacao* transformacao; /*!< É um objeto da classe Tranformacao*/
 	Clipper* clipper; /*!< É um objeto da classe Clipper*/
+	WavefrontOBJ* obj;
 
 	//! Método que verifica a validade de um nome.
     /*!
@@ -55,6 +58,7 @@ public:
 		displayFile = new DisplayFile();
 		transformacao = new Transformacao();
 		clipper = new Clipper();
+		obj = new WavefrontOBJ();
 	}
 
 	//! Método que rotaciona a window.
@@ -389,6 +393,27 @@ public:
 	*/
 	Coordenada* getProporcoesWindow() {
 		return new Coordenada(window->getLargura(), window->getAltura());
+	}
+
+	void salvaElementoParaOBJ(ElementoGrafico* elemento) {
+		obj->criaNovoArquivo();
+		obj->salvaVerticesNoArquivo(elemento);
+		obj->salvaElementosNoArquivo();
+	}
+
+	void salvaMundoParaOBJ() {
+		obj->criaNovoArquivo();
+		Elemento<ElementoGrafico*>* elementoLista = displayFile->getHead();
+		while (elementoLista != NULL) {
+			obj->salvaVerticesNoArquivo(elementoLista->getInfo());
+			elementoLista = elementoLista->getProximo();
+		}
+		obj->salvaElementosNoArquivo();
+	}
+
+	void carregaOBJ(std::string nomeArquivo) {
+		ListaEnc<ElementoGrafico*>* lista = obj->carregarOBJ(nomeArquivo);
+		displayFile->insereLista(lista);
 	}
 	
 };

@@ -27,6 +27,14 @@ public:
 	Elemento<ElementoGrafico*>* getHead() {
 		return displayFile->getHead();
 	}
+
+	void insereLista(ListaEnc<ElementoGrafico*>* novaLista) {
+		Elemento<ElementoGrafico*>* elementoLista = novaLista->getHead();
+		while (elementoLista != NULL) {
+			displayFile->adiciona(elementoLista->getInfo());
+			elementoLista = elementoLista->getProximo();
+		}
+	}
 	
 	//! Método que insere um ponto no display file.
     /*!
