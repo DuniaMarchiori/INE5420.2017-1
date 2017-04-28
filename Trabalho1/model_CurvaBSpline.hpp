@@ -1,6 +1,8 @@
 #ifndef CURVABSPLINE_HPP
 #define CURVABSPLINE_HPP
 
+#include <iostream>
+
 #include "model_Matriz.hpp"
 
 #include "model_Curva.hpp"
@@ -78,22 +80,28 @@ public:
 		mbs->setValor(0, 1, (double)1/2);
 		mbs->setValor(0, 2, (double)-1/2);
 		mbs->setValor(0, 3, (double)1/6);
+
 		mbs->setValor(1, 0, (double)1/2);
 		mbs->setValor(1, 1, -1.0);
 		mbs->setValor(1, 2, (double)1/2);
+
 		mbs->setValor(2, 0, (double)-1/2);
 		mbs->setValor(2, 2, (double)1/2);
+
 		mbs->setValor(3, 0, (double)1/6);
 		mbs->setValor(3, 1, (double)2/3);
 		mbs->setValor(3, 2, (double)1/6);
 
 		Matriz<double>* eDelta = new Matriz<double>(4, 4);
 		eDelta->setValor(0, 3, 1.0);
+
 		eDelta->setValor(1, 0, dCubo);
 		eDelta->setValor(1, 1, dQuad);
 		eDelta->setValor(1, 2, d);
+
 		eDelta->setValor(2, 0, 6*dCubo);
 		eDelta->setValor(2, 1, 2*dQuad);
+
 		eDelta->setValor(3, 0, 6*dCubo);
 
 		Elemento<Coordenada*>* elementoLista = getListaNormal()->getHead();

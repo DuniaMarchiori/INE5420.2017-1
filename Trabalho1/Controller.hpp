@@ -448,47 +448,55 @@ public:
 		descricaoSCN();
 		atualizaDesenho();
 	}
-	
+
 	//! Método que carrega um arquivo .obj.
 	void carregarObj() {
 		try {
-			string path = view->selecionarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo.obj
-			ListaEnc<ElementoGrafico*>* lista = model->elementosCarregadosArquivoOBJ(path);
+			string path = view->selecionarArquivo();
+			try {
+				ListaEnc<ElementoGrafico*>* lista = model->elementosCarregadosArquivoOBJ(path);
 
-			string tipoElementoParaListBox = "";
-			Elemento<ElementoGrafico*>* elementoLista = lista->getHead();
-			while (elementoLista != NULL) {
-				model->insereElementoGrafico(elementoLista->getInfo());
-				switch (elementoLista->getInfo()->getTipo()) {
-					case PONTO:
-						tipoElementoParaListBox = "Ponto";
-						break;
-					case RETA:
-						tipoElementoParaListBox = "Reta";
-						break;
-					case POLIGONO:
-						tipoElementoParaListBox = "Polígono";
-						break;
-					case CURVA:
-						tipoElementoParaListBox = "Curva";
-						break;
+				string tipoElementoParaListBox = "";
+				Elemento<ElementoGrafico*>* elementoLista = lista->getHead();
+				while (elementoLista != NULL) {
+					model->insereElementoGrafico(elementoLista->getInfo());
+					switch (elementoLista->getInfo()->getTipo()) {
+						case PONTO:
+							tipoElementoParaListBox = "Ponto";
+							break;
+						case RETA:
+							tipoElementoParaListBox = "Reta";
+							break;
+						case POLIGONO:
+							tipoElementoParaListBox = "Polígono";
+							break;
+						case CURVA:
+							tipoElementoParaListBox = "Curva";
+							break;
+					}
+
+					view->adicionaElementoListbox(elementoLista->getInfo()->getNome(), tipoElementoParaListBox);
+					elementoLista = elementoLista->getProximo();
 				}
 
-				view->adicionaElementoListbox(elementoLista->getInfo()->getNome(), tipoElementoParaListBox);
-				elementoLista = elementoLista->getProximo();
-			}
+				view->inserirTextoConsole("Arquivo carregado.");
 
-			descricaoSCN();
-			atualizaDesenho();
+				descricaoSCN();
+				atualizaDesenho();
+			} catch (int erro) {
+				if (erro > -1) {
+					view->inserirTextoConsole(("Erro na linha " + to_string(erro) + " do arquivo carregado.").c_str());
+				}
+			}
 		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
 			return;
 		}
 	}
-	
+
 	//! Método que salva um elemento em .obj.
 	void salvarElementoObj() {
 		try {
-			string path = view->salvarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo
+			string path = view->salvarArquivo();
 			int index = view->getIndexLinhaElementosSelecionada();
 			ElementoGrafico* elemento = model->getElementoNoIndice(index);
 			model->salvaElementoParaOBJ(path, elemento);
@@ -497,11 +505,11 @@ public:
 			return;
 		}
 	}
-	
+
 	//! Método que salva o mundo em .obj.
 	void salvarMundoObj() {
 		try {
-			string path = view->salvarArquivo(); // Retorna tipo: \home\blabla\abc\arquivo
+			string path = view->salvarArquivo();
 			model->salvaMundoParaOBJ(path);
 			view->inserirTextoConsole("Mundo salvo.");
 		} catch (...) { // Caso o usuário cancele a operação e feche a janela de escolher
@@ -603,7 +611,7 @@ public:
 						} else {
 							view->inserirTextoConsole("ERRO: a curva deve ter pelo menos 4 coordenadas.");
 						}
-						
+
 					}
 				}
 

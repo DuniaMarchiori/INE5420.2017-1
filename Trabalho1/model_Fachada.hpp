@@ -112,7 +112,7 @@ public:
 	Reta* clippingDeRetaLB(Reta* reta) {
 		return clipper->clippingDeRetaLB(reta);
 	}
-	
+
 	//! Método que clippa um poligono.
 	/*!
         /param poligono O poligono que será clippado.
@@ -121,12 +121,12 @@ public:
 	Poligono* clippingDePoligono(Poligono* poligono) {
 		return clipper->clippingDePoligono(poligono);
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	//! Método que clippa uma curva, com clipping de retas Cohen-Sutherland.
 	/*!
         /param pontosCurva São os pontos que serão ligador para formar a curva.
@@ -135,7 +135,7 @@ public:
 	ListaEnc<Reta*>* clippingDeCurvaCS(ListaEnc<Coordenada*>* pontosCurva) {
 		return clipper->clippingDeCurvaCS(pontosCurva);
 	}
-	
+
 	//! Método que clippa uma curva, com clipping de retas Liang-Barsky.
 	/*!
         /param pontosCurva São os pontos que serão ligador para formar a curva.
@@ -144,11 +144,11 @@ public:
 	ListaEnc<Reta*>* clippingDeCurvaLB(ListaEnc<Coordenada*>* pontosCurva) {
 		return clipper->clippingDeCurvaLB(pontosCurva);
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	//! Método que realiza a transformada de viewport.
 	/*!
         /param ponto uma coordenada do mundo que sera transformada.
@@ -292,7 +292,7 @@ public:
 			throw -3;
 		}
 	}
-	
+
 	//! Método que insere uma curva B-Spline na display file.
     /*!
 		Verifica se o nome e as coordenadas são válidas.
@@ -313,7 +313,7 @@ public:
 			throw -3;
 		}
 	}
-	
+
 	//! Método que deleta um elemento da display file.
 	/*!
         /param index a posicao do elemento a ser deletado.
@@ -390,7 +390,7 @@ public:
 		free(fator);
 		free(resultado);
 	}
-	
+
 	//! Método que devolve a largura e altura da window.
 	/*!
 		/return coordenada com a altura e largura da window.
@@ -399,12 +399,21 @@ public:
 		return new Coordenada(window->getLargura(), window->getAltura());
 	}
 
+	//! Método que salva um elemento em .obj
+	/*!
+		/param arquivo é o caminho até o arquivo .obj
+		/param elemento é o elemento que será salvo.
+	*/
 	void salvaElementoParaOBJ(std::string arquivo, ElementoGrafico* elemento) {
 		obj->criaNovoArquivo(arquivo);
 		obj->salvaVerticesNoArquivo(elemento);
 		obj->salvaElementosNoArquivo();
 	}
 
+	//! Método que salva o mundo em .obj
+	/*!
+		/param arquivo é o caminho até o arquivo .obj
+	*/
 	void salvaMundoParaOBJ(std::string arquivo) {
 		obj->criaNovoArquivo(arquivo);
 		Elemento<ElementoGrafico*>* elementoLista = displayFile->getHead();
@@ -415,11 +424,15 @@ public:
 		obj->salvaElementosNoArquivo();
 	}
 
-	ListaEnc<ElementoGrafico*>* elementosCarregadosArquivoOBJ(std::string nomeArquivo) {
-		return obj->carregarOBJ(nomeArquivo);
-		//displayFile->insereLista(lista);
+	//! Método que converte um arquivo .obj em uma lista de elementos graficos.
+	/*!
+		/param caminhoArquivo é o caminho até o arquivo .obj
+		/return uma lista de elementos graficos contida no arquivo.
+	*/
+	ListaEnc<ElementoGrafico*>* elementosCarregadosArquivoOBJ(std::string caminhoArquivo) {
+		return obj->carregarOBJ(caminhoArquivo);
 	}
-	
+
 };
 
 #endif
