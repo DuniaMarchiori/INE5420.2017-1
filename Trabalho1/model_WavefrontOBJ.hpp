@@ -16,6 +16,10 @@
 
 using std::string;
 
+/*!
+	Implementação básica de Wavefront Obj, apenas com pontos, retas, poligonos e curvas (b-spline).
+	Não interpreta arquivos de material.
+*/
 class WavefrontOBJ {
 
 private:

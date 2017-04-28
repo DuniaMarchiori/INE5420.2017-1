@@ -1,8 +1,6 @@
 #ifndef CURVABSPLINE_HPP
 #define CURVABSPLINE_HPP
 
-#include <iostream>
-
 #include "model_Matriz.hpp"
 
 #include "model_Curva.hpp"
@@ -152,7 +150,7 @@ public:
 			dy  = colunaDeFy->getValor(1, 0);
 			d2y = colunaDeFy->getValor(2, 0);
 			d3y = colunaDeFy->getValor(3, 0);
-
+			
 			desenhaCurvaFwdDiff(n, x, dx, d2x, d3x, y, dy, d2y, d3y, listaFinal);
 
 			C1 = C2;
