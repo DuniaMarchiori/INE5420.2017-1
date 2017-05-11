@@ -3,9 +3,13 @@
 
 #include <string>
 
+#include <iostream>
+#include <math.h>
+
 #include "model_Matriz.hpp"
 #include "model_WavefrontOBJ.hpp"
 #include "model_Tipo.hpp"
+#include "model_Aresta.hpp"
 
 #include "model_Coordenada.hpp"
 #include "model_ElementoGrafico.hpp"
@@ -16,6 +20,7 @@
 #include "model_Curva.hpp"
 #include "model_CurvaBezier.hpp"
 #include "model_CurvaBSpline.hpp"
+#include "model_Objeto3D.hpp"
 
 #include "model_Window.hpp"
 #include "model_DisplayFile.hpp"
@@ -52,8 +57,14 @@ public:
 
 	//! Construtor
 	Fachada () {
-		Coordenada* centroWindow = new Coordenada(0,0);
-		window = new Window(centroWindow, 100, 100);
+		/* Valores Default do sistema */
+		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0);
+		/**/
+
+		/* Valores do exercicio à mão /
+		window = new Window(new Coordenada3D(-50, 50, -50), 100, 141.421, 0, 45, 0);
+		/**/
+
 		viewport = new Viewport();
 		displayFile = new DisplayFile();
 		transformacao = new Transformacao();
@@ -64,18 +75,31 @@ public:
 	//! Método que rotaciona a window.
 	/*!
         /param graus indica quantos graus a window deve rotacionar.
-    */
-	void rotacionarWindow(double graus) {
-		window->rotacionarWindow(graus);
+		/param eixo inteiro representando o eixo a ser rotacionado (X = 0, Y = 1, Z = 2).
+	*/
+	void rotacionarWindow(double graus, int eixo) {
+		switch (eixo) {
+			case 0: {
+				window->rotacionarX(graus);
+				break;
+			} case 1: {
+				window->rotacionarY(graus);
+				break;
+			} case 2: {
+				window->rotacionarZ(graus);
+				break;
+			}
+		}
 	}
 
 	//! Método que manda a window se mover.
 	/*!
         /param fatX O quanto a janela deve se mover em X.
         /param fatY O quanto a janela deve se mover em Y.
+        /param fatZ O quanto a janela deve se mover em Z.
     */
-	void moverWindow(double fatX, double fatY) {
-		window->moverWindow(fatX, fatY);
+	void moverWindow(double fatX, double fatY, double fatZ) {
+		window->moverWindow(fatX, fatY, fatZ);
 	}
 
 	//! Método que manda a window executar um zoom.
@@ -122,17 +146,12 @@ public:
 		return clipper->clippingDePoligono(poligono);
 	}
 
-
-
-
-
-
 	//! Método que clippa uma curva, com clipping de retas Cohen-Sutherland.
 	/*!
         /param pontosCurva São os pontos que serão ligador para formar a curva.
 		/return a lista de retas depois do clipping.
     */
-	ListaEnc<Reta*>* clippingDeCurvaCS(ListaEnc<Coordenada*>* pontosCurva) {
+	ListaEnc<Reta*>* clippingDeCurvaCS(ListaEnc<Coordenada3D*>* pontosCurva) {
 		return clipper->clippingDeCurvaCS(pontosCurva);
 	}
 
@@ -141,13 +160,9 @@ public:
         /param pontosCurva São os pontos que serão ligador para formar a curva.
 		/return a lista de retas depois do clipping.
     */
-	ListaEnc<Reta*>* clippingDeCurvaLB(ListaEnc<Coordenada*>* pontosCurva) {
+	ListaEnc<Reta*>* clippingDeCurvaLB(ListaEnc<Coordenada3D*>* pontosCurva) {
 		return clipper->clippingDeCurvaLB(pontosCurva);
 	}
-
-
-
-
 
 	//! Método que realiza a transformada de viewport.
 	/*!
@@ -155,7 +170,7 @@ public:
         /param vpMax a coordenada vpMax da viewport.
 		/return o ponto transformado.
     */
-	Coordenada* transformaViewport(Coordenada* ponto, Coordenada* vpMax) {
+	Coordenada* transformaViewport(Coordenada3D* ponto, Coordenada* vpMax) {
 		return viewport->transformaViewport(ponto, vpMax);
 	}
 
@@ -179,7 +194,7 @@ public:
 		/param coordY A coordenada em Y desse ponto.
 		/return retorna o ponto que foi inserido.
     */
-	Ponto* inserirNovoPonto(string nome, string coordX, string coordY) {
+	Ponto* inserirNovoPonto(string nome, string coordX, string coordY, string coordZ) {
 		if (!nomeValido(nome)) {
 			throw -1;
 		}
@@ -187,13 +202,14 @@ public:
 		// Se os campos de coordenada não estão em branco
 		if ( !(coordX.empty()) && !(coordY.empty()) ) {
 			// Cria novo objeto
-			Coordenada* c = new Coordenada();
+			Coordenada3D* c = new Coordenada3D();
 
 			// Verifica se os campos são números
 			try {
 				// stod = string to double
 				c->setX(stod(coordX));
 				c->setY(stod(coordY));
+				c->setZ(stod(coordZ));
 			} catch (...) {
 				throw -2;
 			}
@@ -217,25 +233,27 @@ public:
 		/param coordFinY A coordenada final em Y dessa reta.
 		/return retorna a reta que foi inserida.
     */
-	Reta* inserirNovaReta(string nome, string coordIniX, string coordIniY, string coordFinX, string coordFinY) {
+	Reta* inserirNovaReta(string nome, string coordIniX, string coordIniY, string coordIniZ, string coordFinX, string coordFinY, string coordFinZ) {
 		if (!nomeValido(nome)) {
 			throw -1;
 		}
 
 		// Se os campos de coordenada não estão em branco
-		if ( !(coordIniX.empty()) && !(coordIniY.empty()) && !(coordFinX.empty()) && !(coordFinY.empty()) ) {
+		if ( !(coordIniX.empty()) && !(coordIniY.empty()) && !(coordIniZ.empty()) && !(coordFinX.empty()) && !(coordFinY.empty()) && !(coordFinZ.empty())  ) {
 			// Cria novo objeto
-			Coordenada* cI = new Coordenada();
-			Coordenada* cF = new Coordenada();
+			Coordenada3D* cI = new Coordenada3D();
+			Coordenada3D* cF = new Coordenada3D();
 
 			// Verifica se os campos são números
 			try {
 				// stod = string to double
 				cI->setX(stod(coordIniX));
 				cI->setY(stod(coordIniY));
+				cI->setZ(stod(coordIniZ));
 
 				cF->setX(stod(coordFinX));
 				cF->setY(stod(coordFinY));
+				cF->setZ(stod(coordFinZ));
 			} catch (...) {
 				throw -2;
 			}
@@ -257,7 +275,7 @@ public:
 		/param preenchido True caso o poligono deva ser preenchido.
 		/return retorna o polígono que foi inserido.
     */
-	Poligono* inserirNovoPoligono(string nome, ListaEnc<Coordenada*>* listaCoordsPoligono, bool preenchido) {
+	Poligono* inserirNovoPoligono(string nome, ListaEnc<Coordenada3D*>* listaCoordsPoligono, bool preenchido) {
 		if (!nomeValido(nome)) {
 			throw -1;
 		}
@@ -279,7 +297,7 @@ public:
 		/param listaCoordCurva Uma lista de coordenadas que contém todos os pontos da curva.
 		/return retorna a curva que foi inserida.
     */
-	CurvaBezier* inserirNovaCurvaBezier(string nome, ListaEnc<Coordenada*>* listaCoordCurva) {
+	CurvaBezier* inserirNovaCurvaBezier(string nome, ListaEnc<Coordenada3D*>* listaCoordCurva) {
 		if (!nomeValido(nome)) {
 			throw -1;
 		}
@@ -300,7 +318,7 @@ public:
 		/param listaCoordCurva Uma lista de coordenadas que contém todos os pontos da curva.
 		/return retorna a curva que foi inserida.
     */
-	CurvaBSpline* inserirNovaCurvaBSpline(string nome, ListaEnc<Coordenada*>* listaCoordCurva) {
+	CurvaBSpline* inserirNovaCurvaBSpline(string nome, ListaEnc<Coordenada3D*>* listaCoordCurva) {
 		if (!nomeValido(nome)) {
 			throw -1;
 		}
@@ -311,6 +329,45 @@ public:
 			return cb;
 		} else {
 			throw -3;
+		}
+	}
+
+	//! Método que insere um Objeto3D na display file.
+    /*!
+		Verifica se o nome e as coordenadas são válidas.
+        /param nome O nome do novo Objeto3D.
+		/param listaCoords Uma lista de coordenadas que contém todas as coordenadas do Objeto3D.
+		/param listaPares Uma lista de ParCoord que contém inteiros dizendo quais coordenadas formam arestas.
+		/return retorna o Objeto3 que foi inserido.
+    */
+	Objeto3D* inserirNovoObjeto3D(string nome, ListaEnc<Coordenada3D*>* listaCoords, ListaEnc<ParCoord*>* listaPares) {
+		if (!nomeValido(nome)) {
+			throw -1;
+		}
+
+		if ( !(listaCoords->listaVazia()) ) {
+			ListaEnc<Aresta*>* listaArestas = new ListaEnc<Aresta*>();
+
+			Elemento<ParCoord*>* elemento = listaPares->getHead();
+			while (elemento != NULL) {
+				ParCoord* arestaAtual = elemento->getInfo();
+				Coordenada3D *A, *B;
+				try {
+					A = listaCoords->elementoNoIndice(arestaAtual->getA());
+					B = listaCoords->elementoNoIndice(arestaAtual->getB());
+				} catch ( ... ) {
+					throw -3;
+				}
+				Aresta* aresta = new Aresta(A, B);
+
+				listaArestas->adiciona(aresta);
+				elemento = elemento->getProximo();
+			}
+			Objeto3D* obj = new Objeto3D(nome, listaCoords, listaArestas);
+			displayFile->inserirNovoObjeto3D(obj);
+			return obj;
+		} else {
+			throw -2;
 		}
 	}
 
@@ -336,7 +393,7 @@ public:
         /param elem o elemento grafico que sera transladado.
 		/param coord uma coordenada contendo a quantidade de translação que sera aplicada em X e Y.
     */
-	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
+	void fazTranslacao(ElementoGrafico* elem, Coordenada3D* coord) {
 		transformacao->fazTranslacao(elem, coord);
 	}
 
@@ -345,7 +402,7 @@ public:
         /param elem o elemento grafico que sera escalonado.
 		/param fator uma coordenada contendo a quantidade de escalonamento que sera aplicada em X e Y.
     */
-	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
+	void fazEscalonamento(ElementoGrafico* elem, Coordenada3D* fator) {
 		transformacao->fazEscalonamento(elem, fator);
 	}
 
@@ -356,14 +413,48 @@ public:
 		/param angulo quantos graus o elemento sera rotacionado.
     */
 	void fazRotacao(ElementoGrafico* elem, Coordenada* coord, double angulo) {
+		/*
 		transformacao->fazRotacao(elem, coord, angulo);
+		*/
+	}
+
+	//! Método que realiza a rotação de um elemento grafico em torno do eixo X.
+	/*!
+        /param elem o elemento grafico que sera rotacionado.
+		/param coord a rotação sera relativa a este ponto.
+		/param angulo quantos graus o elemento sera rotacionado.
+    */
+	void fazRotacaoX(ElementoGrafico* elem, Coordenada3D* coord, double angulo) {
+		transformacao->fazRotacaoEixo(elem, coord, angulo, 0);
+	}
+
+	//! Método que realiza a rotação de um elemento grafico em torno do eixo Y.
+	/*!
+        /param elem o elemento grafico que sera rotacionado.
+		/param coord a rotação sera relativa a este ponto.
+		/param angulo quantos graus o elemento sera rotacionado.
+    */
+	void fazRotacaoY(ElementoGrafico* elem, Coordenada3D* coord, double angulo) {
+		transformacao->fazRotacaoEixo(elem, coord, angulo, 1);
+	}
+
+	//! Método que realiza a rotação de um elemento grafico em torno do eixo Z.
+	/*!
+        /param elem o elemento grafico que sera rotacionado.
+		/param coord a rotação sera relativa a este ponto.
+		/param angulo quantos graus o elemento sera rotacionado.
+    */
+	void fazRotacaoZ(ElementoGrafico* elem, Coordenada3D* coord, double angulo) {
+		transformacao->fazRotacaoEixo(elem, coord, angulo, 2);
 	}
 
 	//! Método que faz a tranformação de sistemas de coordenadas normalizadas em todo o mundo.
 	void sistemaCoordenadasNormalizadas() {
-		double angulo = window->getAngulo();
+
+		double angulo = window->getAnguloZ();
+
 		Coordenada* fator = new Coordenada( (2/window->getLargura()), (2/window->getAltura()) );
-		Matriz<double>* resultado = transformacao->matrizSistemaCoordenadasNormalizadas(angulo, fator, window->getCentro());
+		Matriz<double>* resultado = transformacao->matrizSistemaCoordenadasNormalizadas(angulo, fator, window->getVRP());
 
 		// Faz a transformação em todo o mundo
 		Elemento<ElementoGrafico*>* elementoLista = displayFile->getHead();
@@ -381,12 +472,11 @@ public:
 		/param elem o elemento que será feita a transformação.
 	*/
 	void sistemaCoordenadasNormalizadas(ElementoGrafico* elem) {
-		double angulo = window->getAngulo();
+		double angulo = window->getAnguloZ();
+
 		Coordenada* fator = new Coordenada( (2/window->getLargura()), (2/window->getAltura()) );
-		Matriz<double>* resultado = transformacao->matrizSistemaCoordenadasNormalizadas(angulo, fator, window->getCentro());
-
+		Matriz<double>* resultado = transformacao->matrizSistemaCoordenadasNormalizadas(angulo, fator, window->getVRP());
 		transformacao->fazTransformacaoNormalizada(elem, resultado);
-
 		free(fator);
 		free(resultado);
 	}
@@ -424,6 +514,12 @@ public:
 		obj->salvaElementosNoArquivo();
 	}
 
+	//! Método que reseta a posição da window.
+	void resetarWindow() {
+		free(window);
+		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0);
+	}
+
 	//! Método que converte um arquivo .obj em uma lista de elementos graficos.
 	/*!
 		/param caminhoArquivo é o caminho até o arquivo .obj
@@ -431,6 +527,22 @@ public:
 	*/
 	ListaEnc<ElementoGrafico*>* elementosCarregadosArquivoOBJ(std::string caminhoArquivo) {
 		return obj->carregarOBJ(caminhoArquivo);
+	}
+
+	void projecaoParalelaOrtogonal() {
+		Matriz<double>* resultado = transformacao->getMatrizProjecaoParalelaOrtogonal(window->getVRP(), window->getAnguloX(), window->getAnguloY());
+
+		Elemento<ElementoGrafico*>* elementoLista = displayFile->getHead();
+		while (elementoLista != NULL) {
+			transformacao->fazProjecaoParalelaOrtogonal(elementoLista->getInfo(), resultado);
+			elementoLista = elementoLista->getProximo();
+		}
+	}
+
+	void projecaoParalelaOrtogonal(ElementoGrafico* elemento) {
+		Matriz<double>* resultado = transformacao->getMatrizProjecaoParalelaOrtogonal(window->getVRP(), window->getAnguloX(), window->getAnguloY());
+
+		transformacao->fazProjecaoParalelaOrtogonal(elemento, resultado);
 	}
 
 };

@@ -1,7 +1,11 @@
 #include <stdlib.h>
+
+#include <iostream>
+
 #include <math.h>
 #include "view_View.hpp"
 #include "model_Fachada.hpp"
+#include "ParCoord.hpp"
 
 #ifndef CONTROLLER_HPP
 #define CONTROLLER_HPP
@@ -81,14 +85,14 @@ public:
 
 					if (poligonoClippado != NULL) {
 						//ListaEnc<Coordenada*>* listaCoord = (static_cast<Poligono*> (elemento))->getListaNormal();
-						ListaEnc<Coordenada*>* listaCoord = poligonoClippado->getListaNormal();
+						ListaEnc<Coordenada3D*>* listaCoord = poligonoClippado->getListaNormal();
 
-						Elemento<Coordenada*>* proxCoord = listaCoord->getHead();
+						Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
 
 						ListaEnc<Coordenada*>* listaCoordTransformada = new ListaEnc<Coordenada*>();
 
 						while (proxCoord != NULL) {
-							Coordenada* coord = proxCoord->getInfo();
+							Coordenada3D* coord = proxCoord->getInfo();
 							Coordenada* coordTransformada = model->transformaViewport(coord, viewportMax);
 							listaCoordTransformada->adiciona(coordTransformada);
 							proxCoord = proxCoord->getProximo();
@@ -109,7 +113,7 @@ public:
 					int numSegmentos = (distMedia/maiorProporcao)*100;
 					numSegmentos = fmax(2, fmin(numSegmentos, 2000)); // Mantém o numero no intervalo [2, 2000].
 
-					ListaEnc<Coordenada*>* pontosCurva = curva->getCurvaFinal(numSegmentos); // Quantos segmentos baseado no zoom;
+					ListaEnc<Coordenada3D*>* pontosCurva = curva->getCurvaFinal(numSegmentos); // Quantos segmentos baseado no zoom;
 					ListaEnc<Reta*>* listaRetas;
 
 					switch (view->getTipoClippingReta()) {
@@ -128,8 +132,8 @@ public:
 						while (elementoLista != NULL) {
 							Reta* retaAtual = elementoLista->getInfo();
 
-							retaAtual->setCoordenadaNormalInicial(model->transformaViewport(retaAtual->getCoordenadaNormalInicial(), viewportMax));
-							retaAtual->setCoordenadaNormalFinal(model->transformaViewport(retaAtual->getCoordenadaNormalFinal(), viewportMax));
+							retaAtual->setCoordenadaNormalInicial(new Coordenada3D(model->transformaViewport(retaAtual->getCoordenadaNormalInicial(), viewportMax)));
+							retaAtual->setCoordenadaNormalFinal(new Coordenada3D(model->transformaViewport(retaAtual->getCoordenadaNormalFinal(), viewportMax)));
 
 							elementoLista = elementoLista->getProximo();
 						}
@@ -140,6 +144,43 @@ public:
 					}
 
 					free(pontosCurva);
+					break;
+				} case OBJETO3D: {
+
+					Objeto3D* objeto = (static_cast<Objeto3D*> (elemento));
+					Elemento<Aresta*>* elementoLista = objeto->getListaArestaNormal()->getHead();
+
+					while (elementoLista != NULL) {
+						Aresta* aresta = elementoLista->getInfo();
+
+						Reta* retaDaAresta = new Reta();
+						retaDaAresta->setCoordenadaNormalInicial(new Coordenada3D(aresta->getCoordA()));
+						retaDaAresta->setCoordenadaNormalFinal(new Coordenada3D(aresta->getCoordB()));
+
+						Reta* retaClippada = NULL;
+						switch (view->getTipoClippingReta()) {
+							case 0: {
+								retaClippada = model->clippingDeRetaCS(retaDaAresta);
+								break;
+							} case 1: {
+								retaClippada = model->clippingDeRetaLB(retaDaAresta);
+								break;
+							}
+						}
+
+						if (retaClippada != NULL) {
+							Coordenada* coordIniTransformada = model->transformaViewport(retaClippada->getCoordenadaNormalInicial(), viewportMax);
+							Coordenada* coordFinTransformada = model->transformaViewport(retaClippada->getCoordenadaNormalFinal(), viewportMax);
+							view->desenhaReta(coordIniTransformada, coordFinTransformada);
+							free(coordIniTransformada);
+							free(coordFinTransformada);
+						}
+
+						free(retaClippada);
+						free(retaDaAresta);
+						elementoLista = elementoLista->getProximo();
+					}
+					break;
 				}
 			}
 			proxElemento = proxElemento->getProximo();
@@ -153,7 +194,7 @@ public:
         /param elem o elemento grafico que sera transladado.
 		/param coord uma coordenada contendo a quantidade de translação que sera aplicada em X e Y.
     */
-	void fazTranslacao(ElementoGrafico* elem, Coordenada* coord) {
+	void fazTranslacao(ElementoGrafico* elem, Coordenada3D* coord) {
 		model->fazTranslacao(elem, coord);
 	}
 
@@ -162,7 +203,7 @@ public:
         /param elem o elemento grafico que sera escalonado.
 		/param fator uma coordenada contendo a quantidade de escalonamento que sera aplicada em X e Y.
     */
-	void fazEscalonamento(ElementoGrafico* elem, Coordenada* fator) {
+	void fazEscalonamento(ElementoGrafico* elem, Coordenada3D* fator) {
 		model->fazEscalonamento(elem, fator);
 	}
 
@@ -189,17 +230,26 @@ public:
 		model->sistemaCoordenadasNormalizadas(elem);
 	}
 
+	void projecaoParalelaOrtogonal() {
+		model->projecaoParalelaOrtogonal();
+	}
+
+	void projecaoParalelaOrtogonal(ElementoGrafico* elemento) {
+		model->projecaoParalelaOrtogonal(elemento);
+	}
+
 	//! Método encarregado de decidir qual operação de transformação sera feita.
 	void editarElementoGrafico() {
 		int index = view->getIndexLinhaElementosSelecionada();
 		ElementoGrafico* elemento = model->getElementoNoIndice(index);
-		Coordenada* c;
+		Coordenada3D* c;
 
 		switch (view->getTipoTransformacao()) {
 			case 0: // Aba da translação
 				try {
-					c = new Coordenada(view->getTransX(), view->getTransY());
+					c = new Coordenada3D(view->getTransX(), view->getTransY(), view->getTransZ());
 					fazTranslacao(elemento, c);
+					projecaoParalelaOrtogonal(elemento);
 					descricaoSCN(elemento);
 					//view->limparTextoTranslacao();
 					view->focusTransX();
@@ -214,8 +264,9 @@ public:
 
 			case 1: // Aba do escalonamento
 				try {
-					c = new Coordenada(view->getEscalFatorX(), view->getEscalFatorY());
+					c = new Coordenada3D(view->getEscalFatorX(), view->getEscalFatorY(), view->getEscalFatorZ());
 					fazEscalonamento(elemento, c);
+					projecaoParalelaOrtogonal(elemento);
 					descricaoSCN(elemento);
 					//view->limparTextoEscalonamento();
 					view->focusEscalX();
@@ -243,10 +294,24 @@ public:
 						break;
 					}
 				}
-				switch(view->getRelatividadeRotacao()) {
+				int eixo = view->getEixoDeRotacao();
+				switch (view->getRelatividadeRotacao()) {
 					case 0: // Opção de rotação em relação à origem
-						c = new Coordenada(0, 0);
-						fazRotacao(elemento, c, angulo);
+						c = new Coordenada3D(0, 0, 0);
+						switch (eixo) {
+							case 0: {
+								model->fazRotacaoX(elemento, c, angulo);
+								break;
+							} case 1: {
+								model->fazRotacaoY(elemento, c, angulo);
+								break;
+							} case 2: {
+								model->fazRotacaoZ(elemento, c, angulo);
+								break;
+							}
+						}
+						// fazRotacao(elemento, c, angulo);
+						projecaoParalelaOrtogonal(elemento);
 						descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor da origem.");
 						view->focusRotAngulo();
@@ -255,8 +320,21 @@ public:
 						break;
 
 					case 1: // Opção de rotação em relação ao centro do elemento
-						c = new Coordenada(elemento->getCentroGeometrico());
-						fazRotacao(elemento, c, angulo);
+						c = new Coordenada3D(elemento->getCentroGeometrico());
+						switch (eixo) {
+							case 0: {
+								model->fazRotacaoX(elemento, c, angulo);
+								break;
+							} case 1: {
+								model->fazRotacaoY(elemento, c, angulo);
+								break;
+							} case 2: {
+								model->fazRotacaoZ(elemento, c, angulo);
+								break;
+							}
+						}
+						// fazRotacao(elemento, c, angulo);
+						projecaoParalelaOrtogonal(elemento);
 						descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");
 						view->focusRotAngulo();
@@ -266,8 +344,21 @@ public:
 
 					case 2: // Opção de rotação em relação a um ponto qualquer
 						try {
-							c = new Coordenada(view->getRotRelativoAX(), view->getRotRelativoAY());
-							fazRotacao(elemento, c, angulo);
+							c = new Coordenada3D(view->getRotRelativoAX(), view->getRotRelativoAY(), view->getRotRelativoAZ());
+							switch (eixo) {
+								case 0: {
+									model->fazRotacaoX(elemento, c, angulo);
+									break;
+								} case 1: {
+									model->fazRotacaoY(elemento, c, angulo);
+									break;
+								} case 2: {
+									model->fazRotacaoZ(elemento, c, angulo);
+									break;
+								}
+							}
+							// fazRotacao(elemento, c, angulo);
+							projecaoParalelaOrtogonal(elemento);
 							descricaoSCN(elemento);
 							view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
 							view->focusRotAngulo();
@@ -327,40 +418,205 @@ public:
 		}
 	}
 
-	//! Método que gira a window no sentido anti-horário.
-	void botaoGirarWindowEsquerdo() {
+	//! Método chamado ao apertar o botão de movimento de cima à esquerda.
+	void botaoPosTopEsq() {
+		switch (view->getTipoMovimentoWindow()) {
+			case 0: {
+				botaoSubirWindow();
+				break;
+			} case 1: {
+				botaoGirarWindowZAntiHor();
+				break;
+			}
+		}
+	}
+
+	//! Método chamado ao apertar o botão de movimento de cima à direita.
+	void botaoPosTopDir() {
+		switch (view->getTipoMovimentoWindow()) {
+			case 0: {
+				botaoDescerWindow();
+				break;
+			} case 1: {
+				botaoGirarWindowZHor();
+				break;
+			}
+		}
+	}
+
+	//! Método chamado ao apertar o botão de movimento de cima no meio.
+	void botaoPosCima() {
+		switch (view->getTipoMovimentoWindow()) {
+			case 0: {
+				botaoMovimentoFrente();
+				break;
+			} case 1: {
+				botaoGirarWindowXHor();
+				break;
+			}
+		}
+	}
+
+	//! Método chamado ao apertar o botão de movimento da esquerda.
+	void botaoPosEsq() {
+		switch (view->getTipoMovimentoWindow()) {
+			case 0: {
+				botaoMovimentoEsquerda();
+				break;
+			} case 1: {
+				botaoGirarWindowYHor();
+				break;
+			}
+		}
+	}
+
+	//! Método chamado ao apertar o botão de movimento da direita.
+	void botaoPosDir() {
+		switch (view->getTipoMovimentoWindow()) {
+			case 0: {
+				botaoMovimentoDireita();
+				break;
+			} case 1: {
+				botaoGirarWindowYAntiHor();
+				break;
+			}
+		}
+	}
+
+	//! Método chamado ao apertar o botão de movimento de baixo.
+	void botaoPosBaixo() {
+		switch (view->getTipoMovimentoWindow()) {
+			case 0: {
+				botaoMovimentoTras();
+				break;
+			} case 1: {
+				botaoGirarWindowXAntiHor();
+				break;
+			}
+		}
+	}
+
+	//! Método que gira a window ao redor do eixo X no sentido anti-horário.
+	void botaoGirarWindowXAntiHor() {
 		try {
 			double fator = view->getFatorPosicao();
-			model->rotacionarWindow(fator);
+			model->rotacionarWindow(fator, 0);
+			projecaoParalelaOrtogonal();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Window rotacionada");
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que gira a window ao redor do eixo X no sentido horário.
+	void botaoGirarWindowXHor() {
+		try {
+			double fator = view->getFatorPosicao();
+			model->rotacionarWindow(-fator, 0);
+			projecaoParalelaOrtogonal();
+			descricaoSCN();
+			atualizaDesenho();
+			view->inserirTextoConsole("Window rotacionada");
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que gira a window ao redor do eixo Y no sentido anti-horário.
+	void botaoGirarWindowYAntiHor() {
+		try {
+			double fator = view->getFatorPosicao();
+			model->rotacionarWindow(-fator, 1);
+			projecaoParalelaOrtogonal();
+			descricaoSCN();
+			atualizaDesenho();
+			view->inserirTextoConsole("Window rotacionada");
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que gira a window ao redor do eixo Y no sentido horário.
+	void botaoGirarWindowYHor() {
+		try {
+			double fator = view->getFatorPosicao();
+			model->rotacionarWindow(fator, 1);
+			projecaoParalelaOrtogonal();
+			descricaoSCN();
+			atualizaDesenho();
+			view->inserirTextoConsole("Window rotacionada");
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que gira a window ao redor do eixo Z no sentido anti-horário.
+	void botaoGirarWindowZAntiHor() {
+		try {
+			double fator = view->getFatorPosicao();
+			model->rotacionarWindow(fator, 2);
+			projecaoParalelaOrtogonal();
+			descricaoSCN();
+			atualizaDesenho();
+			view->inserirTextoConsole("Window rotacionada");
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que gira a window ao redor do eixo Z no sentido horário.
+	void botaoGirarWindowZHor() {
+		try {
+			double fator = view->getFatorPosicao();
+			model->rotacionarWindow(-fator, 2);
+			projecaoParalelaOrtogonal();
+			descricaoSCN();
+			atualizaDesenho();
+			view->inserirTextoConsole("Window rotacionada");
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que gira a window no sentido anti-horário.
+	void botaoSubirWindow() {
+		try {
+			double fator = view->getFatorPosicao();
+			model->moverWindow(0, fator, 0);
+			projecaoParalelaOrtogonal();
+			descricaoSCN();
+			atualizaDesenho();
+			view->inserirTextoConsole("Movimentação para cima.");
 		} catch (...){
 			return;
 		}
 	}
 
 	//! Método que gira a window no sentido horário.
-	void botaoGirarWindowDireito() {
+	void botaoDescerWindow() {
 		try {
 			double fator = view->getFatorPosicao();
-			model->rotacionarWindow(-1 * fator);
+			model->moverWindow(0, -fator, 0);
+			projecaoParalelaOrtogonal();
 			descricaoSCN();
 			atualizaDesenho();
-			view->inserirTextoConsole("Window rotacionada");
+			view->inserirTextoConsole("Movimentação para baixo.");
 		} catch (...){
 			return;
 		}
 	}
 
 	//! Método que movimenta a window para cima.
-	void botaoMovimentoCima() {
+	void botaoMovimentoFrente() {
 		try {
 			double fator = view->getFatorPosicao();
-			model->moverWindow(0,fator);
+			model->moverWindow(0, 0, fator);
+			projecaoParalelaOrtogonal();
 			descricaoSCN();
 			atualizaDesenho();
-			view->inserirTextoConsole("Movimentação para cima.");
+			view->inserirTextoConsole("Movimentação para frente.");
 		} catch (...){
 			return;
 		}
@@ -370,7 +626,8 @@ public:
 	void botaoMovimentoEsquerda() {
 		try {
 			double fator = view->getFatorPosicao();
-			model->moverWindow(-fator,0);
+			model->moverWindow(-fator, 0, 0);
+			projecaoParalelaOrtogonal();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para a esquerda.");
@@ -383,7 +640,8 @@ public:
 	void botaoMovimentoDireita() {
 		try {
 			double fator = view->getFatorPosicao();
-			model->moverWindow(fator,0);
+			model->moverWindow(fator, 0, 0);
+			projecaoParalelaOrtogonal();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para a direita.");
@@ -393,16 +651,22 @@ public:
 	}
 
 	//! Método que movimenta a window para baixo.
-	void botaoMovimentoBaixo() {
+	void botaoMovimentoTras() {
 		try {
 			double fator = view->getFatorPosicao();
-			model->moverWindow(0,-fator);
+			model->moverWindow(0, 0, -fator);
+			projecaoParalelaOrtogonal();
 			descricaoSCN();
 			atualizaDesenho();
-			view->inserirTextoConsole("Movimentação para baixo.");
+			view->inserirTextoConsole("Movimentação para trás.");
 		} catch (...){
 			return;
 		}
+	}
+
+	//! Método que atualiza os botões de cima da janela de posição da window.
+	void movWindowAlterado() {
+		view->alterarBotoesMovimentoWindow(view->getTipoMovimentoWindow());
 	}
 
 	//! Método que realiza zoom out na window.
@@ -410,6 +674,7 @@ public:
 		try {
 			double fator = view->getFatorZoom();
 			model->zoom(-fator);
+			projecaoParalelaOrtogonal();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Zoom para fora.");
@@ -423,6 +688,7 @@ public:
 		try {
 			double fator = view->getFatorZoom();
 			model->zoom(fator);
+			projecaoParalelaOrtogonal();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Zoom para dentro.");
@@ -445,6 +711,7 @@ public:
 
 	//! Método que redesenha os elementos quando o tipo de clipping de reta é alterado.
 	void clippingAlterado() {
+		projecaoParalelaOrtogonal();
 		descricaoSCN();
 		atualizaDesenho();
 	}
@@ -481,6 +748,7 @@ public:
 
 				view->inserirTextoConsole("Arquivo carregado.");
 
+				projecaoParalelaOrtogonal();
 				descricaoSCN();
 				atualizaDesenho();
 			} catch (int erro) {
@@ -517,6 +785,14 @@ public:
 		}
 	}
 
+	//! Método que salva o mundo em .obj.
+	void resetarWindow() {
+		model->resetarWindow();
+		projecaoParalelaOrtogonal();
+		descricaoSCN();
+		atualizaDesenho();
+	}
+
 	//! Método que adiciona um novo elemento.
 	void addNovoElemento() {
 		string nome = view->getNomeElemento();
@@ -525,10 +801,12 @@ public:
 			case 0: { // A page 0 corresponde à aba de Ponto
 				string coordX = view->getCoordXNovoPonto();
 				string coordY = view->getCoordYNovoPonto();
+				string coordZ = view->getCoordZNovoPonto();
 				try {
-					Ponto* p = model->inserirNovoPonto(nome, coordX, coordY);
+					Ponto* p = model->inserirNovoPonto(nome, coordX, coordY, coordZ);
 					view->limparTextoNovoPonto();
 					view->adicionaElementoListbox(nome, "Ponto");
+					projecaoParalelaOrtogonal(p);
 					descricaoSCN(p);
 					view->inserirTextoConsole("Novo ponto adicionado.");
 				} catch (int erro) {
@@ -545,13 +823,15 @@ public:
 			} case 1: { // A page 1 corresponde à aba de Reta
 				string coordIniX = view->getCoordIniXNovaReta();
 				string coordIniY = view->getCoordIniYNovaReta();
+				string coordIniZ = view->getCoordIniZNovaReta();
 				string coordFinX = view->getCoordFinXNovaReta();
 				string coordFinY = view->getCoordFinYNovaReta();
-
+				string coordFinZ = view->getCoordFinZNovaReta();
 				try {
-					Reta* r = model->inserirNovaReta(nome, coordIniX, coordIniY, coordFinX, coordFinY);
+					Reta* r = model->inserirNovaReta(nome, coordIniX, coordIniY, coordIniZ, coordFinX, coordFinY, coordFinZ);
 					view->limparTextoNovaReta();
 					view->adicionaElementoListbox(nome, "Reta");
+					projecaoParalelaOrtogonal(r);
 					descricaoSCN(r);
 					view->inserirTextoConsole("Nova reta adicionada.");
 				} catch (int erro) {
@@ -566,7 +846,7 @@ public:
 
 				break;
 			} case 2: { // A page 2 corresponde à aba de Polígono
-				ListaEnc<Coordenada*>* lista = view->getListaCoordsPoligono();
+				ListaEnc<Coordenada3D*>* lista = view->getListaCoordsPoligono();
 
 				try {
 					Poligono* pol = model->inserirNovoPoligono(nome, lista, view->poligonoPreenchido());
@@ -574,6 +854,7 @@ public:
 					view->limparTextoNovoPoligono();
 					view->adicionaElementoListbox(nome, "Polígono");
 					view->setPoligono_Btn_DelSensitive(FALSE);
+					projecaoParalelaOrtogonal(pol);
 					descricaoSCN(pol);
 					view->inserirTextoConsole("Novo poligono adicionado.");
 				} catch (int erro) {
@@ -586,14 +867,16 @@ public:
 
 				break;
 			} case 3: { // A page 3 corresponde à aba de Curva
-				ListaEnc<Coordenada*>* lista = view->getListaCoordsCurva();
+				ListaEnc<Coordenada3D*>* lista = view->getListaCoordsCurva();
 
 				try {
 					if (view->getTipoCurva() == 0) { // 0 corresponde a opção de curva de Bézier
 						CurvaBezier* cb = model->inserirNovaCurvaBezier(nome, lista);
+						projecaoParalelaOrtogonal(cb);
 						descricaoSCN(cb);
 					} else {
 						CurvaBSpline* cb = model->inserirNovaCurvaBSpline(nome, lista);
+						projecaoParalelaOrtogonal(cb);
 						descricaoSCN(cb);
 					}
 
@@ -612,6 +895,32 @@ public:
 							view->inserirTextoConsole("ERRO: a curva deve ter pelo menos 4 coordenadas.");
 						}
 
+					}
+				}
+
+				break;
+			} case 4: { // A page 4 corresponde à aba de Objeto3D
+				ListaEnc<Coordenada3D*>* listaCoord = view->getListaCoordsObjeto3D();
+				ListaEnc<ParCoord*>* listaAresta = view->getListaArestasObjeto3D();
+
+				try {
+					Objeto3D* obj = model->inserirNovoObjeto3D(nome, listaCoord, listaAresta);
+					view->resetarListaCoordenadasObjeto3D();
+					view->resetarListaArestaObjeto3D();
+					view->limparTextoNovoObjeto3D();
+					view->adicionaElementoListbox(nome, "Objeto3D");
+					view->setObjeto3D_Coord_Btn_DelSensitive(FALSE);
+					view->setObjeto3D_Aresta_Btn_DelSensitive(FALSE);
+					projecaoParalelaOrtogonal(obj);
+					descricaoSCN(obj);
+					view->inserirTextoConsole("Novo Objeto3D adicionado.");
+				} catch (int erro) {
+					if (erro == -1) {
+						view->inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
+					} else if (erro == -2) {
+						view->inserirTextoConsole("ERRO: não é possível inserir um Objeto3D sem coordenada.");
+					} else if (erro == -3) {
+						view->inserirTextoConsole("ERRO: arestas inválidas.");
 					}
 				}
 
@@ -664,6 +973,48 @@ public:
 	//! Método que é chamado ao selecionar um elemento na list box de elementos.
 	void selecionaListBoxCurva() {
 		view->setCurva_Btn_DelSensitive(TRUE);
+	}
+
+	//! Método que adiciona uma coordenada à curva sendo criado.
+	void addNovaCoordenadaObjeto3D() {
+		try {
+			view->inserirCoordListaEncObjeto3D();
+			view->limparTextoCoordObjeto3D();
+			view->focusCoordObjeto3D();
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que remove a coordenada selecionada na criação de curva.
+	void delCoordenadaObjeto3D() {
+		view->deletarCoordObjeto3D();
+	}
+
+	//! Método que adiciona uma coordenada à curva sendo criado.
+	void addNovaArestaObjeto3D() {
+		try {
+			view->inserirArestaListaEncObjeto3D();
+			view->limparTextoArestaObjeto3D();
+			view->focusArestaObjeto3D();
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que remove a coordenada selecionada na criação de curva.
+	void delArestaObjeto3D() {
+		view->deletarArestaObjeto3D();
+	}
+
+	//! Método que é chamado ao selecionar um elemento na list box de elementos.
+	void selecionaListBoxObjeto3DCoord() {
+		view->setObjeto3D_Coord_Btn_DelSensitive(TRUE);
+	}
+
+	//! Método que é chamado ao selecionar um elemento na list box de elementos.
+	void selecionaListBoxObjeto3DAresta() {
+		view->setObjeto3D_Aresta_Btn_DelSensitive(TRUE);
 	}
 
 	//! Método que é chamado ao fechar a janela de novo elemento.

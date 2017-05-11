@@ -35,7 +35,7 @@ public:
 		/param coordFinal é a coordenada final da reta.
 	*/
 	void desenhaReta(Coordenada* coordInicial, Coordenada* coordFinal) {
-		if (coordInicial->getX() == coordFinal-> getX() && coordInicial->getY() == coordFinal-> getY()) {
+		if ((fabs( coordInicial->getX()-coordFinal->getX() ) < 10e-9) && (fabs( coordInicial->getY()-coordFinal->getY() ) < 10e-9)) {
 			desenhaPonto(coordInicial);
 		} else {
 			cairo_t *c = cairo_create (surface);

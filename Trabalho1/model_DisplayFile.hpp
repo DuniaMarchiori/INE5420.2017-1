@@ -7,6 +7,7 @@
 #include "model_Reta.hpp"
 #include "model_Poligono.hpp"
 #include "model_Curva.hpp"
+#include "model_Objeto3D.hpp"
 
 class DisplayFile {
 	
@@ -66,6 +67,14 @@ public:
     */
 	void inserirNovaCurva(Curva* c) {
 		displayFile->adiciona(c);
+	}
+	
+	//! Método que insere um Objeto3D na display file.
+    /*!
+        /param obj é o Objeto3D a ser adicionada à display file.
+    */
+	void inserirNovoObjeto3D(Objeto3D* obj) {
+		displayFile->adiciona(obj);
 	}
 	
 	//! Método que deleta um elemento da display file.

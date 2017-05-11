@@ -1,45 +1,37 @@
 #include <math.h>
+#include <iostream>
 
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include "model_Coordenada.hpp"
+#include "model_Coordenada3D.hpp"
+#include "model_Poligono.hpp"
+#include "ListaEnc.hpp"
 
 class Window {
 
 private:
-	Coordenada *centro; /*!< A coordenada que indica a posição da window.*/
-	Coordenada *viewUpVector; /*!< O vetor que aponta para onde esta rotacionada a window.*/
-	double altura, largura; /*!< Altura e Largura da window.*/
+	Coordenada3D* VRP;
+	double angX, angY, angZ;
+	double altura, largura;
+	//Coordenada3D *vetorFrente, *vetorDireita, *vetorCima;
 
 public:
 	//! Construtor
 	/*!
-		/param posInicial é a cooordenada inicial da window.
-		/param _altura é a altura inicial da window.
-		/param _largura é a largura inicial da window.
-	*/
-	Window(Coordenada* posInicial, double _altura, double _largura) {
-		centro = posInicial;
-		viewUpVector = new Coordenada(0, 1);
-		altura = _altura;
-		largura = _largura;
-	}
 
-	//! Método que retorna a posição da Window.
-	/*!
-		/return a coordenada da posição da window.
 	*/
-	Coordenada* getCentro() {
-		return centro;
-	}
-
-	//! Método que altera a coordenada da posição da Window.
-	/*!
-		/param p é a coordenada que a posição receberá.
-	*/
-	void setCentro(Coordenada* p) {
-		centro = p;
+	Window(Coordenada3D* pos, double alt, double larg, double _angX, double _angY, double _angZ) {
+		VRP = pos;
+		altura = alt;
+		largura = larg;
+		angX = _angX;
+		angY = _angY;
+		angZ = _angZ;
+		//vetorFrente = new Coordenada3D(0, 0, 1);
+		//vetorDireita = new Coordenada3D(1, 0, 0);
+		//vetorCima = new Coordenada3D(0, 1, 0);
+		//atualizarVetores();
 	}
 
 	//! Método que retorna a altura da window.
@@ -50,14 +42,6 @@ public:
 		return altura;
 	}
 
-	//! Método que altera a altura da Window.
-	/*!
-		/param h é nova altura da window.
-	*/
-	void setAltura(double h) {
-		altura = h;
-	}
-
 	//! Método que retorna a largura da window.
 	/*!
 		/return largura da window.
@@ -66,67 +50,114 @@ public:
 		return largura;
 	}
 
-	//! Método que altera a largura da Window.
+	//! Método que retorna a posição da VRP.
 	/*!
-		/param w é nova largura da window.
+		/return a coordenada VRP da window.
 	*/
-	void setLargura(double w) {
-		largura = w;
+	Coordenada3D* getVRP() {
+		return VRP;
 	}
 
-	//! Método que move a Window.
-	/*!
-		/param fatX é o quanto a window ira se mover no eixo X.
-		/param fatY é o quanto a window ira se mover no eixo Y.
-	*/
-	void moverWindow(double fatX, double fatY) {
-		double angulo = getAngulo() * M_PI/180.0;
-		centro->setX(centro->getX() + fatX * cos(angulo) - fatY * sin(angulo));
-		centro->setY(centro->getY() + fatX * sin(angulo) + fatY * cos(angulo));
-
-
-
-		//centro->setX(centro->getX() + viewUpVector->getX() * fatX);
-		//centro->setY(centro->getY() + viewUpVector->getY() * fatY);
+	//! Método que altera a VRP.
+	void setVRP(Coordenada3D* novaVRP) {
+		free(VRP);
+		VRP = novaVRP;
 	}
 
-	//! Método que dá zoom na Window.
-	/*!
-		/param fator é um double que indica o quanto de aproximação ou afastamento será feito.
-	*/
+	double getAnguloX() {
+		return angX;
+	}
+
+	double getAnguloY() {
+		return angY;
+	}
+
+	double getAnguloZ() {
+		return angZ;
+	}
+
+	void rotacionarX(double fator) {
+		angX += fator;
+		while (angX >= 360) {
+			angX -= 360;
+		}
+		while (angX < 0) {
+			angX += 360;
+		}
+		//atualizarVetores();
+	}
+
+	void rotacionarY(double fator) {
+		angY += fator;
+		while (angY >= 360) {
+			angY -= 360;
+		}
+		while (angY < 0) {
+			angY += 360;
+		}
+		//atualizarVetores();
+	}
+
+	void rotacionarZ(double fator) {
+		angZ += fator;
+		while (angZ >= 360) {
+			angZ -= 360;
+		}
+		while (angZ < 0) {
+			angZ += 360;
+		}
+		//atualizarVetores();
+	}
+
+	//! Método que move a window pelos eixos do mundo.
 	void zoom(double fator) {
-		altura -= altura * (fator/100.0);
-		largura -= largura * (fator/100.0);
+		altura -= altura * (fator/100);
+		largura -= largura * (fator/100);
+	}
+	
+	//! Método que move a window pelos eixos do mundo.
+	void moverWindow(double fatX, double fatY, double fatZ) {
+		setVRP(new Coordenada3D( (VRP->getX() + fatX), (VRP->getY() + fatY),(VRP->getZ() + fatZ) ));
+		/*
+		double movX, movY, movZ;
+
+		Coordenada3D* movDir = new Coordenada3D(vetorDireita->getX() * fatX, vetorDireita->getY() * fatX, vetorDireita->getZ() * fatX);
+		Coordenada3D* movCima = new Coordenada3D(vetorCima->getX() * fatY, vetorCima->getY() * fatY, vetorCima->getZ() * fatY);
+		Coordenada3D* movFrente = new Coordenada3D(vetorFrente->getX() * fatZ, vetorFrente->getY() * fatZ, vetorFrente->getZ() * fatZ);
+
+		movX = movDir->getX() + movCima->getX() + movFrente->getX();
+		movY = movDir->getY() + movCima->getY() + movFrente->getY();
+		movZ = movDir->getZ() + movCima->getZ() + movFrente->getZ();
+		setVRP(new Coordenada3D( (VRP->getX() + movX), (VRP->getY() + movY),(VRP->getZ() + movZ) ));
+
+		free(movDir);
+		free(movCima);
+		free(movFrente);
+		*/
 	}
 
-	//! Método que rotaciona a Window.
-	/*!
-		/param graus é o quanto a window sera rotacionada em graus.
+	/*
+	void atualizarVetores() {
+		double angXRad = angX * M_PI / 180;
+		double angYRad = angY * M_PI / 180;
+		double angZRad = angZ * M_PI / 180;
+		free(vetorFrente);
+		free(vetorDireita);
+		free(vetorCima);
+
+		vetorFrente = new Coordenada3D(sin(angYRad), -sin(-angXRad) * cos(angYRad), cos(-angXRad) * cos(angYRad));
+
+		vetorDireita = new Coordenada3D(-cos(-angZRad) * cos(angYRad), -sin(-angZRad), sin(angYRad) * cos(-angZRad));
+
+		vetorCima = new Coordenada3D(-sin(angZRad), cos(angZRad) * cos(angXRad), cos(angZRad) * sin(angXRad));
+
+		std::cout << "aX:" << angX << " aY:" << angY << " aZ:" << angZ << std::endl;
+		std::cout << "Forward: " << vetorFrente->getX() << ", " << vetorFrente->getY() << ", " << vetorFrente->getZ() << std::endl;
+		std::cout << "Right: " << vetorDireita->getX() << ", " << vetorDireita->getY() << ", " << vetorDireita->getZ() << std::endl;
+		std::cout << "Up: " << vetorCima->getX() << ", " << vetorCima->getY() << ", " << vetorCima->getZ() << std::endl;
+		std::cout << std::endl;
+	}
 	*/
-	void rotacionarWindow(double graus) {
-		Coordenada *novoVetor = new Coordenada();
-		double radianos = graus * M_PI/180.0;
-
-		double cosseno = cos(radianos);
-		double seno = sin(radianos);
-
-		novoVetor->setX(viewUpVector->getX() * cosseno - viewUpVector->getY() * seno);
-		novoVetor->setY(viewUpVector->getX() * seno + viewUpVector->getY() * cosseno);
-
-		free(viewUpVector);
-		viewUpVector = novoVetor;
-	}
-
-	//! Método que diz o angulo em que a Window se encontra.
-	/*!
-		/return o angulo entre a window e o eixo Y.
-	*/
-	double getAngulo() {
-		double angulo = atan2(viewUpVector->getY(), viewUpVector->getX()) - atan2(1, 0);
-		angulo = (angulo * 180.0) / M_PI;
-		return angulo;
-	}
-
 };
 
 #endif

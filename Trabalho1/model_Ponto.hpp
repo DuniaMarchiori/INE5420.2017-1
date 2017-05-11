@@ -2,13 +2,13 @@
 #define PONTO_HPP
 
 #include "model_ElementoGrafico.hpp"
-#include "model_Coordenada.hpp"
+#include "model_Coordenada3D.hpp"
 
 class Ponto: public ElementoGrafico {
 	
 private:
-	Coordenada* coordenadaMundo; /*!< A coordenada do ponto no mundo*/
-	Coordenada* coordenadaNormal; /*!< A coordenada do ponto normalizada*/
+	Coordenada3D* coordenadaMundo; /*!< A coordenada do ponto no mundo*/
+	Coordenada3D* coordenadaNormal; /*!< A coordenada do ponto normalizada*/
 	
 public:
 	//! Construtor
@@ -16,7 +16,7 @@ public:
 		/param nome é o nome do ponto
 		/param c é a coordenada do ponto no mundo.
 	*/
-	Ponto(string nome, Coordenada* c) {
+	Ponto(string nome, Coordenada3D* c) {
 		setCoordenadaMundo(c);
 		setNome(nome);
 		setTipo(PONTO);
@@ -26,7 +26,7 @@ public:
 	/*!
 		/return a coordenada do ponto no mundo.
 	*/
-	Coordenada* getCoordenadaMundo() {
+	Coordenada3D* getCoordenadaMundo() {
 		return coordenadaMundo;
 	}
 	
@@ -34,7 +34,7 @@ public:
 	/*!
 		/param c é o valor que a coordenada receberá.
 	*/
-	void setCoordenadaMundo(Coordenada* c) {
+	void setCoordenadaMundo(Coordenada3D* c) {
 		coordenadaMundo = c;
 	}
 	
@@ -42,7 +42,7 @@ public:
 	/*!
 		/return a coordenada do ponto normalizada.
 	*/
-	Coordenada* getCoordenadaNormal() {
+	Coordenada3D* getCoordenadaNormal() {
 		return coordenadaNormal;
 	}
 	
@@ -50,7 +50,7 @@ public:
 	/*!
 		/param c é o valor que a coordenada receberá.
 	*/
-	void setCoordenadaNormal(Coordenada* c) {
+	void setCoordenadaNormal(Coordenada3D* c) {
 		coordenadaNormal = c;
 	}
 
@@ -58,8 +58,8 @@ public:
 	/*!
 		/return uma Coordenada que indica o centro geométrico do ponto.
 	*/
-	Coordenada* getCentroGeometrico() override {
-		Coordenada* retorno = new Coordenada(coordenadaMundo);
+	Coordenada3D* getCentroGeometrico() override {
+		Coordenada3D* retorno = new Coordenada3D(coordenadaMundo);
 		return retorno;
 	}
 };

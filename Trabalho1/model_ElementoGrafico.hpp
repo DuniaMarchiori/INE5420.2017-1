@@ -3,7 +3,7 @@
 
 #include <string>
 #include "model_Tipo.hpp"
-#include "model_Coordenada.hpp"
+#include "model_Coordenada3D.hpp"
 
 using std::string;
 
@@ -50,7 +50,7 @@ public:
 	/*!
 		/return uma Coordenada que indica o centro geométrico do elemento.
 	*/
-	virtual Coordenada* getCentroGeometrico() {}
+	virtual Coordenada3D* getCentroGeometrico() {}
 
 };
 

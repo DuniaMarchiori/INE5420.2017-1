@@ -2,20 +2,20 @@
 #define RETA_HPP
 
 #include "model_ElementoGrafico.hpp"
-#include "model_Coordenada.hpp"
+#include "model_Coordenada3D.hpp"
 
 class Reta: public ElementoGrafico {
 
 private:
-	Coordenada *coordenadaMundoInicial, *coordenadaMundoFinal; /*!< Coordenadas dos pontos inicial e final da reta no mundo*/
-	Coordenada *coordenadaNormalInicial, *coordenadaNormalFinal; /*!< Coordenadas dos pontos inicial e final da reta normalizadas*/
+	Coordenada3D *coordenadaMundoInicial, *coordenadaMundoFinal; /*!< Coordenadas dos pontos inicial e final da reta no mundo*/
+	Coordenada3D *coordenadaNormalInicial, *coordenadaNormalFinal; /*!< Coordenadas dos pontos inicial e final da reta normalizadas*/
 
 public:
 
 	//! Construtor
 	Reta() {
-		coordenadaMundoInicial = new Coordenada();
-		coordenadaMundoFinal = new Coordenada();
+		coordenadaMundoInicial = new Coordenada3D();
+		coordenadaMundoFinal = new Coordenada3D();
 		setNome("");
 		setTipo(RETA);
 	}
@@ -26,7 +26,7 @@ public:
 		/param pInicial é a coordenada do ponto inicial da reta.
 		/param pFinal é a coordenada do ponto final da reta.
 	*/
-	Reta(string nome, Coordenada* pInicial, Coordenada* pFinal) {
+	Reta(string nome, Coordenada3D* pInicial, Coordenada3D* pFinal) {
 		coordenadaMundoInicial = pInicial;
 		coordenadaMundoFinal = pFinal;
 		setNome(nome);
@@ -39,7 +39,7 @@ public:
 	/*!
 		/return a coordenada do ponto inicial no mundo.
 	*/
-	Coordenada* getCoordenadaMundoInicial() {
+	Coordenada3D* getCoordenadaMundoInicial() {
 		return coordenadaMundoInicial;
 	}
 
@@ -47,7 +47,7 @@ public:
 	/*!
 		/param p é o valor que a coordenada inicial receberá.
 	*/
-	void setCoordenadaMundoInicial(Coordenada* p) {
+	void setCoordenadaMundoInicial(Coordenada3D* p) {
 		coordenadaMundoInicial = p;
 	}
 
@@ -55,7 +55,7 @@ public:
 	/*!
 		/return a coordenada do ponto final no mundo.
 	*/
-	Coordenada* getCoordenadaMundoFinal() {
+	Coordenada3D* getCoordenadaMundoFinal() {
 		return coordenadaMundoFinal;
 	}
 
@@ -63,7 +63,7 @@ public:
 	/*!
 		/param p é o valor que a coordenada final receberá.
 	*/
-	void setCoordenadaMundoFinal(Coordenada* p) {
+	void setCoordenadaMundoFinal(Coordenada3D* p) {
 		coordenadaMundoFinal = p;
 	}
 
@@ -73,7 +73,7 @@ public:
 	/*!
 		/return a coordenada do ponto inicial normalizada.
 	*/
-	Coordenada* getCoordenadaNormalInicial() {
+	Coordenada3D* getCoordenadaNormalInicial() {
 		return coordenadaNormalInicial;
 	}
 
@@ -81,7 +81,7 @@ public:
 	/*!
 		/param p é o valor que a coordenada inicial receberá.
 	*/
-	void setCoordenadaNormalInicial(Coordenada* p) {
+	void setCoordenadaNormalInicial(Coordenada3D* p) {
 		coordenadaNormalInicial = p;
 	}
 
@@ -89,7 +89,7 @@ public:
 	/*!
 		/return a coordenada do ponto final normalizada.
 	*/
-	Coordenada* getCoordenadaNormalFinal() {
+	Coordenada3D* getCoordenadaNormalFinal() {
 		return coordenadaNormalFinal;
 	}
 
@@ -97,7 +97,7 @@ public:
 	/*!
 		/param p é o valor que a coordenada final receberá.
 	*/
-	void setCoordenadaNormalFinal(Coordenada* p) {
+	void setCoordenadaNormalFinal(Coordenada3D* p) {
 		coordenadaNormalFinal = p;
 	}
 
@@ -106,10 +106,11 @@ public:
 	/*!
 		/return uma Coordenada que indica o centro geométrico da reta.
 	*/
-	Coordenada* getCentroGeometrico() override {
+	Coordenada3D* getCentroGeometrico() override {
 		double retornoX = (coordenadaMundoInicial->getX() + coordenadaMundoFinal->getX()) /2;
 		double retornoY = (coordenadaMundoInicial->getY() + coordenadaMundoFinal->getY()) /2;
-		Coordenada* coord = new Coordenada(retornoX,retornoY);
+		double retornoZ = (coordenadaMundoInicial->getZ() + coordenadaMundoFinal->getZ()) /2;
+		Coordenada3D* coord = new Coordenada3D(retornoX, retornoY, retornoZ);
 		return coord;
 	}
 };

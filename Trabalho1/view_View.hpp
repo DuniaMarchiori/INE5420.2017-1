@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include "view_Console.hpp"
 #include "view_Desenhista.hpp"
+#include "ParCoord.hpp"
 
 #ifndef VIEW_HPP
 #define VIEW_HPP
@@ -18,19 +19,27 @@ class View {
 private:
 	Console* console; /*!< Uma instância do administrador do Console da interface grafica.*/
 	Desenhista* desenhista; /*!< Uma instância da classe que desenha os objetos na tela.*/
-	ListaEnc<Coordenada*> *listaCoordsPoligono; /*!< Uma lista de coordenadas para criar novos poligonos.*/
-	ListaEnc<Coordenada*> *listaCoordsCurva; /*!< Uma lista de coordenadas para criar novas curvas.*/
+	ListaEnc<Coordenada3D*> *listaCoordsPoligono; /*!< Uma lista de coordenadas para criar novos poligonos.*/
+	ListaEnc<Coordenada3D*> *listaCoordsCurva; /*!< Uma lista de coordenadas para criar novas curvas.*/
+
+	ListaEnc<Coordenada3D*> *listaCoordsObjeto3D; /*!< Uma lista de coordenadas para criar novos Objetos3D.*/
+	ListaEnc<ParCoord*> *listaArestas; /*!< Uma lista de inteiros para criar as arestas do novo Objeto3D.*/
 
 	// Objetos relacionados à interface
 	GtkWindow *window_Main; /*!< Referência para a janela principal.*/
-	
-	GtkMenuItem *menuBar_Salvar_Elemento_Obj; /*!< Referência para a janela principal.*/
+
+	GtkMenuItem *menuBar_Salvar_Obj; /*!< O botão de Salvar .obj*/
+	GtkMenuItem *menuBar_Carregar_Obj; /*!< O botão de carregar .obj*/
+	GtkMenuItem *menuBar_Separator_01; /*!< Separador 1 do menubar*/
+	GtkMenuItem *menuBar_Salvar_Elemento_Obj; /*!< O botão de Salvar Elemento.*/
 
 	GtkListBox *elmnt_List; /*!< Referência para a lista de elementos.*/
 	GtkButton *elmnt_Btn_Novo, *elmnt_Btn_Del, *elmnt_Btn_Edit; /*!< Referência para os botões de novo, deletar e editar elementos.*/
 
 	GtkEntry *pos_Txt_Fator; /*!< Referência para a caixa de texto de Fator da movimentação.*/
 	GtkButton *pos_Btn_Cima, *pos_Btn_Baixo, *pos_Btn_Esq, *pos_Btn_Dir; /*!< Referência para os botões das quatro direções.*/
+	GtkButton *pos_Btn_Top_Esq, *pos_Btn_Top_Dir; /*!< Referência para os botões de cima no posicionamento da window.*/
+	GtkRadioButton *pos_radio_0, *pos_radio_1; /*!< Referência para os botões de seleção do tipo de movimento da window.*/
 
 	GtkEntry *zoom_Txt_Fator; /*!< Referência para a caixa de texto de Fator de zoom.*/
 	GtkButton *zoom_Btn_Menos, *zoom_Btn_Mais; /*!< Referência para os botões de mais e menos zoom.*/
@@ -44,8 +53,11 @@ private:
 	GtkWindow *window_NovoElemento; /*!< Referência para a janela de novo elemento.*/
 
 	GtkEntry *textoNomeElemento; /*!< Referência para a caixa de texto de inserção de nome para um elemento.*/
-	GtkEntry *textoPontoX, *textoPontoY, *textoRetaInicialX, *textoRetaInicialY,
-			*textoRetaFinalX, *textoRetaFinalY, *textoPoligonoX, *textoPoligonoY, *textoCurvaX, *textoCurvaY; /*!< Referência para as caixas de texto que recebem valores de coordenadas.*/
+	GtkEntry *textoPontoX, *textoPontoY, *textoPontoZ,
+			*textoRetaInicialX, *textoRetaInicialY, *textoRetaInicialZ, *textoRetaFinalX, *textoRetaFinalY, *textoRetaFinalZ,
+			*textoPoligonoX, *textoPoligonoY, *textoPoligonoZ,
+			*textoCurvaX, *textoCurvaY, *textoCurvaZ,
+			*textoObjeto3DX, *textoObjeto3DY, *textoObjeto3DZ; /*!< Referência para as caixas de texto que recebem valores de coordenadas.*/
 
 	GtkButton *poligono_Btn_Add, *poligono_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de um poligono.*/
 	GtkListBox *poligono_Listbox; /*!< Referência para a listbox com as coordenadas do poligono.*/
@@ -55,19 +67,26 @@ private:
 	GtkListBox *curva_Listbox; /*!< Referência para a listbox com as coordenadas da curva.*/
 	GtkRadioButton *curva_radio_0, *curva_radio_1; /*!< Referência para os botões de seleção do tipo de clipping de reta.*/
 
+	GtkButton *Objeto3D_Coord_Btn_Add, *Objeto3D_Coord_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de um Objeto3D.*/
+	GtkButton *Objeto3D_Aresta_Btn_Add, *Objeto3D_Aresta_Btn_Del; /*!< Referência para os botões de adicionar e deletar arestas na criação de um Objeto3D.*/
+	GtkListBox *Objeto3D_Coord_Listbox; /*!< Referência para a listbox com as coordenadas do objeto3D.*/
+	GtkListBox *Objeto3D_Aresta_Listbox; /*!< Referência para a listbox com as arestas do objeto3D.*/
+	GtkEntry *textoObjeto3DA, *textoObjeto3DB;
+
 	GtkNotebook *novoElmnt_Notebook; /*!< Referência para o notebook na criação de elemento.*/
 
 	GtkWindow *window_EditElemento; /*!< Referência para a janela de editar elemento.*/
 
-	GtkEntry *editElmnt_trans_X, *editElmnt_trans_Y; /*!< Referência para a caixa de texto das coordenadas de translação.*/
+	GtkEntry *editElmnt_trans_X, *editElmnt_trans_Y, *editElmnt_trans_Z; /*!< Referência para a caixa de texto das coordenadas de translação.*/
 
-	GtkEntry *editElmnt_escal_X, *editElmnt_escal_Y; /*!< Referência para a caixa de texto da quantidade de escalonamento.*/
+	GtkEntry *editElmnt_escal_X, *editElmnt_escal_Y, *editElmnt_escal_Z; /*!< Referência para a caixa de texto da quantidade de escalonamento.*/
 
 	GtkEntry *editElmnt_rot_angulo; /*!< Referência para a caixa de texto do angulo de rotação.*/
 
 	GtkRadioButton *editElmnt_radio_0, *editElmnt_radio_1, *editElmnt_radio_2; /*!< Referência para os botões de seleção do tipo de rotação.*/
+	GtkRadioButton *editElmnt_radio_eixo_0, *editElmnt_radio_eixo_1, *editElmnt_radio_eixo_2; /*!< Referência para os botões de seleção do eixo de rotação.*/
 
-	GtkEntry *editElmnt_rot_X, *editElmnt_rot_Y; /*!< Referência para a caixa de texto do ponto arbitrário da rotação.*/
+	GtkEntry *editElmnt_rot_X, *editElmnt_rot_Y, *editElmnt_rot_Z; /*!< Referência para a caixa de texto do ponto arbitrário da rotação.*/
 
 	GtkNotebook *editElmnt_Notebook; /*!< Referência para o notebook na edição de elemento.*/
 
@@ -111,9 +130,16 @@ public:
 		gtkBuilder = gtk_builder_new_from_file("janela.glade");
 
 		window_Main = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_Main"));
-		
+
 		menuBar_Salvar_Elemento_Obj = GTK_MENU_ITEM(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "MenuBar_Salvar_Obj_Elemento"));
 		gtk_widget_set_sensitive ((GtkWidget*) menuBar_Salvar_Elemento_Obj, FALSE); // Esse botão começa desativado.
+
+		menuBar_Salvar_Obj = GTK_MENU_ITEM(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "MenuBar_Salvar_Obj"));
+		gtk_widget_destroy((GtkWidget*) menuBar_Salvar_Obj); // Destruindo esses botões pois a classe WavefrontOBJ não foi atualizada para 3D
+		menuBar_Carregar_Obj = GTK_MENU_ITEM(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "MenuBar_Carregar_Obj"));
+		gtk_widget_destroy((GtkWidget*) menuBar_Carregar_Obj); // Destruindo esses botões pois a classe WavefrontOBJ não foi atualizada para 3D
+		menuBar_Separator_01 = GTK_MENU_ITEM(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "MenuBar_Separator_01"));
+		gtk_widget_destroy((GtkWidget*) menuBar_Separator_01); // Destruindo esses botões pois a classe WavefrontOBJ não foi atualizada para 3D
 
 		viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
 
@@ -125,6 +151,10 @@ public:
 
 		pos_Txt_Fator = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Pos_Txt_Fator"));
 		gtk_entry_set_text(pos_Txt_Fator, "1");
+		pos_Btn_Top_Esq = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Pos_Btn_Top_Esq"));
+		pos_Btn_Top_Dir = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Pos_Btn_Top_Dir"));
+		pos_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Pos_Radio_0"));
+		pos_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Pos_Radio_1"));
 
 		zoom_Txt_Fator = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Zoom_Txt_Fator"));
 		gtk_entry_set_text(zoom_Txt_Fator, "1");
@@ -135,14 +165,18 @@ public:
 
 		textoPontoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_X"));
 		textoPontoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_Y"));
+		textoPontoZ = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Ponto_Z"));
 
 		textoRetaInicialX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_X1"));
 		textoRetaInicialY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_Y1"));
+		textoRetaInicialZ = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_Z1"));
 		textoRetaFinalX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_X2"));
 		textoRetaFinalY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_Y2"));
+		textoRetaFinalZ = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Reta_Z2"));
 
 		textoPoligonoX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_X"));
 		textoPoligonoY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Y"));
+		textoPoligonoZ = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Z"));
 		poligono_Listbox = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Pol"));
 		poligono_Preenchido = GTK_CHECK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Preenchido"));
 		poligono_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Pol_Del"));
@@ -150,11 +184,24 @@ public:
 
 		textoCurvaX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_X"));
 		textoCurvaY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Y"));
+		textoCurvaZ = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Z"));
 		curva_Listbox = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Curv"));
 		curva_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Del"));
 		gtk_widget_set_sensitive ((GtkWidget*) curva_Btn_Del, FALSE); // Esse botão começa desativado.
 		curva_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Radio_0"));
 		curva_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Curv_Radio_1"));
+
+		textoObjeto3DX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Coord_X"));
+		textoObjeto3DY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Coord_Y"));
+		textoObjeto3DZ = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Coord_Z"));
+		textoObjeto3DA = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Aresta_A"));
+		textoObjeto3DB = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Aresta_B"));
+		Objeto3D_Coord_Listbox = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Coord_Listbox"));
+		Objeto3D_Aresta_Listbox = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Aresta_Listbox"));
+		Objeto3D_Coord_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Coord_Del"));
+		gtk_widget_set_sensitive ((GtkWidget*) Objeto3D_Coord_Btn_Del, FALSE); // Esse botão começa desativado.
+		Objeto3D_Aresta_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Aresta_Del"));
+		gtk_widget_set_sensitive ((GtkWidget*) Objeto3D_Aresta_Btn_Del, FALSE); // Esse botão começa desativado.
 
 		novoElmnt_Notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
 		consoleWidget = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
@@ -167,15 +214,23 @@ public:
 
 		editElmnt_trans_X = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Trans_X"));
 		editElmnt_trans_Y = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Trans_Y"));
+		editElmnt_trans_Z = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Trans_Z"));
 		editElmnt_escal_X = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Escal_Fator_X"));
 		editElmnt_escal_Y = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Escal_Fator_Y"));
+		editElmnt_escal_Z = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Escal_Fator_Z"));
 		editElmnt_rot_angulo = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Angulo"));
 
 		editElmnt_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Op_0"));
 		editElmnt_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Op_1"));
 		editElmnt_radio_2 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Op_2"));
+
+		editElmnt_radio_eixo_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Eixo_0"));
+		editElmnt_radio_eixo_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Eixo_1"));
+		editElmnt_radio_eixo_2 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Eixo_2"));
+
 		editElmnt_rot_X = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_X"));
 		editElmnt_rot_Y = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Y"));
+		editElmnt_rot_Z = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Rot_Z"));
 		editElmnt_Notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Notebook"));
 
 		editElmnt_aplicar = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "EditElmnt_Aplicar"));
@@ -224,23 +279,27 @@ public:
 	//! Método que limpa as caixas de texto de ponto da janela de novo objeto.
 	void limparTextoNovoPonto() {
 		limparTextoNomeNovoElmnt();
-		gtk_entry_set_text(textoPontoX, "");
-		gtk_entry_set_text(textoPontoY, "");
+		gtk_entry_set_text(textoPontoX, "0");
+		gtk_entry_set_text(textoPontoY, "0");
+		gtk_entry_set_text(textoPontoZ, "0");
 	}
 
 	//! Método que limpa as caixas de texto de reta da janela de novo objeto.
 	void limparTextoNovaReta() {
 		limparTextoNomeNovoElmnt();
-		gtk_entry_set_text(textoRetaInicialX, "");
-		gtk_entry_set_text(textoRetaInicialY, "");
-		gtk_entry_set_text(textoRetaFinalX, "");
-		gtk_entry_set_text(textoRetaFinalY, "");
+		gtk_entry_set_text(textoRetaInicialX, "0");
+		gtk_entry_set_text(textoRetaInicialY, "0");
+		gtk_entry_set_text(textoRetaInicialZ, "0");
+		gtk_entry_set_text(textoRetaFinalX, "0");
+		gtk_entry_set_text(textoRetaFinalY, "0");
+		gtk_entry_set_text(textoRetaFinalZ, "0");
 	}
 
 	//! Método que limpa as caixa de texto da coordenada de um novo poligono.
 	void limparTextoCoordPoligono() {
-		gtk_entry_set_text(textoPoligonoX, "");
-		gtk_entry_set_text(textoPoligonoY, "");
+		gtk_entry_set_text(textoPoligonoX, "0");
+		gtk_entry_set_text(textoPoligonoY, "0");
+		gtk_entry_set_text(textoPoligonoZ, "0");
 	}
 
 
@@ -258,12 +317,12 @@ public:
 
 	//! Método que limpa as caixa de texto da coordenada de um novo poligono.
 	void limparTextoCoordCurva() {
-		gtk_entry_set_text(textoCurvaX, "");
-		gtk_entry_set_text(textoCurvaY, "");
+		gtk_entry_set_text(textoCurvaX, "0");
+		gtk_entry_set_text(textoCurvaY, "0");
+		gtk_entry_set_text(textoCurvaZ, "0");
 	}
 
-
-	//! Método que limpa as caixas de texto de polígono da janela de novo objeto.
+	//! Método que limpa as caixas de texto de curva da janela de novo objeto.
 	void limparTextoNovaCurva() {
 		limparTextoNomeNovoElmnt();
 		limparTextoCoordCurva();
@@ -272,6 +331,37 @@ public:
 		while (row != NULL) {
 			gtk_container_remove((GtkContainer*) curva_Listbox, (GtkWidget*) row);
 			row = gtk_list_box_get_row_at_index (curva_Listbox, 0);
+		}
+	}
+
+	//! Método que limpa as caixa de texto da coordenada de um novo poligono.
+	void limparTextoCoordObjeto3D() {
+		gtk_entry_set_text(textoObjeto3DX, "0");
+		gtk_entry_set_text(textoObjeto3DY, "0");
+		gtk_entry_set_text(textoObjeto3DZ, "0");
+	}
+
+	void limparTextoArestaObjeto3D() {
+		gtk_entry_set_text(textoObjeto3DA, "0");
+		gtk_entry_set_text(textoObjeto3DB, "1");
+	}
+
+	//! Método que limpa as caixas de texto de Objeto3D da janela de novo objeto.
+	void limparTextoNovoObjeto3D() {
+		limparTextoNomeNovoElmnt();
+		limparTextoCoordObjeto3D();
+		limparTextoArestaObjeto3D();
+		// Limpa a listBox de coord
+		GtkListBoxRow* row = gtk_list_box_get_row_at_index (Objeto3D_Coord_Listbox, 0);
+		while (row != NULL) {
+			gtk_container_remove((GtkContainer*) Objeto3D_Coord_Listbox, (GtkWidget*) row);
+			row = gtk_list_box_get_row_at_index (Objeto3D_Coord_Listbox, 0);
+		}
+		// Limpa a listBox de aresta
+		row = gtk_list_box_get_row_at_index (Objeto3D_Aresta_Listbox, 0);
+		while (row != NULL) {
+			gtk_container_remove((GtkContainer*) Objeto3D_Aresta_Listbox, (GtkWidget*) row);
+			row = gtk_list_box_get_row_at_index (Objeto3D_Aresta_Listbox, 0);
 		}
 	}
 
@@ -355,26 +445,28 @@ public:
 		// Pega coordenadas
 		string polX = gtk_entry_get_text(textoPoligonoX);
 		string polY = gtk_entry_get_text(textoPoligonoY);
+		string polZ = gtk_entry_get_text(textoPoligonoZ);
 
 		/// Se os campos de coordenada não estão em branco
-		if ( !(polX.empty()) && !(polY.empty()) ) {
+		if ( !(polX.empty()) && !(polY.empty()) && !(polZ.empty()) ) {
 			// Cria novo objeto
-			Coordenada* c = new Coordenada();
+			Coordenada3D* c = new Coordenada3D();
 			// Verifica se os campos são números
 			try {
 				// stod = string to double
 				c->setX(stod(polX));
 				c->setY(stod(polY));
+				c->setZ(stod(polZ));
 			} catch (const invalid_argument& e) {
 				console->inserirTexto("ERRO: coordenadas devem ser valores numéricos.");
 				throw -1;
 			}
 			listaCoordsPoligono->adiciona(c);
 
-			string nomeNaLista = "(" + polX + "," + polY + ")";
+			string nomeNaLista = "(" + polX + "," + polY + "," + polZ + ")";
 			addToListBox(poligono_Listbox, nomeNaLista);
 		} else {
-			console->inserirTexto("ERRO: não é possível inserir coordenada sem valor X ou Y.");
+			console->inserirTexto("ERRO: não é possível inserir coordenada sem valor X, Y ou Z.");
 			throw -2;
 		}
 	}
@@ -384,26 +476,94 @@ public:
 		// Pega coordenadas
 		string polX = gtk_entry_get_text(textoCurvaX);
 		string polY = gtk_entry_get_text(textoCurvaY);
+		string polZ = gtk_entry_get_text(textoCurvaZ);
 
 		/// Se os campos de coordenada não estão em branco
-		if ( !(polX.empty()) && !(polY.empty()) ) {
+		if ( !(polX.empty()) && !(polY.empty()) && !(polZ.empty()) ) {
 			// Cria novo objeto
-			Coordenada* c = new Coordenada();
+			Coordenada3D* c = new Coordenada3D();
 			// Verifica se os campos são números
 			try {
 				// stod = string to double
 				c->setX(stod(polX));
 				c->setY(stod(polY));
+				c->setZ(stod(polZ));
 			} catch (const invalid_argument& e) {
 				console->inserirTexto("ERRO: coordenadas devem ser valores numéricos.");
 				throw -1;
 			}
 			listaCoordsCurva->adiciona(c);
 
-			string nomeNaLista = "(" + polX + "," + polY + ")";
+			string nomeNaLista = "(" + polX + "," + polY + "," + polZ + ")";
 			addToListBox(curva_Listbox, nomeNaLista);
 		} else {
-			console->inserirTexto("ERRO: não é possível inserir coordenada sem valor X ou Y.");
+			console->inserirTexto("ERRO: não é possível inserir coordenada sem valor X, Y ou Z.");
+			throw -2;
+		}
+	}
+
+	//! Método que insere em uma lista as coordenadas do polígono a ser criado.
+	void inserirCoordListaEncObjeto3D() {
+		// Pega coordenadas
+		string polX = gtk_entry_get_text(textoObjeto3DX);
+		string polY = gtk_entry_get_text(textoObjeto3DY);
+		string polZ = gtk_entry_get_text(textoObjeto3DZ);
+
+		/// Se os campos de coordenada não estão em branco
+		if ( !(polX.empty()) && !(polY.empty()) && !(polZ.empty()) ) {
+			// Cria novo objeto
+			Coordenada3D* c = new Coordenada3D();
+			// Verifica se os campos são números
+			try {
+				// stod = string to double
+				c->setX(stod(polX));
+				c->setY(stod(polY));
+				c->setZ(stod(polZ));
+			} catch (const invalid_argument& e) {
+				console->inserirTexto("ERRO: coordenadas devem ser valores numéricos.");
+				throw -1;
+			}
+			listaCoordsObjeto3D->adiciona(c);
+
+			string nomeNaLista = to_string(listaCoordsObjeto3D->getSize() - 1) + ": (" + polX + "," + polY + "," + polZ + ")";
+			addToListBox(Objeto3D_Coord_Listbox, nomeNaLista);
+		} else {
+			console->inserirTexto("ERRO: não é possível inserir coordenada sem valor X, Y ou Z.");
+			throw -2;
+		}
+	}
+
+	//! Método que insere em uma lista as coordenadas do polígono a ser criado.
+	void inserirArestaListaEncObjeto3D() {
+		// Pega coordenadas
+		string polA = gtk_entry_get_text(textoObjeto3DA);
+		string polB = gtk_entry_get_text(textoObjeto3DB);
+
+		/// Se os campos de coordenada não estão em branco
+		if ( !(polA.empty()) && !(polB.empty()) ) {
+			// Cria novo objeto
+			ParCoord* aresta;
+			// Verifica se os campos são números
+			try {
+				// stod = string to double
+				aresta = new ParCoord(stod(polA), stod(polB));
+			} catch (const invalid_argument& e) {
+				console->inserirTexto("ERRO: coordenadas devem ser valores numéricos.");
+				throw -1;
+			}
+			int numCoords = listaCoordsObjeto3D->getSize() - 1;
+			if ((aresta->getA() <= numCoords) && (aresta->getB() <= numCoords) && (aresta->getA() != aresta->getB())) {
+				listaArestas->adiciona(aresta);
+
+				string nomeNaLista = "(" + polA + "," + polB + ")";
+				addToListBox(Objeto3D_Aresta_Listbox, nomeNaLista);
+			} else {
+				console->inserirTexto("ERRO: as coordenadas escolhidas não são validas");
+				throw -3;
+			}
+
+		} else {
+			console->inserirTexto("ERRO: você deve inserir valores inteiros");
 			throw -2;
 		}
 	}
@@ -412,7 +572,7 @@ public:
 	void fecharPrograma() {
 		gtk_main_quit();
 	}
-	
+
 	//! Método que altera a sensibilidade do botao de salvar elemento.
 	/*!
 		/param valor é o novo valor da sensibilidade do botao (TRUE ou FALSE).
@@ -439,8 +599,10 @@ public:
 
 	//! Metodo que exibe a janela de novo elemento.
 	void elmnt_Btn_Novo_Clicado() {
-		listaCoordsPoligono = new ListaEnc<Coordenada*>();
-		listaCoordsCurva = new ListaEnc<Coordenada*>();
+		listaCoordsPoligono = new ListaEnc<Coordenada3D*>();
+		listaCoordsCurva = new ListaEnc<Coordenada3D*>();
+		listaCoordsObjeto3D = new ListaEnc<Coordenada3D*>();
+		listaArestas = new ListaEnc<ParCoord*>();
 		gtk_widget_show((GtkWidget*) window_NovoElemento);
 	}
 
@@ -488,6 +650,40 @@ public:
 				console->inserirTexto("ERRO: Você deve inserir um valor diferente de 0 como fator de movimento");
 				gtk_entry_set_text(pos_Txt_Fator, "1");
 				throw -2;
+			}
+		}
+	}
+
+	//! Metodo que retorna o tipo de transformação na window da window.
+	/*!
+		/return inteiro correspondendo à um dos dois tipos de movimento da window.
+	*/
+	int getTipoMovimentoWindow() {
+		if (gtk_toggle_button_get_active((GtkToggleButton*) pos_radio_0)) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+
+	//! Metodo que altera o texto dos botões de movimento da window.
+	/*!
+		/param tipo inteiro correspondendo à um dos dois possiveis conjunto de textos para estes botões.
+	*/
+	int alterarBotoesMovimentoWindow(int tipo) {
+		switch (tipo) {
+			case 0: {
+				gtk_widget_show((GtkWidget*) pos_Btn_Top_Esq);
+				gtk_widget_show((GtkWidget*) pos_Btn_Top_Dir);
+				gtk_button_set_label(pos_Btn_Top_Esq, "↥");
+				gtk_button_set_label(pos_Btn_Top_Dir, "↧");
+				break;
+			} case 1: {
+				gtk_widget_hide((GtkWidget*) pos_Btn_Top_Esq);
+				gtk_widget_hide((GtkWidget*) pos_Btn_Top_Dir);
+				gtk_button_set_label(pos_Btn_Top_Esq, "⟲");
+				gtk_button_set_label(pos_Btn_Top_Dir, "⟳");
+				break;
 			}
 		}
 	}
@@ -562,6 +758,15 @@ public:
 		return entradaY;
 	}
 
+	//! Metodo que retorna o valor contido na caixa de coordenada Z da criação de um ponto.
+	/*!
+		/return a coordenada Z desse novo ponto.
+	*/
+	string getCoordZNovoPonto() {
+		string entradaZ = gtk_entry_get_text(textoPontoZ);
+		return entradaZ;
+	}
+
 	//! Metodo que retorna o valor contido na caixa de coordenada X Inicial da criação de uma reta.
 	/*!
 		/return a coordenada X Inicial dessa nova reta.
@@ -578,6 +783,15 @@ public:
 	string getCoordIniYNovaReta() {
 		string entradaYini = gtk_entry_get_text(textoRetaInicialY);
 		return entradaYini;
+	}
+
+	//! Metodo que retorna o valor contido na caixa de coordenada Z Inicial da criação de uma reta.
+	/*!
+		/return a coordenada Z Inicial dessa nova reta.
+	*/
+	string getCoordIniZNovaReta() {
+		string entradaZini = gtk_entry_get_text(textoRetaInicialZ);
+		return entradaZini;
 	}
 
 	//! Metodo que retorna o valor contido na caixa de coordenada X Final da criação de uma reta.
@@ -598,6 +812,15 @@ public:
 		return entradaYfin;
 	}
 
+	//! Metodo que retorna o valor contido na caixa de coordenada Z Final da criação de uma reta.
+	/*!
+		/return a coordenada Z Final dessa nova reta.
+	*/
+	string getCoordFinZNovaReta() {
+		string entradaZfin = gtk_entry_get_text(textoRetaFinalZ);
+		return entradaZfin;
+	}
+
 	//! Metodo que retorna o indice do elemento selecionado na ListBox de elementos.
 	/*!
 		/return o indice do elemento selecionado.
@@ -610,7 +833,7 @@ public:
 	/*!
 		/return a lista de coordenadas do novo poligono.
 	*/
-	ListaEnc<Coordenada*>* getListaCoordsPoligono() {
+	ListaEnc<Coordenada3D*>* getListaCoordsPoligono() {
 		return listaCoordsPoligono;
 	}
 
@@ -618,8 +841,24 @@ public:
 	/*!
 		/return a lista de coordenadas da nova curva.
 	*/
-	ListaEnc<Coordenada*>* getListaCoordsCurva() {
+	ListaEnc<Coordenada3D*>* getListaCoordsCurva() {
 		return listaCoordsCurva;
+	}
+
+	//! Metodo que retorna a lista de coordenadas na criação de um Objeto3D.
+	/*!
+		/return a lista de coordenadas do novo Objeto3D.
+	*/
+	ListaEnc<Coordenada3D*>* getListaCoordsObjeto3D() {
+		return listaCoordsObjeto3D;
+	}
+
+	//! Metodo que retorna a lista de coordenadas na criação de um Objeto3D.
+	/*!
+		/return a lista de coordenadas do novo Objeto3D.
+	*/
+	ListaEnc<ParCoord*>* getListaArestasObjeto3D() {
+		return listaArestas;
 	}
 
 	//! Metodo que adiciona o nome de um elemento à listbox de elementos.
@@ -645,6 +884,22 @@ public:
 	*/
 	void setCurva_Btn_DelSensitive(gboolean valor) {
 		gtk_widget_set_sensitive((GtkWidget*) curva_Btn_Del, valor);
+	}
+
+	//! Método que altera a sensibilidade do botao de deletar coordenada na criação de Objetos3D.
+	/*!
+		/param valor é o novo valor da sensibilidade do botao (TRUE ou FALSE).
+	*/
+	void setObjeto3D_Coord_Btn_DelSensitive(gboolean valor) {
+		gtk_widget_set_sensitive((GtkWidget*) Objeto3D_Coord_Btn_Del, valor);
+	}
+
+	//! Método que altera a sensibilidade do botao de deletar arestas na criação de Objetos3D.
+	/*!
+		/param valor é o novo valor da sensibilidade do botao (TRUE ou FALSE).
+	*/
+	void setObjeto3D_Aresta_Btn_DelSensitive(gboolean valor) {
+		gtk_widget_set_sensitive((GtkWidget*) Objeto3D_Aresta_Btn_Del, valor);
 	}
 
 	//! Metodo que retorna o tipo de curva sendo criada.
@@ -674,16 +929,68 @@ public:
 		gtk_widget_grab_focus((GtkWidget*) textoCurvaX);
 	}
 
+	//! Método que passa o foco do cursor para a caixa de Coordenada X na janela de criação de Objeto3D.
+	void focusCoordObjeto3D() {
+		gtk_widget_grab_focus((GtkWidget*) textoObjeto3DX);
+	}
+
+	//! Método que passa o foco do cursor para a caixa de Coordenada X na janela de criação de Objeto3D.
+	void focusArestaObjeto3D() {
+		gtk_widget_grab_focus((GtkWidget*) textoObjeto3DA);
+	}
+
 	//! Método que deleta a coordenada selecionada na janela de criação de poligono.
 	void deletarCoordPoligono() {
 		listaCoordsPoligono->retiraDaPosicao(getIndexElementoDeletado(poligono_Listbox));
 		setPoligono_Btn_DelSensitive(FALSE);
 	}
 
-	//! Método que deleta a coordenada selecionada na janela de criação de poligono.
+	//! Método que deleta a coordenada selecionada na janela de criação de curva.
 	void deletarCoordCurva() {
 		listaCoordsCurva->retiraDaPosicao(getIndexElementoDeletado(curva_Listbox));
 		setCurva_Btn_DelSensitive(FALSE);
+	}
+
+	//! Método que deleta a coordenada selecionada na janela de criação de um Objeto3D.
+	void deletarCoordObjeto3D() {
+		listaCoordsObjeto3D->retiraDaPosicao(getIndexElementoDeletado(Objeto3D_Coord_Listbox));
+		setObjeto3D_Coord_Btn_DelSensitive(FALSE);
+
+		GtkListBoxRow* row = gtk_list_box_get_row_at_index (Objeto3D_Coord_Listbox, 0);
+		while (row != NULL) {
+			gtk_container_remove((GtkContainer*) Objeto3D_Coord_Listbox, (GtkWidget*) row);
+			row = gtk_list_box_get_row_at_index (Objeto3D_Coord_Listbox, 0);
+		}
+
+		Elemento<Coordenada3D*>* elementoLista = listaCoordsObjeto3D->getHead();
+		int count = 0;
+		while (elementoLista != NULL) {
+			Coordenada3D* coord = elementoLista->getInfo();
+			string polX = to_string(coord->getX());
+			polX.erase( polX.find_last_not_of('0') + 1, std::string::npos);
+			if (polX.back() == ',') { polX.erase(polX.end()-1); }
+
+			string polY = to_string(coord->getY());
+			polY.erase( polY.find_last_not_of('0') + 1, std::string::npos);
+			if (polY.back() == ',') { polY.erase(polY.end()-1); }
+
+			string polZ = to_string(coord->getZ());
+			polZ.erase( polZ.find_last_not_of('0') + 1, std::string::npos);
+			if (polZ.back() == ',') { polZ.erase(polZ.end()-1); }
+
+			string nomeNaLista = to_string(count) + ": (" + polX + "," + polY + "," + polZ + ")";
+			addToListBox(Objeto3D_Coord_Listbox, nomeNaLista);
+			count++;
+			elementoLista = elementoLista->getProximo();
+		}
+
+
+	}
+
+	//! Método que deleta a aresta selecionada na janela de criação de poligono.
+	void deletarArestaObjeto3D() {
+		listaArestas->retiraDaPosicao(getIndexElementoDeletado(Objeto3D_Aresta_Listbox));
+		setObjeto3D_Aresta_Btn_DelSensitive(FALSE);
 	}
 
 	//! Método que retorna se a caixa de Preenchimento na criação de poligono esta marcada.
@@ -701,22 +1008,37 @@ public:
 		limparTextoNovaReta();
 		limparTextoNovoPoligono();
 		limparTextoNovaCurva();
+		limparTextoNovoObjeto3D();
 		setPoligono_Btn_DelSensitive(FALSE);
 		setCurva_Btn_DelSensitive(FALSE);
+		setObjeto3D_Coord_Btn_DelSensitive(FALSE);
+		setObjeto3D_Aresta_Btn_DelSensitive(FALSE);
 		gtk_toggle_button_set_active((GtkToggleButton*) poligono_Preenchido, FALSE);
 		gtk_notebook_set_current_page(novoElmnt_Notebook, 0);
 		free(listaCoordsPoligono);
 		free(listaCoordsCurva);
+		free(listaCoordsObjeto3D);
+		free(listaArestas);
 	}
 
 	//! Método que reinicia a lista de coordenadas na janela de criação de poligono.
 	void resetarListaCoordenadasPoligono() {
-		listaCoordsPoligono = new ListaEnc<Coordenada*>();
+		listaCoordsPoligono = new ListaEnc<Coordenada3D*>();
 	}
 
 	//! Método que reinicia a lista de coordenadas na janela de criação de curvas.
 	void resetarListaCoordenadasCurva() {
-		listaCoordsCurva = new ListaEnc<Coordenada*>();
+		listaCoordsCurva = new ListaEnc<Coordenada3D*>();
+	}
+
+	//! Método que reinicia a lista de coordenadas na janela de criação de Objetos3D.
+	void resetarListaCoordenadasObjeto3D() {
+		listaCoordsObjeto3D = new ListaEnc<Coordenada3D*>();
+	}
+
+	//! Método que reinicia a lista de aresta na janela de criação de Objetos3D.
+	void resetarListaArestaObjeto3D() {
+		listaArestas = new ListaEnc<ParCoord*>();
 	}
 
 	// ------------------------------------------------------------------------------------------------
@@ -724,8 +1046,9 @@ public:
 
 	//! Método que limpa as caixas de texto de translação da janela de editar objeto.
 	void limparTextoTranslacao() {
-		gtk_entry_set_text(editElmnt_trans_X, "");
-		gtk_entry_set_text(editElmnt_trans_Y, "");
+		gtk_entry_set_text(editElmnt_trans_X, "0");
+		gtk_entry_set_text(editElmnt_trans_Y, "0");
+		gtk_entry_set_text(editElmnt_trans_Z, "0");
 	}
 
 	//! Método que passa o foco do cursor para a caixa de Coordenada X na janela de translação.
@@ -735,8 +1058,9 @@ public:
 
 	//! Método que limpa as caixas de texto de escalonamento da janela de editar objeto.
 	void limparTextoEscalonamento() {
-		gtk_entry_set_text(editElmnt_escal_X, "");
-		gtk_entry_set_text(editElmnt_escal_Y, "");
+		gtk_entry_set_text(editElmnt_escal_X, "1");
+		gtk_entry_set_text(editElmnt_escal_Y, "1");
+		gtk_entry_set_text(editElmnt_escal_Z, "1");
 	}
 
 	//! Método que passa o foco do cursor para a caixa de Coordenada X na janela de escalonamento.
@@ -746,12 +1070,16 @@ public:
 
 	//! Método que limpa as caixas de texto de rotacao da janela de editar objeto.
 	void limparTextoRotacao() {
-		gtk_entry_set_text(editElmnt_rot_X, "");
-		gtk_entry_set_text(editElmnt_rot_Y, "");
-		gtk_entry_set_text(editElmnt_rot_angulo, "");
+		gtk_entry_set_text(editElmnt_rot_X, "0");
+		gtk_entry_set_text(editElmnt_rot_Y, "0");
+		gtk_entry_set_text(editElmnt_rot_Z, "0");
+		gtk_entry_set_text(editElmnt_rot_angulo, "0");
 		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_0, TRUE);
 		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_1, FALSE);
 		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_2, FALSE);
+		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_eixo_0, TRUE);
+		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_eixo_1, FALSE);
+		gtk_toggle_button_set_active((GtkToggleButton*) editElmnt_radio_eixo_2, FALSE);
 	}
 
 	//! Método que passa o foco do cursor para a caixa de valor do ângulo na janela de rotação.
@@ -778,7 +1106,7 @@ public:
 
 	//! Metodo que retorna o valor numérico contido na caixa de Translação em X.
 	/*!
-		/return a quantidade de translação em x.
+		/return a quantidade de translação em X.
 	*/
 	double getTransX() {
 		try {
@@ -795,7 +1123,7 @@ public:
 
 	//! Metodo que retorna o valor numérico contido na caixa de Translação em Y.
 	/*!
-		/return a quantidade de translação em y.
+		/return a quantidade de translação em Y.
 	*/
 	double getTransY() {
 		try {
@@ -803,6 +1131,23 @@ public:
 		} catch (int erro) {
 			if (erro == -1) {
 				//gtk_entry_set_text(editElmnt_trans_Y, "0");
+				throw -1;
+			} else if (erro == -2) {
+				return 0;
+			}
+		}
+	}
+
+	//! Metodo que retorna o valor numérico contido na caixa de Translação em Z.
+	/*!
+		/return a quantidade de translação em Z.
+	*/
+	double getTransZ() {
+		try {
+			return getFator(editElmnt_trans_Z);
+		} catch (int erro) {
+			if (erro == -1) {
+				//gtk_entry_set_text(editElmnt_trans_Z, "0");
 				throw -1;
 			} else if (erro == -2) {
 				return 0;
@@ -846,6 +1191,24 @@ public:
 		}
 	}
 
+	//! Metodo que retorna o valor numérico contido na caixa de fator de Escala em Z.
+	/*!
+		/return o fator de escala em Z.
+	*/
+	double getEscalFatorZ() {
+		try {
+			return getFator(editElmnt_escal_Z);
+		} catch (int erro) {
+			if (erro == -1) {
+				//gtk_entry_set_text(editElmnt_escal_Z, "1");
+				throw -1;
+			} else if (erro == -2) {
+				//gtk_entry_set_text(editElmnt_escal_Z, "1");
+				throw -2;
+			}
+		}
+	}
+
 	//! Metodo que retorna o valor numérico contido na caixa de angulo de rotacao.
 	/*!
 		/return o angulo a ser rotacionado.
@@ -861,6 +1224,20 @@ public:
 				//gtk_entry_set_text(editElmnt_rot_angulo, "1");
 				throw -2;
 			}
+		}
+	}
+
+	//! Metodo que retorna o eixo de rotacao.
+	/*!
+		/return inteiro correspondendo à uma das três opções de eixo para a rotação (0 = X, 1 = Y, 2 = Z).
+	*/
+	int getEixoDeRotacao() {
+		if (gtk_toggle_button_get_active((GtkToggleButton*) editElmnt_radio_eixo_0)) {
+			return 0;
+		} else if (gtk_toggle_button_get_active((GtkToggleButton*) editElmnt_radio_eixo_1)) {
+			return 1;
+		} else {
+			return 2;
 		}
 	}
 
@@ -912,6 +1289,23 @@ public:
 		}
 	}
 
+	//! Metodo que retorna o valor numérico contido na caixa de posição Z na rotação relativa à um ponto.
+	/*!
+		/return a coordenada Z desse ponto.
+	*/
+	double getRotRelativoAZ() {
+		try {
+			return getFator(editElmnt_rot_Z);
+		} catch (int erro) {
+			if (erro == -1) {
+				//gtk_entry_set_text(editElmnt_rot_Z, "1");
+				throw -1;
+			} else if (erro == -2) {
+				return 0;
+			}
+		}
+	}
+
 	//! Metodo que abre uma janela para escolher um arquivo.
 	/*!
 		/return O caminho para um arquivo.
@@ -931,7 +1325,7 @@ public:
 		}
 
 		gtk_widget_destroy (dialog);
-		
+
 		return arquivo;
 	}
 

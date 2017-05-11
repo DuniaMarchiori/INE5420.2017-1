@@ -8,15 +8,15 @@
 class Poligono: public ElementoGrafico {
 
 private:
-	ListaEnc<Coordenada*> *listaMundo; /*!< Lista encadeada de coordenadas do polígono no mundo.*/
-	ListaEnc<Coordenada*> *listaNormal; /*!< Lista encadeada de coordenadas do polígono normalizadas.*/
+	ListaEnc<Coordenada3D*> *listaMundo; /*!< Lista encadeada de coordenadas do polígono no mundo.*/
+	ListaEnc<Coordenada3D*> *listaNormal; /*!< Lista encadeada de coordenadas do polígono normalizadas.*/
 	bool preenchido; /*!< Valor que indica se este poligono é preenchido ou não.*/
 
 public:
 	//! Construtor
 	Poligono() {
-		listaMundo = new ListaEnc<Coordenada*>();
-		listaNormal = new ListaEnc<Coordenada*>();
+		listaMundo = new ListaEnc<Coordenada3D*>();
+		listaNormal = new ListaEnc<Coordenada3D*>();
 		preenchido = false;
 		setNome("");
 		setTipo(POLIGONO);
@@ -27,8 +27,8 @@ public:
 		/param nome é o nome do polígono
 	*/
 	Poligono(string nome) {
-		listaMundo = new ListaEnc<Coordenada*>();
-		listaNormal = new ListaEnc<Coordenada*>();
+		listaMundo = new ListaEnc<Coordenada3D*>();
+		listaNormal = new ListaEnc<Coordenada3D*>();
 		preenchido = false;
 		setNome(nome);
 		setTipo(POLIGONO);
@@ -39,7 +39,7 @@ public:
 		/param nome é o nome do polígono
 		/param novaLista é a lista de coordenadas do polígono
 	*/
-	Poligono(string nome, ListaEnc<Coordenada*> *novaLista) {
+	Poligono(string nome, ListaEnc<Coordenada3D*> *novaLista) {
 		setListaMundo(novaLista);
 		preenchido = false;
 		setNome(nome);
@@ -54,7 +54,7 @@ public:
         Adiciona coordenadas à lista de coordenadas
         /param p é a coordenada a ser adicionada.
     */
-	void adicionarCoordenadaMundo(Coordenada* p) {
+	void adicionarCoordenadaMundo(Coordenada3D* p) {
 		listaMundo->adiciona(p);
 	}
 
@@ -62,7 +62,7 @@ public:
     /*!
         /param novaLista é a lista de coordenadas que substituirá a anterior.
     */
-	void setListaMundo(ListaEnc<Coordenada*> *novaLista) {
+	void setListaMundo(ListaEnc<Coordenada3D*> *novaLista) {
 		listaMundo = novaLista;
 	}
 
@@ -70,7 +70,7 @@ public:
     /*!
         /return uma lista encadeada das coordenadas do polígono.
     */
-	ListaEnc<Coordenada*>* getListaMundo() {
+	ListaEnc<Coordenada3D*>* getListaMundo() {
 		return listaMundo;
 	}
 
@@ -97,7 +97,7 @@ public:
         Adiciona coordenadas à lista de coordenadas
         /param p é a coordenada a ser adicionada.
     */
-	void adicionarCoordenadaNormal(Coordenada* p) {
+	void adicionarCoordenadaNormal(Coordenada3D* p) {
 		listaNormal->adiciona(p);
 	}
 
@@ -105,7 +105,7 @@ public:
     /*!
         /param novaLista é a lista de coordenadas que substituirá a anterior.
     */
-	void setListaNormal(ListaEnc<Coordenada*> *novaLista) {
+	void setListaNormal(ListaEnc<Coordenada3D*> *novaLista) {
 		listaNormal = novaLista;
 	}
 
@@ -113,7 +113,7 @@ public:
     /*!
         /return uma lista encadeada das coordenadas do polígono.
     */
-	ListaEnc<Coordenada*>* getListaNormal() {
+	ListaEnc<Coordenada3D*>* getListaNormal() {
 		return listaNormal;
 	}
 
@@ -122,24 +122,25 @@ public:
 	/*!
 		/return uma Coordenada que indica o centro geométrico do polígono.
 	*/
-	Coordenada* getCentroGeometrico() override{
-		Coordenada* coord;
+	Coordenada3D* getCentroGeometrico() override{
+		Coordenada3D* coord;
 
 		if (listaMundo->listaVazia()) {
-			coord = new Coordenada(-1, -1); // Se não há pontos no polígono
+			coord = new Coordenada3D(-1, -1, -1); // Se não há pontos no polígono
 		} else {
 			int n = 0;
-			double somaX = 0, somaY = 0;
-			Elemento<Coordenada*>* proxCoord = listaMundo->getHead();
+			double somaX = 0, somaY = 0, somaZ = 0;
+			Elemento<Coordenada3D*>* proxCoord = listaMundo->getHead();
 
 			while (proxCoord != NULL) {
-				++n;
+				n++;
 				somaX += proxCoord->getInfo()->getX();
 				somaY += proxCoord->getInfo()->getY();
+				somaZ += proxCoord->getInfo()->getZ();
 				proxCoord = proxCoord->getProximo();
 			}
 
-			coord = new Coordenada( (somaX/n),(somaY/n) );
+			coord = new Coordenada3D( (somaX/n), (somaY/n), (somaZ/n) );
 		}
 
 		return coord;

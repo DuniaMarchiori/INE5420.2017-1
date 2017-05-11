@@ -1,6 +1,7 @@
 #ifndef OBJ_HPP
 #define OBJ_HPP
 
+#include <stdlib.h>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -23,7 +24,6 @@ using std::string;
 class WavefrontOBJ {
 
 private:
-
 	string caminho; /*!< O caminho do arquivo sendo editado no momento*/
 	string nomeArquivoCriado; /*!< É apenas o nome do arquivo final*/
 	string nomeArquivoFinal; /*!< É o nome do arquivo final com caminho e extensão*/
@@ -89,12 +89,15 @@ private:
 		/return a string contendo o ponto.
 	*/
 	string pontoParaString(Ponto* ponto) {
+		/*
 		adicionaNoFimArquivo(verticeParaString(ponto->getCoordenadaMundo()), nomeArquivoFinal);
 
 		string novaLinha = "p";
 		novaLinha += " " + std::to_string(quantidadeVertices);
 
 		return novaLinha;
+		*/
+		return NULL;
 	}
 
 	//! Método que retorna uma reta como uma string no formato de wavefrontObj.
@@ -103,6 +106,7 @@ private:
 		/return a string contendo a reta.
 	*/
 	string retaParaString(Reta* reta) {
+		/*
 		string novaLinha = "l";
 
 		adicionaNoFimArquivo(verticeParaString(reta->getCoordenadaMundoInicial()), nomeArquivoFinal);
@@ -112,6 +116,8 @@ private:
 		novaLinha += " " + std::to_string(quantidadeVertices);
 
 		return novaLinha;
+		*/
+		return NULL;
 	}
 
 	//! Método que retorna um poligono como uma string no formato de wavefrontObj.
@@ -120,6 +126,7 @@ private:
 		/return a string contendo o poligono.
 	*/
 	string poligonoParaString(Poligono* pol) {
+		/*
 		string novaLinha = "l";
 
 		ListaEnc<Coordenada*>* lista = pol->getListaMundo();
@@ -132,6 +139,8 @@ private:
 		}
 
 		return novaLinha;
+		*/
+		return NULL;
 	}
 
 	//! Método que retorna uma curva como uma string no formato de wavefrontObj.
@@ -140,6 +149,7 @@ private:
 		/return a string contendo a curva.
 	*/
 	string curvaParaString(CurvaBSpline* c) {
+		/*
 		string novaLinha = "curv";
 
 		ListaEnc<Coordenada*>* lista = c->getListaMundo();
@@ -152,6 +162,8 @@ private:
 		}
 
 		return novaLinha;
+		*/
+		return NULL;
 	}
 
 	//! Método que converte uma string em uma coordenada.
@@ -195,6 +207,7 @@ private:
 		/return o ponto contido na string.
 	*/
 	Ponto* stringParaPonto(std::stringstream& stream, string nomeElemento, ListaEnc<Coordenada*>* listaVertices) {
+		/*
 		string palavra;
 		int vertice, quantidadeParametros = 0;
 
@@ -216,6 +229,8 @@ private:
 		Coordenada* c = new Coordenada(listaVertices->elementoNoIndice(vertice-1)); // porque os vértices no arquivo são indexados a partir do 1 e a lista é a partir do 0
 		Ponto* p = new Ponto(nomeElemento, c);
 		return p;
+		*/
+		return NULL;
 	}
 
 	//! Método que converte uma string em uma reta.
@@ -225,7 +240,8 @@ private:
 		/param listaVertices é a lista de todos os vertices do arquivo.
 		/return a reta contida na string.
 	*/
-	Reta* stringParaReta(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada*>* listaVertices){
+	Reta* stringParaReta(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada*>* listaVertices) {
+		/*
 		Coordenada *cInicial, *cFinal;
 
 		Elemento<int>* vertice = valores->getHead();
@@ -234,6 +250,8 @@ private:
 		cFinal = new Coordenada(listaVertices->elementoNoIndice( (vertice->getInfo()) -1));
 		Reta* r = new Reta(nomeElemento, cInicial, cFinal);
 		return r;
+		*/
+		return NULL;
 	}
 
 	//! Método que converte uma string em um poligono.
@@ -243,10 +261,13 @@ private:
 		/param listaVertices é a lista de todos os vertices do arquivo.
 		/return o poligono contido na string.
 	*/
-	Poligono* stringParaPoligono(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada*>* listaVertices){
+	Poligono* stringParaPoligono(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada*>* listaVertices) {
+		/*
 		ListaEnc<Coordenada*>* listaAuxPoligono = percorreListaParaEncontrarVertices(listaVertices, valores);
 		Poligono* pol = new Poligono(nomeElemento, listaAuxPoligono);
 		return pol;
+		*/
+		return NULL;
 	}
 
 	//! Método que converte uma string em uma curva.
@@ -256,16 +277,18 @@ private:
 		/param listaVertices é a lista de todos os vertices do arquivo.
 		/return a curva contida na string.
 	*/
-	CurvaBSpline* stringParaCurva(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada*>* listaVertices){
+	CurvaBSpline* stringParaCurva(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada*>* listaVertices) {
+		/*
 		ListaEnc<Coordenada*>* listaAuxCurva =  percorreListaParaEncontrarVertices(listaVertices, valores);
 		CurvaBSpline* cbs = new CurvaBSpline(nomeElemento, listaAuxCurva);
 		return cbs;
+		*/
 	}
 
 public:
 
 	//! Construtor
-	WavefrontOBJ () {
+	WavefrontOBJ(){
 		indiceArquivos = 1;
 		quantidadeVertices = 0;
 		caminho = "";

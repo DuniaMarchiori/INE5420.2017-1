@@ -96,13 +96,13 @@ class ListaEnc {
 	    \return retorna um inteiro que é a posição do elemento
 	    \sa listaVazia
 	*/
-	int posicao(const T& dado) const {
+	int posicao(T dado) {
 	    if (listaVazia()) throw -1;
 	    Elemento<T>* elemAux = head;
 	    T aux = elemAux->getInfo();
 	    for (int i = 0; i <= size; i++) {
 	         if (aux == dado) return i;
-	         if (elemAux->getProximo() == NULL) throw -1;
+	         if (elemAux->getProximo() == NULL) throw -2;
 	         elemAux = elemAux->getProximo();
 	         aux = elemAux->getInfo();
 	    }

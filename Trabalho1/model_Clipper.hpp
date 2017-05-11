@@ -15,7 +15,7 @@ private:
         /param coord A coordenada que se deseja saber o region code.
 		/return um array de inteiros contendo o region code.
     */
-	int* obterRegionCode(Coordenada* coord) {
+	int* obterRegionCode(Coordenada3D* coord) {
 		int* RC = new int[4];
 		for (int i = 0; i < 4; i++) {
 			RC[i] = 0;
@@ -79,8 +79,8 @@ private:
         /param m é o coeficiente angular da reta.
 		/return a coordenada clippada da extremidade da reta.
     */
-	Coordenada* auxiliarCSClipping (int* RC, Coordenada* coord, double m) {
-		Coordenada* novoPonto;
+	Coordenada3D* auxiliarCSClipping (int* RC, Coordenada3D* coord, double m) {
+		Coordenada3D* novoPonto;
 		bool xCalculado = false;
 		bool yCalculado = false;
 		double x = 0;
@@ -117,20 +117,20 @@ private:
 
 		if (xCalculado != yCalculado) {
 			if (xCalculado == true && x >= -1 && x <= 1) {
-				novoPonto = new Coordenada(x, y2);
+				novoPonto = new Coordenada3D(x, y2, 0);
 				return novoPonto;
 			} else if (yCalculado == true && y >= -1 && y <= 1) {
-				novoPonto = new Coordenada(x2, y);
+				novoPonto = new Coordenada3D(x2, y, 0);
 				return novoPonto;
 			} else {
 				return NULL;
 			}
 		} else if (xCalculado && yCalculado) {
 			if (x >= -1 && x <= 1) {
-				novoPonto = new Coordenada(x, y2);
+				novoPonto = new Coordenada3D(x, y2, 0);
 				return novoPonto;
 			} else if (y >= -1 && y <= 1) {
-				novoPonto = new Coordenada(x2, y);
+				novoPonto = new Coordenada3D(x2, y, 0);
 				return novoPonto;
 			}
 		}
@@ -173,39 +173,39 @@ private:
 		/param limite variavel indicando qual o limite da window esta sendo analisado (-1 ou 1).
 		/param poligonoClippado ponteiro para o poligono que esta sendo construido nesta clippagem.
     */
-	void auxClippingPoligonoVertical(Coordenada* coordAnterior, Coordenada* coordAtual, bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado) {
+	void auxClippingPoligonoVertical(Coordenada3D* coordAnterior, Coordenada3D* coordAtual, bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado) {
 		if (anteriorDentro && atualDentro) {
 			// Se a coordenada veio de dentro para dentro.
 			// 	Ele se adiciona ao novo poligono.
-			Coordenada* novaCoordenada = new Coordenada(coordAtual);
+			Coordenada3D* novaCoordenada = new Coordenada3D(coordAtual);
 			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
 		} else if (anteriorDentro && !atualDentro){
 			// Se a coordenada veio de dentro para fora.
 			// 	Ela se altera baseado na reta formada entre ela e a coordenada anterior.
-			Coordenada* novaCoordenada;
+			Coordenada3D* novaCoordenada;
 
 			// y – y0 = m (x – x0)
 			// y = m (x - x0) + y0
 			double m = (coordAtual->getY() - coordAnterior->getY()) / (coordAtual->getX() - coordAnterior->getX());
 			double y = m * (limite - coordAtual->getX()) + coordAtual->getY();
 
-			novaCoordenada = new Coordenada(limite, y);
+			novaCoordenada = new Coordenada3D(limite, y, 0);
 			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
 
 		} else if (!anteriorDentro && atualDentro){
 			// Se a coordenada veio de fora para dentro.
 			// 	Ela cria uma nova coordenada baseado na reta formada entre ela e a coordenada anterior.
 			// 	E então se adiciona ao poligono final.
-			Coordenada* novaCoordenada;
+			Coordenada3D* novaCoordenada;
 
 			// y – y0 = m (x – x0)
 			// y = m (x - x0) + y0
 			double m = (coordAtual->getY() - coordAnterior->getY()) / (coordAtual->getX() - coordAnterior->getX());
 			double y = m * (limite - coordAtual->getX()) + coordAtual->getY();
 
-			novaCoordenada = new Coordenada(limite, y);
+			novaCoordenada = new Coordenada3D(limite, y, 0);
 			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
-			novaCoordenada = new Coordenada(coordAtual);
+			novaCoordenada = new Coordenada3D(coordAtual);
 			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
 
 		} // Se for de fora pra fora, a coordenada simplesmente é ignorada.
@@ -219,10 +219,10 @@ private:
 	Poligono* clippaPoligonoEsq(Poligono* poligonoAClipar) {
 		Poligono* poligonoClippado = new Poligono();
 
-		Elemento<Coordenada*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
-		Coordenada* coordAtual;
+		Elemento<Coordenada3D*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
+		Coordenada3D* coordAtual;
 
-		Coordenada* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
+		Coordenada3D* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
 
 		while (elementoAtual != NULL) {
 			coordAtual = elementoAtual->getInfo();
@@ -247,10 +247,10 @@ private:
 	Poligono* clippaPoligonoDir(Poligono* poligonoAClipar) {
 		Poligono* poligonoClippado = new Poligono();
 
-		Elemento<Coordenada*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
-		Coordenada* coordAtual;
+		Elemento<Coordenada3D*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
+		Coordenada3D* coordAtual;
 
-		Coordenada* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
+		Coordenada3D* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
 
 		while (elementoAtual != NULL) {
 			coordAtual = elementoAtual->getInfo();
@@ -276,39 +276,39 @@ private:
 		/param limite variavel indicando qual o limite da window esta sendo analisado (-1 ou 1).
 		/param poligonoClippado ponteiro para o poligono que esta sendo construido nesta clippagem.
     */
-	void auxClippingPoligonoHorizontal(Coordenada* coordAnterior, Coordenada* coordAtual, bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado) {
+	void auxClippingPoligonoHorizontal(Coordenada3D* coordAnterior, Coordenada3D* coordAtual, bool anteriorDentro, bool atualDentro, double limite, Poligono* poligonoClippado) {
 		if (anteriorDentro && atualDentro) {
 			// Se a coordenada veio de dentro para dentro.
 			// 	Ele se adiciona ao novo poligono.
-			Coordenada* novaCoordenada = new Coordenada(coordAtual);
+			Coordenada3D* novaCoordenada = new Coordenada3D(coordAtual);
 			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
 		} else if (anteriorDentro && !atualDentro){
 			// Se a coordenada veio de dentro para fora.
 			// 	Ela se altera baseado na reta formada entre ela e a coordenada anterior.
-			Coordenada* novaCoordenada;
+			Coordenada3D* novaCoordenada;
 
 			// y – y0 = m (x – x0)
 			// x = (y - y0) / m + x0
 			double m = (coordAtual->getY() - coordAnterior->getY()) / (coordAtual->getX() - coordAnterior->getX());
 			double x = ((limite - coordAtual->getY()) / m) + coordAtual->getX();
 
-			novaCoordenada = new Coordenada(x, limite);
+			novaCoordenada = new Coordenada3D(x, limite, 0);
 			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
 
 		} else if (!anteriorDentro && atualDentro){
 			// Se a coordenada veio de fora para dentro.
 			// 	Ela cria uma nova coordenada baseado na reta formada entre ela e a coordenada anterior.
 			// 	E então se adiciona ao poligono final.
-			Coordenada* novaCoordenada;
+			Coordenada3D* novaCoordenada;
 
 			// y – y0 = m (x – x0)
 			// x = (y - y0) / m + x0
 			double m = (coordAtual->getY() - coordAnterior->getY()) / (coordAtual->getX() - coordAnterior->getX());
 			double x = ((limite - coordAtual->getY()) / m) + coordAtual->getX();
 
-			novaCoordenada = new Coordenada(x, limite);
+			novaCoordenada = new Coordenada3D(x, limite, 0);
 			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
-			novaCoordenada = new Coordenada(coordAtual);
+			novaCoordenada = new Coordenada3D(coordAtual);
 			poligonoClippado->adicionarCoordenadaNormal(novaCoordenada);
 
 		} // Se for de fora pra fora, a coordenada simplesmente é ignorada.
@@ -322,10 +322,10 @@ private:
 	Poligono* clippaPoligonoBaixo(Poligono* poligonoAClipar) {
 		Poligono* poligonoClippado = new Poligono();
 
-		Elemento<Coordenada*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
-		Coordenada* coordAtual;
+		Elemento<Coordenada3D*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
+		Coordenada3D* coordAtual;
 
-		Coordenada* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
+		Coordenada3D* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
 
 		while (elementoAtual != NULL) {
 			coordAtual = elementoAtual->getInfo();
@@ -350,10 +350,10 @@ private:
 	Poligono* clippaPoligonoCima(Poligono* poligonoAClipar) {
 		Poligono* poligonoClippado = new Poligono();
 
-		Elemento<Coordenada*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
-		Coordenada* coordAtual;
+		Elemento<Coordenada3D*>* elementoAtual = poligonoAClipar->getListaNormal()->getHead();
+		Coordenada3D* coordAtual;
 
-		Coordenada* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
+		Coordenada3D* coordAnterior = poligonoAClipar->getListaNormal()->getUltimoElemento()->getInfo();
 
 		while (elementoAtual != NULL) {
 			coordAtual = elementoAtual->getInfo();
@@ -379,18 +379,18 @@ private:
 		/param tipoClippingReta é o tipo de clipping de reta. (0 = C-S; 1 = L-B.)
 		/return as retas da curva depois do clipping.
     */
-	ListaEnc<Reta*>* clippingDeCurvaAux(ListaEnc<Coordenada*>* pontosCurva, int tipoClippingReta) {
+	ListaEnc<Reta*>* clippingDeCurvaAux(ListaEnc<Coordenada3D*>* pontosCurva, int tipoClippingReta) {
 		ListaEnc<Reta*>* retasFinais = new ListaEnc<Reta*>();
-		Elemento<Coordenada*>* elementoAtual = pontosCurva->getHead();
-		Coordenada* coordAnterior = elementoAtual->getInfo();
+		Elemento<Coordenada3D*>* elementoAtual = pontosCurva->getHead();
+		Coordenada3D* coordAnterior = elementoAtual->getInfo();
 		elementoAtual = elementoAtual->getProximo();
-		Coordenada* coordAtual;
+		Coordenada3D* coordAtual;
 
 		while (elementoAtual != NULL) {
 			coordAtual = elementoAtual->getInfo();
 			Reta* r = new Reta();
-			r->setCoordenadaNormalInicial(new Coordenada(coordAnterior));
-			r->setCoordenadaNormalFinal(new Coordenada(coordAtual));
+			r->setCoordenadaNormalInicial(new Coordenada3D(coordAnterior));
+			r->setCoordenadaNormalFinal(new Coordenada3D(coordAtual));
 			Reta* retaClippada = NULL;
 			switch (tipoClippingReta) {
 				case 0: {
@@ -429,6 +429,7 @@ public:
 		if (ponto->getCoordenadaNormal()->getX() < -1 || ponto->getCoordenadaNormal()->getX() > 1 || ponto->getCoordenadaNormal()->getY() < -1 || ponto->getCoordenadaNormal()->getY() > 1) {
 			return NULL;
 		}
+		
 		return ponto; // Ponto está dentro da window
 	}
 
@@ -439,8 +440,8 @@ public:
     */
 	Reta* clippingDeRetaCS(Reta* reta) {
 		Reta* retaClippada;
-		Coordenada* P1 = reta->getCoordenadaNormalInicial();
-		Coordenada* P2 = reta->getCoordenadaNormalFinal();
+		Coordenada3D* P1 = reta->getCoordenadaNormalInicial();
+		Coordenada3D* P2 = reta->getCoordenadaNormalFinal();
 
 		int* RCZero = new int[4];
 		for (int i = 0; i < 4; i++) {
@@ -453,25 +454,25 @@ public:
 		if (comparaRegionCode(RC1, RC2) && comparaRegionCode(RC1, RCZero) ) {
 			// Reta esta completamente contida na window.
 			retaClippada = new Reta();
-			retaClippada->setCoordenadaNormalInicial(new Coordenada(P1));
-			retaClippada->setCoordenadaNormalFinal(new Coordenada(P2));
+			retaClippada->setCoordenadaNormalInicial(new Coordenada3D(P1));
+			retaClippada->setCoordenadaNormalFinal(new Coordenada3D(P2));
 			return retaClippada;
 		} else if (!andLogicoRegionCodeZerado(RC1, RC2)) {
 			// Reta esta completamente fora da window.
 			return NULL;
 		} else {
 			double m = (P2->getY() - P1->getY()) / (P2->getX() - P1->getX());
-			Coordenada* novoP1 = NULL;
-			Coordenada* novoP2 = NULL;
+			Coordenada3D* novoP1 = NULL;
+			Coordenada3D* novoP2 = NULL;
 
 			if (comparaRegionCode(RC1, RCZero)) {
-				novoP1 = new Coordenada(P1->getX(), P1->getY());
+				novoP1 = new Coordenada3D(P1->getX(), P1->getY(), 0);
 			} else {
 				novoP1 = auxiliarCSClipping(RC1, P1, m);
 			}
 
 			if (comparaRegionCode(RC2, RCZero)) {
-				novoP2 = new Coordenada(P2->getX(), P2->getY());
+				novoP2 = new Coordenada3D(P2->getX(), P2->getY(), 0);
 			} else {
 				novoP2 = auxiliarCSClipping(RC2, P2, m);
 			}
@@ -493,7 +494,6 @@ public:
         /param reta é a reta que será clippada.
 		/return a reta depois do clipping.
     */
-
 	Reta* clippingDeRetaLB(Reta* reta) {
 		Reta* retaClippada;
 		double p1, p2, p3, p4, q1, q2, q3, q4;
@@ -550,8 +550,8 @@ public:
 
 		z1 = maximo(0.0, r1max, r2max);
 		z2 = minimo(1.0, r1min, r2min);
-		Coordenada* novoP1 = NULL;
-		Coordenada* novoP2 = NULL;
+		Coordenada3D* novoP1 = NULL;
+		Coordenada3D* novoP2 = NULL;
 
 		if (z1 > z2) { // A linha está completamente fora
 			return NULL;
@@ -559,17 +559,17 @@ public:
 
 		// A linha está total ou parcialmente visível
 		if (z1 != 0) {
-			novoP1 = new Coordenada( (ini->getX() + z1 * p2), (ini->getY() + z1 * p4) );
+			novoP1 = new Coordenada3D( (ini->getX() + z1 * p2), (ini->getY() + z1 * p4), 0);
 
 		} else {
-			novoP1 = new Coordenada(ini->getX(), ini->getY());
+			novoP1 = new Coordenada3D(ini->getX(), ini->getY(), 0);
 		}
 
 		if (z2 != 1) {
-			novoP2 = new Coordenada( (ini->getX() + z2 * p2), (ini->getY() + z2 * p4) );
+			novoP2 = new Coordenada3D( (ini->getX() + z2 * p2), (ini->getY() + z2 * p4), 0);
 
 		} else {
-			novoP2 = new Coordenada(fin->getX(), fin->getY());
+			novoP2 = new Coordenada3D(fin->getX(), fin->getY(), 0);
 		}
 
 		retaClippada = new Reta();
@@ -577,7 +577,6 @@ public:
 		retaClippada->setCoordenadaNormalFinal(novoP2);
 		return retaClippada;
 	}
-
 
 	//! Método que faz clipping de um poligono.
 	/*!
@@ -622,7 +621,7 @@ public:
         /param pontosCurva São os pontos que serão ligador para formar a curva.
 		/return O conjunto final de retas.
     */
-	ListaEnc<Reta*>* clippingDeCurvaCS(ListaEnc<Coordenada*>* pontosCurva) {
+	ListaEnc<Reta*>* clippingDeCurvaCS(ListaEnc<Coordenada3D*>* pontosCurva) {
 		return clippingDeCurvaAux(pontosCurva, 0);
 	}
 
@@ -631,7 +630,7 @@ public:
         /param pontosCurva São os pontos que serão ligador para formar a curva.
 		/return O conjunto final de retas.
     */
-	ListaEnc<Reta*>* clippingDeCurvaLB(ListaEnc<Coordenada*>* pontosCurva) {
+	ListaEnc<Reta*>* clippingDeCurvaLB(ListaEnc<Coordenada3D*>* pontosCurva) {
 		return clippingDeCurvaAux(pontosCurva, 1);
 	}
 

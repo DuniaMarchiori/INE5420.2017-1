@@ -42,16 +42,16 @@ extern "C" G_MODULE_EXPORT void Elmnt_Btn_Edit_clicked_cb() {
 /*!
 	Roda a window no sentido anti-horário.
 */
-extern "C" G_MODULE_EXPORT void Pos_Btn_Rot_Esq_clicked_cb(){
-	controller->botaoGirarWindowEsquerdo();
+extern "C" G_MODULE_EXPORT void Pos_Btn_Top_Esq_clicked_cb(){
+	controller->botaoPosTopEsq();
 }
 
 //! Método que é chamado ao pressionar o botão de girar a window no sentido horário.
 /*!
 	Roda a window no sentido anti-horário.
 */
-extern "C" G_MODULE_EXPORT void Pos_Btn_Rot_Dir_clicked_cb(){
-	controller->botaoGirarWindowDireito();
+extern "C" G_MODULE_EXPORT void Pos_Btn_Top_Dir_clicked_cb(){
+	controller->botaoPosTopDir();
 }
 
 //! Método que é chamado ao pressionar o botão "Cima".
@@ -59,7 +59,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Rot_Dir_clicked_cb(){
 	Move a window para cima baseado no fator.
 */
 extern "C" G_MODULE_EXPORT void Pos_Btn_Cima_clicked_cb(){
-	controller->botaoMovimentoCima();
+	controller->botaoPosCima();
 }
 
 
@@ -68,7 +68,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Cima_clicked_cb(){
 	Move a window para esquerda baseado no fator.
 */
 extern "C" G_MODULE_EXPORT void Pos_Btn_Esq_clicked_cb(){
-	controller->botaoMovimentoEsquerda();
+	controller->botaoPosEsq();
 }
 
 
@@ -77,7 +77,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Esq_clicked_cb(){
 	Move a window para direita baseado no fator.
 */
 extern "C" G_MODULE_EXPORT void Pos_Btn_Dir_clicked_cb(){
-	controller->botaoMovimentoDireita();
+	controller->botaoPosDir();
 }
 
 
@@ -86,7 +86,24 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Dir_clicked_cb(){
 	Move a window para baixo baseado no fator.
 */
 extern "C" G_MODULE_EXPORT void Pos_Btn_Baixo_clicked_cb(){
-	controller->botaoMovimentoBaixo();
+	controller->botaoPosBaixo();
+}
+
+
+//! Método que é chamado ao pressionar o radio button do tipo de clippagem C-S.
+/*!
+	Redesenha todos os elementos, utilizando clipping C-S.
+*/
+extern "C" G_MODULE_EXPORT void Pos_Radio_0_clicked_cb(){
+	controller->movWindowAlterado();
+}
+
+//! Método que é chamado ao pressionar o radio button do tipo de clippagem L-B.
+/*!
+	Redesenha todos os elementos, utilizando clipping L-B.
+*/
+extern "C" G_MODULE_EXPORT void Pos_Radio_1_clicked_cb(){
+	controller->movWindowAlterado();
 }
 
 
@@ -164,6 +181,14 @@ extern "C" G_MODULE_EXPORT void MenuBar_Salvar_Obj_Mundo_activate_cb(){
 	controller->salvarMundoObj();
 }
 
+//! Método que é chamado ao pressionar o botao do menu bar de salvar o mundo em .obj.
+/*!
+	Carrega um elemento em formato .obj.
+*/
+extern "C" G_MODULE_EXPORT void MenuBar_Window_Resetar_activate_cb(){
+	controller->resetarWindow();
+}
+
 
 
 //----------------------------------------------------------------------------------------------------
@@ -227,6 +252,53 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Listbox_Curv_row_selected_cb (GtkListB
 	controller->selecionaListBoxCurva();
 }
 
+//! Método que é chamado ao pressionar o botão de nova coordenada na criação de um Objeto3D.
+/*!
+	Adiciona uma nova coordenada à lista de coordenadas e à list box.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Obj_Coord_Add_clicked_cb() {
+	controller->addNovaCoordenadaObjeto3D();
+}
+
+//! Método que é chamado ao pressionar o botão de deletar coordenada na criação de um Objeto3D.
+/*!
+	Remove a coordenada selecionada na list box de coordenadas do novo Objeto3D.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Obj_Coord_Del_clicked_cb(){
+	controller->delCoordenadaObjeto3D();
+}
+
+//! Método que é chamado ao pressionar o botão de nova aresta na criação de um Objeto3D.
+/*!
+	Adiciona uma nova aresta à lista de arestas e à list box.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Obj_Aresta_Add_clicked_cb() {
+	controller->addNovaArestaObjeto3D();
+}
+
+//! Método que é chamado ao pressionar o botão de deletar aresta na criação de um Objeto3D.
+/*!
+	Remove a aresta selecionada na list box de aresta do novo Objeto3D.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Obj_Aresta_Del_clicked_cb(){
+	controller->delArestaObjeto3D();
+}
+
+//! Método que é chamado ao selecionar uma coordenada da list box de criação de Objeto3D.
+/*!
+	Ativa o botão de deletar coordenada.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Obj_Coord_Listbox_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
+	controller->selecionaListBoxObjeto3DCoord();
+}
+
+//! Método que é chamado ao selecionar uma aresta da list box de criação de Objeto3D.
+/*!
+	Ativa o botão de deletar aresta.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Obj_Aresta_Listbox_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
+	controller->selecionaListBoxObjeto3DAresta();
+}
 
 //! Método que é ativado ao fechar a janela de novo elemento.
 /*!
