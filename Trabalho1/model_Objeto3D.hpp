@@ -29,6 +29,18 @@ public:
 	}
 
 	//! Construtor
+	Objeto3D(string nome) {
+		listaCoordMundo = new ListaEnc<Coordenada3D*>();
+		listaArestasMundo = new ListaEnc<Aresta*>();
+
+		listaCoordNormal = new ListaEnc<Coordenada3D*>();
+		listaArestasNormal = new ListaEnc<Aresta*>();
+
+		setNome(nome);
+		setTipo(OBJETO3D);
+	}
+
+	//! Construtor
 	Objeto3D(string nome, ListaEnc<Coordenada3D*>* listaCoord, ListaEnc<Aresta*>* listaAresta) {
 		listaCoordMundo = listaCoord;
 		listaArestasMundo = listaAresta;
@@ -48,6 +60,19 @@ public:
 		listaCoordMundo = novaLista;
 	}
 
+	//! Método que adiciona novas coordenadas à lista de coordenadas do mundo do objeto3d
+    /*!
+        /param listaCoordsNovas é a lista de coordenadas que serão adicionadas.
+    */
+	void appendListaCoordMundo(ListaEnc<Coordenada3D*> *listaCoordsNovas) {
+		Elemento<Coordenada3D*>* elemento = listaCoordsNovas->getHead();
+
+		while(elemento != NULL) {
+			listaCoordMundo->adiciona(elemento->getInfo());
+			elemento = elemento->getProximo();
+		}
+	}
+
 	//! Método que retorna a lista de coordenadas do mundo do objeto3d
     /*!
         /return uma lista encadeada das coordenadas do objeto3d.
@@ -62,6 +87,19 @@ public:
     */
 	void setListaArestaMundo(ListaEnc<Aresta*> *novaLista) {
 		listaArestasMundo = novaLista;
+	}
+
+	//! Método que adiciona novas arestas à lista de arestas do mundo do objeto3d
+    /*!
+        /param listaArestasNovas é a lista de arestas que serão adicionadas.
+    */
+	void appendListaArestaMundo(ListaEnc<Aresta*> *listaArestasNovas) {
+		Elemento<Aresta*>* elemento = listaArestasNovas->getHead();
+
+		while(elemento != NULL) {
+			listaArestasMundo->adiciona(elemento->getInfo());
+			elemento = elemento->getProximo();
+		}
 	}
 
 	//! Método que retorna a lista de arestas do mundo do objeto3d

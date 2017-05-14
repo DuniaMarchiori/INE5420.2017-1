@@ -754,6 +754,9 @@ public:
 						case CURVA:
 							tipoElementoParaListBox = "Curva";
 							break;
+						case OBJETO3D:
+							tipoElementoParaListBox = "Objeto3D";
+							break;
 					}
 
 					view->adicionaElementoListbox(elementoLista->getInfo()->getNome(), tipoElementoParaListBox);

@@ -7,13 +7,15 @@
 #include <sstream>
 #include <sys/stat.h>
 
-#include "model_Coordenada.hpp"
+#include "model_Coordenada3D.hpp"
 #include "model_ElementoGrafico.hpp"
 #include "model_Ponto.hpp"
 #include "model_Reta.hpp"
 #include "model_Poligono.hpp"
 //#include <CurvaBezier.cpp>
 #include "model_CurvaBSpline.hpp"
+#include "model_Objeto3D.hpp"
+#include "model_Aresta.hpp"
 
 using std::string;
 
@@ -47,12 +49,12 @@ private:
 		/param valores É uma lista contendo quais pontos pertencem ao elemento.
 		/return retorna os vertices do elemento.
 	*/
-	ListaEnc<Coordenada*>* percorreListaParaEncontrarVertices(ListaEnc<Coordenada*>* listaVertices, ListaEnc<int>* valores) {
+	ListaEnc<Coordenada3D*>* percorreListaParaEncontrarVertices(ListaEnc<Coordenada3D*>* listaVertices, ListaEnc<int>* valores) {
 		Elemento<int>* vertice = valores->getHead();
-		ListaEnc<Coordenada*>* listaAux = new ListaEnc<Coordenada*>();
+		ListaEnc<Coordenada3D*>* listaAux = new ListaEnc<Coordenada3D*>();
 
 		while (vertice != NULL) {
-			Coordenada* c = new Coordenada(listaVertices->elementoNoIndice( (vertice->getInfo()) -1));
+			Coordenada3D* c = new Coordenada3D(listaVertices->elementoNoIndice( (vertice->getInfo()) -1));
 			listaAux->adiciona(c);
 			vertice = vertice->getProximo();
 		}
@@ -77,9 +79,9 @@ private:
 		/param c a Coordenada que sera transformada em string
 		/return a string contendo a coordenada.
 	*/
-	string verticeParaString(Coordenada* c) {
+	string verticeParaString(Coordenada3D* c) {
 		quantidadeVertices++;
-		string linha = "v " + std::to_string(c->getX()) + " " + std::to_string(c->getY());
+		string linha = "v " + std::to_string(c->getX()) + " " + std::to_string(c->getY()) + " " + std::to_string(c->getZ());
 		return linha;
 	}
 
@@ -89,14 +91,14 @@ private:
 		/return a string contendo o ponto.
 	*/
 	string pontoParaString(Ponto* ponto) {
-		/*
+		
 		adicionaNoFimArquivo(verticeParaString(ponto->getCoordenadaMundo()), nomeArquivoFinal);
 
 		string novaLinha = "p";
 		novaLinha += " " + std::to_string(quantidadeVertices);
 
 		return novaLinha;
-		*/
+		
 		return NULL;
 	}
 
@@ -106,7 +108,7 @@ private:
 		/return a string contendo a reta.
 	*/
 	string retaParaString(Reta* reta) {
-		/*
+		
 		string novaLinha = "l";
 
 		adicionaNoFimArquivo(verticeParaString(reta->getCoordenadaMundoInicial()), nomeArquivoFinal);
@@ -116,7 +118,7 @@ private:
 		novaLinha += " " + std::to_string(quantidadeVertices);
 
 		return novaLinha;
-		*/
+		
 		return NULL;
 	}
 
@@ -126,11 +128,11 @@ private:
 		/return a string contendo o poligono.
 	*/
 	string poligonoParaString(Poligono* pol) {
-		/*
+		
 		string novaLinha = "l";
 
-		ListaEnc<Coordenada*>* lista = pol->getListaMundo();
-		Elemento<Coordenada*>* vertice = lista->getHead();
+		ListaEnc<Coordenada3D*>* lista = pol->getListaMundo();
+		Elemento<Coordenada3D*>* vertice = lista->getHead();
 
 		while (vertice != NULL) {
 			adicionaNoFimArquivo(verticeParaString(vertice->getInfo()), nomeArquivoFinal);
@@ -139,7 +141,7 @@ private:
 		}
 
 		return novaLinha;
-		*/
+		
 		return NULL;
 	}
 
@@ -149,11 +151,11 @@ private:
 		/return a string contendo a curva.
 	*/
 	string curvaParaString(CurvaBSpline* c) {
-		/*
+		
 		string novaLinha = "curv";
 
-		ListaEnc<Coordenada*>* lista = c->getListaMundo();
-		Elemento<Coordenada*>* vertice = lista->getHead();
+		ListaEnc<Coordenada3D*>* lista = c->getListaMundo();
+		Elemento<Coordenada3D*>* vertice = lista->getHead();
 
 		while (vertice != NULL) {
 			adicionaNoFimArquivo(verticeParaString(vertice->getInfo()), nomeArquivoFinal);
@@ -162,8 +164,17 @@ private:
 		}
 
 		return novaLinha;
-		*/
+		
 		return NULL;
+	}
+
+	//! Método que retorna um objeto 3D como uma string no formato de wavefrontObj.
+	/*!
+		/param objeto é o Objeto3D que sera transformada em string
+		/return a string contendo o objeto.
+	*/
+	string objeto3DParaString(Objeto3D* objeto) {
+		return "# TODO objeto3DParaString()";
 	}
 
 	//! Método que converte uma string em uma coordenada.
@@ -171,15 +182,15 @@ private:
 		/param stream é a stream que contem a string.
 		/return a coordenada contida na string.
 	*/
-	Coordenada* stringParaCoordenada(std::stringstream& stream) {
-		int* valores = new int[2]();
+	Coordenada3D* stringParaCoordenada(std::stringstream& stream) {
+		int* valores = new int[3]();
 		double parametro = 0;
 		int quantidadeParametros = 0;
 		string palavra;
 
 		while (stream >> palavra) {
 
-			if (quantidadeParametros < 2) { // x e y
+			if (quantidadeParametros < 3) { // x, y e z
 				try {
 					parametro = std::stod(palavra);
 					valores[quantidadeParametros] = parametro;
@@ -195,7 +206,7 @@ private:
 			}
 		}
 
-		Coordenada* c = new Coordenada(valores[0], valores[1]);
+		Coordenada3D* c = new Coordenada3D(valores[0], valores[1], valores[2]);
 		return c;
 	}
 
@@ -206,8 +217,8 @@ private:
 		/param listaVertices é a lista de todos os vertices do arquivo.
 		/return o ponto contido na string.
 	*/
-	Ponto* stringParaPonto(std::stringstream& stream, string nomeElemento, ListaEnc<Coordenada*>* listaVertices) {
-		/*
+	Ponto* stringParaPonto(std::stringstream& stream, string nomeElemento, ListaEnc<Coordenada3D*>* listaVertices) {
+		
 		string palavra;
 		int vertice, quantidadeParametros = 0;
 
@@ -226,10 +237,10 @@ private:
 			}
 		}
 
-		Coordenada* c = new Coordenada(listaVertices->elementoNoIndice(vertice-1)); // porque os vértices no arquivo são indexados a partir do 1 e a lista é a partir do 0
+		Coordenada3D* c = new Coordenada3D(listaVertices->elementoNoIndice(vertice-1)); // porque os vértices no arquivo são indexados a partir do 1 e a lista é a partir do 0
 		Ponto* p = new Ponto(nomeElemento, c);
 		return p;
-		*/
+		
 		return NULL;
 	}
 
@@ -240,17 +251,17 @@ private:
 		/param listaVertices é a lista de todos os vertices do arquivo.
 		/return a reta contida na string.
 	*/
-	Reta* stringParaReta(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada*>* listaVertices) {
-		/*
-		Coordenada *cInicial, *cFinal;
+	Reta* stringParaReta(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada3D*>* listaVertices) {
+		
+		Coordenada3D *cInicial, *cFinal;
 
 		Elemento<int>* vertice = valores->getHead();
-		cInicial = new Coordenada(listaVertices->elementoNoIndice( (vertice->getInfo()) -1));
+		cInicial = new Coordenada3D(listaVertices->elementoNoIndice( (vertice->getInfo()) -1));
 		vertice = vertice->getProximo();
-		cFinal = new Coordenada(listaVertices->elementoNoIndice( (vertice->getInfo()) -1));
+		cFinal = new Coordenada3D(listaVertices->elementoNoIndice( (vertice->getInfo()) -1));
 		Reta* r = new Reta(nomeElemento, cInicial, cFinal);
 		return r;
-		*/
+		
 		return NULL;
 	}
 
@@ -261,12 +272,12 @@ private:
 		/param listaVertices é a lista de todos os vertices do arquivo.
 		/return o poligono contido na string.
 	*/
-	Poligono* stringParaPoligono(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada*>* listaVertices) {
-		/*
-		ListaEnc<Coordenada*>* listaAuxPoligono = percorreListaParaEncontrarVertices(listaVertices, valores);
+	Poligono* stringParaPoligono(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada3D*>* listaVertices) {
+		
+		ListaEnc<Coordenada3D*>* listaAuxPoligono = percorreListaParaEncontrarVertices(listaVertices, valores);
 		Poligono* pol = new Poligono(nomeElemento, listaAuxPoligono);
 		return pol;
-		*/
+		
 		return NULL;
 	}
 
@@ -277,12 +288,42 @@ private:
 		/param listaVertices é a lista de todos os vertices do arquivo.
 		/return a curva contida na string.
 	*/
-	CurvaBSpline* stringParaCurva(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada*>* listaVertices) {
-		/*
-		ListaEnc<Coordenada*>* listaAuxCurva =  percorreListaParaEncontrarVertices(listaVertices, valores);
+	CurvaBSpline* stringParaCurva(string nomeElemento, ListaEnc<int>* valores, ListaEnc<Coordenada3D*>* listaVertices) {
+		
+		ListaEnc<Coordenada3D*>* listaAuxCurva =  percorreListaParaEncontrarVertices(listaVertices, valores);
 		CurvaBSpline* cbs = new CurvaBSpline(nomeElemento, listaAuxCurva);
 		return cbs;
-		*/
+		
+	}
+
+	ListaEnc<Aresta*>* stringParaFaceDeObjeto(ListaEnc<Coordenada3D*>* listaCoordenadas) {
+		ListaEnc<Aresta*>* face = new ListaEnc<Aresta*>();
+
+		Elemento<Coordenada3D*>* elementoInicial = listaCoordenadas->getHead();
+		Elemento<Coordenada3D*>* elementoFinal;
+
+		if (listaCoordenadas->getSize() == 1)
+		{
+			Aresta* novaAresta = new Aresta(elementoInicial->getInfo(), elementoInicial->getInfo());
+			face->adiciona(novaAresta);
+
+		} else {
+			while(elementoInicial != NULL) {
+				elementoFinal = elementoInicial->getProximo();
+				if (elementoFinal != NULL) {
+					Aresta* novaAresta = new Aresta(elementoInicial->getInfo(), elementoFinal->getInfo());
+					face->adiciona(novaAresta);
+				}
+				elementoInicial = elementoInicial->getProximo();
+			}
+
+			elementoInicial = listaCoordenadas->getUltimoElemento();
+			elementoFinal = listaCoordenadas->getHead();
+			Aresta* novaAresta = new Aresta(elementoInicial->getInfo(), elementoFinal->getInfo());
+			face->adiciona(novaAresta);
+		}
+
+		return face;
 	}
 
 public:
@@ -305,8 +346,10 @@ public:
 		std::ifstream arquivo(nomeArquivo);
 		string linha, nomeElemento = "";
 		int numeroLinha = 0;
+		bool primeiraFace = true; // para auxilio com objetos3d
+		Objeto3D* novoObjeto3D = NULL;
 		ListaEnc<ElementoGrafico*>* listaRetorno = new ListaEnc<ElementoGrafico*>();
-		ListaEnc<Coordenada*>* listaVertices = new ListaEnc<Coordenada*>();
+		ListaEnc<Coordenada3D*>* listaVertices = new ListaEnc<Coordenada3D*>();
 
 		while ( std::getline(arquivo, linha) ) {
 
@@ -317,8 +360,9 @@ public:
 			string palavra;
 			stream >> palavra;
 			if (palavra == "v") { // é um vértice
+				primeiraFace = true; // para controle de objetos3D
 
-				Coordenada* c;
+				Coordenada3D* c;
 				try {
 					c = stringParaCoordenada(stream);
 				} catch (int erro) {
@@ -329,6 +373,7 @@ public:
 				listaVertices->adiciona(c);
 
 			} else if (palavra == "p") { // é um ponto
+				primeiraFace = true; // para controle de objetos3D
 
 				if (nomeElemento != "") { // se foi passado um nome para esse elemento
 					Ponto* p;
@@ -349,6 +394,8 @@ public:
 				}
 
 			} else if (palavra == "l") { // pode ser uma reta ou um polígono
+				primeiraFace = true; // para controle de objetos3D
+
 				ListaEnc<int>* valores = new ListaEnc<int>();
 				int parametro = 0, quantidadeParametros = 0;
 
@@ -392,6 +439,8 @@ public:
 				free(valores);
 
 			} else if (palavra == "curv") { // é uma curva
+				primeiraFace = true; // para controle de objetos3D
+
 				ListaEnc<int>* valores = new ListaEnc<int>();
 				int parametro = 0, quantidadeParametros = 0;
 
@@ -428,11 +477,53 @@ public:
 				free(valores);
 
 			} else if (palavra == "o") { // é o nome de um elemento
+				primeiraFace = true; // para controle de objetos3D
+
 				while (stream >> palavra) {
 					nomeElemento += palavra;
 				}
 
-			} else if (palavra != "#" && palavra != "") { // '#' indica comentário. se o que sobrar não foi um comentário, então é um comando inválido
+			} else if(palavra == "f") {
+				if (primeiraFace) {
+					if (novoObjeto3D != NULL) {
+						listaRetorno->adiciona(novoObjeto3D);
+					}
+
+					if (nomeElemento != "") { // se foi passado um nome para esse elemento
+						novoObjeto3D = new Objeto3D(nomeElemento);
+						nomeElemento = "";
+					} else { // não foi passado um nome válido para esse elemento
+						free(listaVertices);
+						throw numeroLinha;
+					}
+					primeiraFace = false;
+				}
+
+				ListaEnc<int>* valores = new ListaEnc<int>();
+				int parametro = 0;
+
+				while (stream >> palavra) {
+						try {
+							parametro = std::stoi(palavra);
+							valores->adiciona(parametro);
+						} catch (...) {
+							free(valores);
+							free(listaVertices);
+							throw numeroLinha;
+						}
+				}
+
+				//adiciona nova face no novoObjeto3D
+
+				ListaEnc<Coordenada3D*>* listaCoordenadas = percorreListaParaEncontrarVertices(listaVertices, valores);
+				ListaEnc<Aresta*>* listaArestas = stringParaFaceDeObjeto(listaCoordenadas);
+
+				// append dessas duas listas no novoObjeto
+				novoObjeto3D->appendListaCoordMundo(listaCoordenadas);
+				novoObjeto3D->appendListaArestaMundo(listaArestas);
+
+
+			}else if (palavra != "#" && palavra != "") { // '#' indica comentário. se o que sobrar não foi um comentário, então é um comando inválido
 				free(listaVertices);
 				throw numeroLinha;
 				// console "comando 'palavra' não é suportado pelo sistema."
@@ -442,6 +533,10 @@ public:
 		}
 
 		free(listaVertices);
+
+		//adiciona o último objeto3D
+		listaRetorno->adiciona(novoObjeto3D);
+
 		return listaRetorno;
 	}
 
@@ -501,6 +596,10 @@ public:
 			} case CURVA: {
 				CurvaBSpline* curva = (static_cast<CurvaBSpline*> (elemento));
 				elementosSalvos += curvaParaString(curva) + "\n";
+				break;
+			} case OBJETO3D: {
+				Objeto3D* objeto = (static_cast<Objeto3D*> (elemento));
+				elementosSalvos += objeto3DParaString(objeto) + "\n";
 				break;
 			}
 		}

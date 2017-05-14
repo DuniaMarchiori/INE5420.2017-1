@@ -137,9 +137,9 @@ public:
 		menuBar_Salvar_Obj = GTK_MENU_ITEM(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "MenuBar_Salvar_Obj"));
 		gtk_widget_destroy((GtkWidget*) menuBar_Salvar_Obj); // Destruindo esses botões pois a classe WavefrontOBJ não foi atualizada para 3D
 		menuBar_Carregar_Obj = GTK_MENU_ITEM(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "MenuBar_Carregar_Obj"));
-		gtk_widget_destroy((GtkWidget*) menuBar_Carregar_Obj); // Destruindo esses botões pois a classe WavefrontOBJ não foi atualizada para 3D
+		//gtk_widget_destroy((GtkWidget*) menuBar_Carregar_Obj); // Destruindo esses botões pois a classe WavefrontOBJ não foi atualizada para 3D
 		menuBar_Separator_01 = GTK_MENU_ITEM(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "MenuBar_Separator_01"));
-		gtk_widget_destroy((GtkWidget*) menuBar_Separator_01); // Destruindo esses botões pois a classe WavefrontOBJ não foi atualizada para 3D
+		//gtk_widget_destroy((GtkWidget*) menuBar_Separator_01); // Destruindo esses botões pois a classe WavefrontOBJ não foi atualizada para 3D
 
 		viewport_DrawingArea = GTK_WIDGET(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Viewport_DrawingArea"));
 
