@@ -231,11 +231,25 @@ public:
 	}
 
 	void projecaoParalelaOrtogonal() {
-		model->projecaoParalelaOrtogonal();
+		//model->projecaoParalelaOrtogonal();
+
+		// pra teste
+		model->projecaoPerspectiva();
 	}
 
 	void projecaoParalelaOrtogonal(ElementoGrafico* elemento) {
-		model->projecaoParalelaOrtogonal(elemento);
+		//model->projecaoParalelaOrtogonal(elemento);
+		
+		// pra teste
+		model->projecaoPerspectiva(elemento);
+	}
+
+	void projecaoPerspectiva() {
+		model->projecaoPerspectiva();
+	}
+
+	void projecaoPerspectiva(ElementoGrafico* elemento) {
+		model->projecaoPerspectiva(elemento);
 	}
 
 	//! Método encarregado de decidir qual operação de transformação sera feita.

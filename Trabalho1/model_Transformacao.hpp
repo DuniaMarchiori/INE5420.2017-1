@@ -595,13 +595,31 @@ public:
 		return resultado;
 	}
 
+	Matriz<double>* getMatrizProjecaoPerspectiva(Coordenada3D* vrp, double anguloX, double anguloY, double distanciaCOP) {
+		// fazer matriz translação * rotacaoX * rotacaoY
+		Matriz<double> *resultado, *auxiliar, *rotacao;
+
+		auxiliar = novaMatrizTranslacao(-(vrp->getX()), -(vrp->getY()), -(vrp->getZ()));
+		rotacao = novaMatrizRotacaoX(-anguloX);
+		resultado = auxiliar->multiplica(rotacao);
+
+		auxiliar = novaMatrizRotacaoY(-anguloY);
+		resultado = resultado->multiplica(auxiliar);
+
+		// translada a distância do COP em Z
+		auxiliar = novaMatrizTranslacao(0,0, distanciaCOP);
+		resultado = resultado->multiplica(auxiliar);
+
+		return resultado;
+	}
+
 	//! Método que faz transformações em coordenadas normalizadas de um elemento.
 	/*!
 		Faz as transformações usando a matriz passada.
 		/param elem é o elemento gráfico que será feita a transformação.
 		/param matrizResultado é a matriz utilizada para fazer a transformação.
 	*/
-	void fazProjecaoParalelaOrtogonal(ElementoGrafico* elem, Matriz<double>* matrizResultado) {
+	void fazProjecao(ElementoGrafico* elem, Matriz<double>* matrizResultado) {
 		Tipo t = elem->getTipo();
 
 		switch (t) {
@@ -688,6 +706,83 @@ public:
 					}
 					obj->setListaArestaNormal(listaNovasArestas);
 
+					break;
+				}
+		}
+	}
+
+	void fazProjecaoPerspectiva(ElementoGrafico* elem, double distanciaCOP) {
+		Tipo t = elem->getTipo();
+
+		switch (t) {
+			case PONTO:
+				{
+					Ponto* p = static_cast<Ponto*> (elem);
+					Coordenada3D* coord = p->getCoordenadaNormal();
+					Coordenada3D* nova = new Coordenada3D( (coord->getX()/ (coord->getZ()/distanciaCOP)) , (coord->getY()/ (coord->getZ()/distanciaCOP)) , distanciaCOP);
+					p->setCoordenadaNormal(nova);
+					break;
+				}
+			case RETA:
+				{
+					Reta* r = static_cast<Reta*> (elem);
+					Coordenada3D* coordIni = r->getCoordenadaNormalInicial();
+					Coordenada3D* coordFin = r->getCoordenadaNormalFinal();
+					Coordenada3D* novaInicial = new Coordenada3D( (coordIni->getX()/ (coordIni->getZ()/distanciaCOP)) , (coordIni->getY()/ (coordIni->getZ()/distanciaCOP)) , distanciaCOP);
+					Coordenada3D* novaFinal = new Coordenada3D( (coordFin->getX()/ (coordFin->getZ()/distanciaCOP)) , (coordFin->getY()/ (coordFin->getZ()/distanciaCOP)) , distanciaCOP);
+					r->setCoordenadaNormalInicial(novaInicial);
+					r->setCoordenadaNormalFinal(novaFinal);
+					break;
+				}
+			case POLIGONO:
+				{
+					Poligono* p = static_cast<Poligono*> (elem);
+
+					ListaEnc<Coordenada3D*>* listaCoord = p->getListaNormal();
+					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+
+					while (proxCoord != NULL) {
+						Coordenada3D* coordPol = proxCoord->getInfo();
+						Coordenada3D* coordTransformada = new Coordenada3D( (coordPol->getX()/ (coordPol->getZ()/distanciaCOP)) , (coordPol->getY()/ (coordPol->getZ()/distanciaCOP)) , distanciaCOP);
+						listaNovasCoord->adiciona(coordTransformada);
+						proxCoord = proxCoord->getProximo();
+					}
+					p->setListaNormal(listaNovasCoord);
+					//free(listaCoord);
+					break;
+				}
+			case CURVA:
+				{
+					Curva* c = static_cast<Curva*> (elem);
+
+					ListaEnc<Coordenada3D*>* listaCoord = c->getListaNormal();
+					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+
+					while (proxCoord != NULL) {
+						Coordenada3D* coordCurva = proxCoord->getInfo();
+						Coordenada3D* coordTransformada = new Coordenada3D( (coordCurva->getX()/ (coordCurva->getZ()/distanciaCOP)) , (coordCurva->getY()/ (coordCurva->getZ()/distanciaCOP)) , distanciaCOP);
+						listaNovasCoord->adiciona(coordTransformada);
+						proxCoord = proxCoord->getProximo();
+					}
+					c->setListaNormal(listaNovasCoord);
+					break;
+				}
+			case OBJETO3D:
+				{
+					Objeto3D* obj = static_cast<Objeto3D*> (elem);
+
+					ListaEnc<Coordenada3D*>* listaCoord = obj->getListaCoordNormal();
+					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+					while (proxCoord != NULL) {
+						Coordenada3D* coordObj = proxCoord->getInfo();
+						Coordenada3D* coordTransformada = new Coordenada3D( (coordObj->getX()/ (coordObj->getZ()/distanciaCOP)), (coordObj->getY()/ (coordObj->getZ()/distanciaCOP)) , distanciaCOP);
+						coordObj->setX(coordTransformada->getX());
+						coordObj->setY(coordTransformada->getY());
+						coordObj->setZ(coordTransformada->getZ());
+						proxCoord = proxCoord->getProximo();
+					}
 					break;
 				}
 		}

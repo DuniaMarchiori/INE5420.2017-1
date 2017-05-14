@@ -58,7 +58,7 @@ public:
 	//! Construtor
 	Fachada () {
 		/* Valores Default do sistema */
-		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0);
+		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 5);
 		/**/
 
 		/* Valores do exercicio à mão /
@@ -517,7 +517,7 @@ public:
 	//! Método que reseta a posição da window.
 	void resetarWindow() {
 		free(window);
-		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0);
+		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 5);
 	}
 
 	//! Método que converte um arquivo .obj em uma lista de elementos graficos.
@@ -534,7 +534,7 @@ public:
 
 		Elemento<ElementoGrafico*>* elementoLista = displayFile->getHead();
 		while (elementoLista != NULL) {
-			transformacao->fazProjecaoParalelaOrtogonal(elementoLista->getInfo(), resultado);
+			transformacao->fazProjecao(elementoLista->getInfo(), resultado);
 			elementoLista = elementoLista->getProximo();
 		}
 	}
@@ -542,9 +542,26 @@ public:
 	void projecaoParalelaOrtogonal(ElementoGrafico* elemento) {
 		Matriz<double>* resultado = transformacao->getMatrizProjecaoParalelaOrtogonal(window->getVRP(), window->getAnguloX(), window->getAnguloY());
 
-		transformacao->fazProjecaoParalelaOrtogonal(elemento, resultado);
+		transformacao->fazProjecao(elemento, resultado);
 	}
 
+	void projecaoPerspectiva() {
+		Matriz<double>* resultado = transformacao->getMatrizProjecaoPerspectiva(window->getVRP(), window->getAnguloX(), window->getAnguloY(), window->getDistanciaCOP());
+
+		Elemento<ElementoGrafico*>* elementoLista = displayFile->getHead();
+		while (elementoLista != NULL) {
+			transformacao->fazProjecao(elementoLista->getInfo(), resultado);
+			transformacao->fazProjecaoPerspectiva(elementoLista->getInfo(), window->getDistanciaCOP());
+			elementoLista = elementoLista->getProximo();
+		}
+	}
+
+	void projecaoPerspectiva(ElementoGrafico* elemento) {
+		Matriz<double>* resultado = transformacao->getMatrizProjecaoPerspectiva(window->getVRP(), window->getAnguloX(), window->getAnguloY(), window->getDistanciaCOP());
+
+		transformacao->fazProjecao(elemento, resultado);
+		transformacao->fazProjecaoPerspectiva(elemento, window->getDistanciaCOP());
+	}
 };
 
 #endif

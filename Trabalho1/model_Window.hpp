@@ -14,6 +14,7 @@ private:
 	Coordenada3D* VRP;
 	double angX, angY, angZ;
 	double altura, largura;
+	double distanciaCOP;
 	//Coordenada3D *vetorFrente, *vetorDireita, *vetorCima;
 
 public:
@@ -21,13 +22,14 @@ public:
 	/*!
 
 	*/
-	Window(Coordenada3D* pos, double alt, double larg, double _angX, double _angY, double _angZ) {
+	Window(Coordenada3D* pos, double alt, double larg, double _angX, double _angY, double _angZ, double _distanciaCOP) {
 		VRP = pos;
 		altura = alt;
 		largura = larg;
 		angX = _angX;
 		angY = _angY;
 		angZ = _angZ;
+		distanciaCOP = _distanciaCOP;
 		//vetorFrente = new Coordenada3D(0, 0, 1);
 		//vetorDireita = new Coordenada3D(1, 0, 0);
 		//vetorCima = new Coordenada3D(0, 1, 0);
@@ -64,6 +66,10 @@ public:
 		VRP = novaVRP;
 	}
 
+	void setDistanciaCOP(double novaDistancia) {
+		distanciaCOP = novaDistancia;
+	}
+
 	double getAnguloX() {
 		return angX;
 	}
@@ -74,6 +80,10 @@ public:
 
 	double getAnguloZ() {
 		return angZ;
+	}
+
+	double getDistanciaCOP() {
+		return distanciaCOP;
 	}
 
 	void rotacionarX(double fator) {
