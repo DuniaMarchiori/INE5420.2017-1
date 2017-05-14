@@ -229,27 +229,31 @@ public:
 	void descricaoSCN(ElementoGrafico* elem) {
 		model->sistemaCoordenadasNormalizadas(elem);
 	}
-
-	void projecaoParalelaOrtogonal() {
-		//model->projecaoParalelaOrtogonal();
-
-		// pra teste
-		model->projecaoPerspectiva();
+	
+	//! Método que projeta realiza a projeção baseado no tipo de projeção selecionada.
+	void projetar3D() {
+		switch (view->getTipoProjecao()) {
+			case 0: {
+				model->projecaoParalelaOrtogonal();
+				break;
+			} case 1: {
+				model->projecaoPerspectiva();
+				break;
+			}
+		}
 	}
-
-	void projecaoParalelaOrtogonal(ElementoGrafico* elemento) {
-		//model->projecaoParalelaOrtogonal(elemento);
-		
-		// pra teste
-		model->projecaoPerspectiva(elemento);
-	}
-
-	void projecaoPerspectiva() {
-		model->projecaoPerspectiva();
-	}
-
-	void projecaoPerspectiva(ElementoGrafico* elemento) {
-		model->projecaoPerspectiva(elemento);
+	
+	//! Método que projeta realiza a projeção baseado no tipo de projeção selecionada.
+	void projetar3D(ElementoGrafico* elem) {
+		switch (view->getTipoProjecao()) {
+			case 0: {
+				model->projecaoParalelaOrtogonal(elem);
+				break;
+			} case 1: {
+				model->projecaoPerspectiva(elem);
+				break;
+			}
+		}
 	}
 
 	//! Método encarregado de decidir qual operação de transformação sera feita.
@@ -263,7 +267,7 @@ public:
 				try {
 					c = new Coordenada3D(view->getTransX(), view->getTransY(), view->getTransZ());
 					fazTranslacao(elemento, c);
-					projecaoParalelaOrtogonal(elemento);
+					projetar3D(elemento);
 					descricaoSCN(elemento);
 					//view->limparTextoTranslacao();
 					view->focusTransX();
@@ -280,7 +284,7 @@ public:
 				try {
 					c = new Coordenada3D(view->getEscalFatorX(), view->getEscalFatorY(), view->getEscalFatorZ());
 					fazEscalonamento(elemento, c);
-					projecaoParalelaOrtogonal(elemento);
+					projetar3D(elemento);
 					descricaoSCN(elemento);
 					//view->limparTextoEscalonamento();
 					view->focusEscalX();
@@ -325,7 +329,7 @@ public:
 							}
 						}
 						// fazRotacao(elemento, c, angulo);
-						projecaoParalelaOrtogonal(elemento);
+						projetar3D(elemento);
 						descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor da origem.");
 						view->focusRotAngulo();
@@ -348,7 +352,7 @@ public:
 							}
 						}
 						// fazRotacao(elemento, c, angulo);
-						projecaoParalelaOrtogonal(elemento);
+						projetar3D(elemento);
 						descricaoSCN(elemento);
 						view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");
 						view->focusRotAngulo();
@@ -372,7 +376,7 @@ public:
 								}
 							}
 							// fazRotacao(elemento, c, angulo);
-							projecaoParalelaOrtogonal(elemento);
+							projetar3D(elemento);
 							descricaoSCN(elemento);
 							view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
 							view->focusRotAngulo();
@@ -515,7 +519,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->rotacionarWindow(fator, 0);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Window rotacionada");
@@ -529,7 +533,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->rotacionarWindow(-fator, 0);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Window rotacionada");
@@ -543,7 +547,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->rotacionarWindow(-fator, 1);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Window rotacionada");
@@ -557,7 +561,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->rotacionarWindow(fator, 1);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Window rotacionada");
@@ -571,7 +575,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->rotacionarWindow(fator, 2);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Window rotacionada");
@@ -585,7 +589,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->rotacionarWindow(-fator, 2);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Window rotacionada");
@@ -599,7 +603,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(0, fator, 0);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para cima.");
@@ -613,7 +617,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(0, -fator, 0);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para baixo.");
@@ -627,7 +631,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(0, 0, fator);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para frente.");
@@ -641,7 +645,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(-fator, 0, 0);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para a esquerda.");
@@ -655,7 +659,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(fator, 0, 0);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para a direita.");
@@ -669,7 +673,7 @@ public:
 		try {
 			double fator = view->getFatorPosicao();
 			model->moverWindow(0, 0, -fator);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Movimentação para trás.");
@@ -688,7 +692,7 @@ public:
 		try {
 			double fator = view->getFatorZoom();
 			model->zoom(-fator);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Zoom para fora.");
@@ -702,7 +706,7 @@ public:
 		try {
 			double fator = view->getFatorZoom();
 			model->zoom(fator);
-			projecaoParalelaOrtogonal();
+			projetar3D();
 			descricaoSCN();
 			atualizaDesenho();
 			view->inserirTextoConsole("Zoom para dentro.");
@@ -725,7 +729,14 @@ public:
 
 	//! Método que redesenha os elementos quando o tipo de clipping de reta é alterado.
 	void clippingAlterado() {
-		projecaoParalelaOrtogonal();
+		projetar3D();
+		descricaoSCN();
+		atualizaDesenho();
+	}
+	
+	//! Método que redesenha os elementos quando o tipo de projeção é alterado.
+	void projecaoAlterada() {
+		projetar3D();
 		descricaoSCN();
 		atualizaDesenho();
 	}
@@ -765,7 +776,7 @@ public:
 
 				view->inserirTextoConsole("Arquivo carregado.");
 
-				projecaoParalelaOrtogonal();
+				projetar3D();
 				descricaoSCN();
 				atualizaDesenho();
 			} catch (int erro) {
@@ -805,7 +816,7 @@ public:
 	//! Método que salva o mundo em .obj.
 	void resetarWindow() {
 		model->resetarWindow();
-		projecaoParalelaOrtogonal();
+		projetar3D();
 		descricaoSCN();
 		atualizaDesenho();
 	}
@@ -823,7 +834,7 @@ public:
 					Ponto* p = model->inserirNovoPonto(nome, coordX, coordY, coordZ);
 					view->limparTextoNovoPonto();
 					view->adicionaElementoListbox(nome, "Ponto");
-					projecaoParalelaOrtogonal(p);
+					projetar3D(p);
 					descricaoSCN(p);
 					view->inserirTextoConsole("Novo ponto adicionado.");
 				} catch (int erro) {
@@ -848,7 +859,7 @@ public:
 					Reta* r = model->inserirNovaReta(nome, coordIniX, coordIniY, coordIniZ, coordFinX, coordFinY, coordFinZ);
 					view->limparTextoNovaReta();
 					view->adicionaElementoListbox(nome, "Reta");
-					projecaoParalelaOrtogonal(r);
+					projetar3D(r);
 					descricaoSCN(r);
 					view->inserirTextoConsole("Nova reta adicionada.");
 				} catch (int erro) {
@@ -871,7 +882,7 @@ public:
 					view->limparTextoNovoPoligono();
 					view->adicionaElementoListbox(nome, "Polígono");
 					view->setPoligono_Btn_DelSensitive(FALSE);
-					projecaoParalelaOrtogonal(pol);
+					projetar3D(pol);
 					descricaoSCN(pol);
 					view->inserirTextoConsole("Novo poligono adicionado.");
 				} catch (int erro) {
@@ -889,11 +900,11 @@ public:
 				try {
 					if (view->getTipoCurva() == 0) { // 0 corresponde a opção de curva de Bézier
 						CurvaBezier* cb = model->inserirNovaCurvaBezier(nome, lista);
-						projecaoParalelaOrtogonal(cb);
+						projetar3D(cb);
 						descricaoSCN(cb);
 					} else {
 						CurvaBSpline* cb = model->inserirNovaCurvaBSpline(nome, lista);
-						projecaoParalelaOrtogonal(cb);
+						projetar3D(cb);
 						descricaoSCN(cb);
 					}
 
@@ -928,7 +939,7 @@ public:
 					view->adicionaElementoListbox(nome, "Objeto3D");
 					view->setObjeto3D_Coord_Btn_DelSensitive(FALSE);
 					view->setObjeto3D_Aresta_Btn_DelSensitive(FALSE);
-					projecaoParalelaOrtogonal(obj);
+					projetar3D(obj);
 					descricaoSCN(obj);
 					view->inserirTextoConsole("Novo Objeto3D adicionado.");
 				} catch (int erro) {

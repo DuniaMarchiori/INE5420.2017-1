@@ -48,6 +48,8 @@ private:
 
 	GtkRadioButton *clipping_radio_0, *clipping_radio_1; /*!< Referência para os botões de seleção do tipo de clipping de reta.*/
 
+	GtkRadioButton *projecao_radio_0, *projecao_radio_1; /*!< Referência para os botões de seleção do tipo de projeção.*/
+
 	GtkTextView *consoleWidget; /*!< Referência para a caixa de texto do console.*/
 
 	GtkWindow *window_NovoElemento; /*!< Referência para a janela de novo elemento.*/
@@ -209,6 +211,9 @@ public:
 		clipping_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Clipping_Radio_0"));
 		clipping_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Clipping_Radio_1"));
 
+		projecao_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Projecao_Radio_0"));
+		projecao_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Projecao_Radio_1"));
+		
 		window_EditElemento = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_EditElmnt"));
 		g_signal_connect (window_EditElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 
@@ -714,6 +719,18 @@ public:
 	*/
 	int getTipoClippingReta() {
 		if (gtk_toggle_button_get_active((GtkToggleButton*) clipping_radio_0)) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+	
+	//! Metodo que retorna o tipo de projeção.
+	/*!
+		/return inteiro correspondendo à um dos dois tipos de projeção.
+	*/
+	int getTipoProjecao() {
+		if (gtk_toggle_button_get_active((GtkToggleButton*) projecao_radio_0)) {
 			return 0;
 		} else {
 			return 1;

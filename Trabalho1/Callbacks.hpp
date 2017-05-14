@@ -90,7 +90,7 @@ extern "C" G_MODULE_EXPORT void Pos_Btn_Baixo_clicked_cb(){
 }
 
 
-//! Método que é chamado ao pressionar o radio button do tipo de clippagem C-S.
+//! Método que é chamado ao pressionar o radio button do tipo de movimento da window.
 /*!
 	Redesenha todos os elementos, utilizando clipping C-S.
 */
@@ -98,10 +98,7 @@ extern "C" G_MODULE_EXPORT void Pos_Radio_0_clicked_cb(){
 	controller->movWindowAlterado();
 }
 
-//! Método que é chamado ao pressionar o radio button do tipo de clippagem L-B.
-/*!
-	Redesenha todos os elementos, utilizando clipping L-B.
-*/
+//! Método que é chamado ao pressionar o radio button do tipo de rotação da window.
 extern "C" G_MODULE_EXPORT void Pos_Radio_1_clicked_cb(){
 	controller->movWindowAlterado();
 }
@@ -155,6 +152,22 @@ extern "C" G_MODULE_EXPORT void Clipping_Radio_0_clicked_cb(){
 */
 extern "C" G_MODULE_EXPORT void Clipping_Radio_1_clicked_cb(){
 	controller->clippingAlterado();
+}
+
+//! Método que é chamado ao pressionar o radio button do tipo de clippagem C-S.
+/*!
+	Redesenha todos os elementos, utilizando clipping C-S.
+*/
+extern "C" G_MODULE_EXPORT void Projecao_Radio_0_clicked_cb(){
+	controller->projecaoAlterada();
+}
+
+//! Método que é chamado ao pressionar o radio button do tipo de clippagem L-B.
+/*!
+	Redesenha todos os elementos, utilizando clipping L-B.
+*/
+extern "C" G_MODULE_EXPORT void Projecao_Radio_1_clicked_cb(){
+	controller->projecaoAlterada();
 }
 
 //! Método que é chamado ao pressionar o botao do menu bar de carregar um .obj.
