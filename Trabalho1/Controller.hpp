@@ -229,7 +229,7 @@ public:
 	void descricaoSCN(ElementoGrafico* elem) {
 		model->sistemaCoordenadasNormalizadas(elem);
 	}
-	
+
 	//! Método que projeta realiza a projeção baseado no tipo de projeção selecionada.
 	void projetar3D() {
 		switch (view->getTipoProjecao()) {
@@ -242,7 +242,7 @@ public:
 			}
 		}
 	}
-	
+
 	//! Método que projeta realiza a projeção baseado no tipo de projeção selecionada.
 	void projetar3D(ElementoGrafico* elem) {
 		switch (view->getTipoProjecao()) {
@@ -733,7 +733,7 @@ public:
 		descricaoSCN();
 		atualizaDesenho();
 	}
-	
+
 	//! Método que redesenha os elementos quando o tipo de projeção é alterado para paralelo.
 	void projecaoAlteradaParalela() {
 		view->setProjecao_Scale_COPSensitive(FALSE);
@@ -741,7 +741,7 @@ public:
 		descricaoSCN();
 		atualizaDesenho();
 	}
-	
+
 	//! Método que redesenha os elementos quando o tipo de projeção é alterado para perspectiva.
 	void projecaoAlteradaPerspectiva() {
 		view->setProjecao_Scale_COPSensitive(TRUE);
@@ -749,7 +749,7 @@ public:
 		descricaoSCN();
 		atualizaDesenho();
 	}
-	
+
 	//! Método que redesenha os elementos quando o tipo de projeção é alterado.
 	void distFocalAtualizada() {
 		model->alterarDistanciaFocal(view->getDistFocal());

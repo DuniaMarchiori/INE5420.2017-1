@@ -58,11 +58,12 @@ public:
 	//! Construtor
 	Fachada () {
 		/* Valores Default do sistema */
-		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 15);
+		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 100);
 		/**/
 
 		/* Valores do exercicio à mão /
-		window = new Window(new Coordenada3D(-50, 50, -50), 100, 141.421, 0, 45, 0);
+		window = new Window(new Coordenada3D(-50, 50, -50), 100, 141.421, 0, 45, 0, 5);
+		//window = new Window(new Coordenada3D(-50, 50, -50), 100, 141.421, 0, 45, 0, 100);
 		/**/
 
 		viewport = new Viewport();
@@ -525,7 +526,7 @@ public:
 	//! Método que reseta a posição da window.
 	void resetarWindow() {
 		free(window);
-		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 15);
+		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 100);
 	}
 
 	//! Método que converte um arquivo .obj em uma lista de elementos graficos.

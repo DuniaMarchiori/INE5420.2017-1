@@ -169,14 +169,7 @@ extern "C" G_MODULE_EXPORT void Projecao_Radio_0_clicked_cb(){
 extern "C" G_MODULE_EXPORT void Projecao_Radio_1_clicked_cb(){
 	controller->projecaoAlteradaPerspectiva();
 }
-
-
-
-
-
-
-
-
+	
 //! Método que é chamado ao atualizar o valor da distância focal.
 /*!
 	Redesenha todos os elementos, utilizando a nova distância focal.
@@ -184,11 +177,6 @@ extern "C" G_MODULE_EXPORT void Projecao_Radio_1_clicked_cb(){
 extern "C" G_MODULE_EXPORT void Projecao_DistFocal_Ajuste_value_changed_cb(){
 	controller->distFocalAtualizada();
 }
-
-
-
-
-
 
 //! Método que é chamado ao pressionar o botao do menu bar de carregar um .obj.
 /*!

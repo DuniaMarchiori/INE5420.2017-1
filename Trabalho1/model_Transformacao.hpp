@@ -577,7 +577,7 @@ public:
 
 		auxiliar = novaMatrizRotacaoY(-anguloY);
 		resultado = resultado->multiplica(auxiliar);
-		
+
 		//auxiliar = novaMatrizRotacaoZ(-anguloZ);
 		//resultado = resultado->multiplica(auxiliar);
 
