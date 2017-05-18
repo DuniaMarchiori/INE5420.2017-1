@@ -734,8 +734,25 @@ public:
 		atualizaDesenho();
 	}
 	
+	//! Método que redesenha os elementos quando o tipo de projeção é alterado para paralelo.
+	void projecaoAlteradaParalela() {
+		view->setProjecao_Scale_COPSensitive(FALSE);
+		projetar3D();
+		descricaoSCN();
+		atualizaDesenho();
+	}
+	
+	//! Método que redesenha os elementos quando o tipo de projeção é alterado para perspectiva.
+	void projecaoAlteradaPerspectiva() {
+		view->setProjecao_Scale_COPSensitive(TRUE);
+		projetar3D();
+		descricaoSCN();
+		atualizaDesenho();
+	}
+	
 	//! Método que redesenha os elementos quando o tipo de projeção é alterado.
-	void projecaoAlterada() {
+	void distFocalAtualizada() {
+		model->alterarDistanciaFocal(view->getDistFocal());
 		projetar3D();
 		descricaoSCN();
 		atualizaDesenho();

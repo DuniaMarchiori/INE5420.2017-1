@@ -49,7 +49,9 @@ private:
 	GtkRadioButton *clipping_radio_0, *clipping_radio_1; /*!< Referência para os botões de seleção do tipo de clipping de reta.*/
 
 	GtkRadioButton *projecao_radio_0, *projecao_radio_1; /*!< Referência para os botões de seleção do tipo de projeção.*/
-
+	GtkAdjustment* projecao_DistFocal_Ajuste;
+	GtkScale* projecao_Scale_COP;
+	
 	GtkTextView *consoleWidget; /*!< Referência para a caixa de texto do console.*/
 
 	GtkWindow *window_NovoElemento; /*!< Referência para a janela de novo elemento.*/
@@ -213,6 +215,9 @@ public:
 
 		projecao_radio_0 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Projecao_Radio_0"));
 		projecao_radio_1 = GTK_RADIO_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Projecao_Radio_1"));
+		projecao_DistFocal_Ajuste = GTK_ADJUSTMENT(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Projecao_DistFocal_Ajuste"));
+		projecao_Scale_COP = GTK_SCALE(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Projecao_Scale_COP"));
+		setProjecao_Scale_COPSensitive(FALSE);
 		
 		window_EditElemento = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_EditElmnt"));
 		g_signal_connect (window_EditElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
@@ -735,6 +740,22 @@ public:
 		} else {
 			return 1;
 		}
+	}
+	
+	//! Metodo que retorna a distância do COP.
+	/*!
+		/return a distância definida pelo usuário para COP.
+	*/
+	double getDistFocal() {
+		return gtk_adjustment_get_value(projecao_DistFocal_Ajuste);
+	}
+	
+	//! Metodo que desativa a barra de alteração de COP.
+	/*!
+		/param valor é o novo valor da sensibilidade da barra (TRUE ou FALSE).
+	*/
+	void setProjecao_Scale_COPSensitive(gboolean valor) {
+		gtk_widget_set_sensitive ((GtkWidget*) projecao_Scale_COP, valor);
 	}
 
 	// ------------------------------------------------------------------------------------------------

@@ -58,7 +58,7 @@ public:
 	//! Construtor
 	Fachada () {
 		/* Valores Default do sistema */
-		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 5);
+		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 15);
 		/**/
 
 		/* Valores do exercicio à mão /
@@ -70,6 +70,14 @@ public:
 		transformacao = new Transformacao();
 		clipper = new Clipper();
 		obj = new WavefrontOBJ();
+	}
+
+	//! Método que altera a distância focal da window.
+	/*!
+        /param dist a nova distância focal.
+	*/
+	void alterarDistanciaFocal(double dist) {
+		window->setDistanciaCOP(dist);
 	}
 
 	//! Método que rotaciona a window.
@@ -517,7 +525,7 @@ public:
 	//! Método que reseta a posição da window.
 	void resetarWindow() {
 		free(window);
-		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 5);
+		window = new Window(new Coordenada3D(0, 0, 0), 100, 100, 0, 0, 0, 15);
 	}
 
 	//! Método que converte um arquivo .obj em uma lista de elementos graficos.

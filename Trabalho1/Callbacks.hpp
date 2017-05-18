@@ -154,21 +154,41 @@ extern "C" G_MODULE_EXPORT void Clipping_Radio_1_clicked_cb(){
 	controller->clippingAlterado();
 }
 
-//! Método que é chamado ao pressionar o radio button do tipo de clippagem C-S.
+//! Método que é chamado ao pressionar o radio button do tipo de projeção paralela.
 /*!
-	Redesenha todos os elementos, utilizando clipping C-S.
+	Redesenha todos os elementos, utilizando projeção paralela.
 */
 extern "C" G_MODULE_EXPORT void Projecao_Radio_0_clicked_cb(){
-	controller->projecaoAlterada();
+	controller->projecaoAlteradaParalela();
 }
 
-//! Método que é chamado ao pressionar o radio button do tipo de clippagem L-B.
+//! Método que é chamado ao pressionar o radio button do tipo de projeção em perspectiva.
 /*!
-	Redesenha todos os elementos, utilizando clipping L-B.
+	Redesenha todos os elementos, utilizando projeção em perspectiva.
 */
 extern "C" G_MODULE_EXPORT void Projecao_Radio_1_clicked_cb(){
-	controller->projecaoAlterada();
+	controller->projecaoAlteradaPerspectiva();
 }
+
+
+
+
+
+
+
+
+//! Método que é chamado ao atualizar o valor da distância focal.
+/*!
+	Redesenha todos os elementos, utilizando a nova distância focal.
+*/
+extern "C" G_MODULE_EXPORT void Projecao_DistFocal_Ajuste_value_changed_cb(){
+	controller->distFocalAtualizada();
+}
+
+
+
+
+
 
 //! Método que é chamado ao pressionar o botao do menu bar de carregar um .obj.
 /*!
