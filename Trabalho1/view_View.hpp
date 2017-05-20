@@ -21,6 +21,7 @@ private:
 	Desenhista* desenhista; /*!< Uma instância da classe que desenha os objetos na tela.*/
 	ListaEnc<Coordenada3D*> *listaCoordsPoligono; /*!< Uma lista de coordenadas para criar novos poligonos.*/
 	ListaEnc<Coordenada3D*> *listaCoordsCurva; /*!< Uma lista de coordenadas para criar novas curvas.*/
+	ListaEnc<Coordenada3D*> *listaCoordsSuperficie; /*!< Uma lista de coordenadas para criar novas superficies.*/
 
 	ListaEnc<Coordenada3D*> *listaCoordsObjeto3D; /*!< Uma lista de coordenadas para criar novos Objetos3D.*/
 	ListaEnc<ParCoord*> *listaArestas; /*!< Uma lista de inteiros para criar as arestas do novo Objeto3D.*/
@@ -51,7 +52,7 @@ private:
 	GtkRadioButton *projecao_radio_0, *projecao_radio_1; /*!< Referência para os botões de seleção do tipo de projeção.*/
 	GtkAdjustment* projecao_DistFocal_Ajuste;
 	GtkScale* projecao_Scale_COP;
-	
+
 	GtkTextView *consoleWidget; /*!< Referência para a caixa de texto do console.*/
 
 	GtkWindow *window_NovoElemento; /*!< Referência para a janela de novo elemento.*/
@@ -61,7 +62,8 @@ private:
 			*textoRetaInicialX, *textoRetaInicialY, *textoRetaInicialZ, *textoRetaFinalX, *textoRetaFinalY, *textoRetaFinalZ,
 			*textoPoligonoX, *textoPoligonoY, *textoPoligonoZ,
 			*textoCurvaX, *textoCurvaY, *textoCurvaZ,
-			*textoObjeto3DX, *textoObjeto3DY, *textoObjeto3DZ; /*!< Referência para as caixas de texto que recebem valores de coordenadas.*/
+			*textoObjeto3DX, *textoObjeto3DY, *textoObjeto3DZ,
+			*textoSuperfX, *textoSuperfY, *textoSuperfZ; /*!< Referência para as caixas de texto que recebem valores de coordenadas.*/
 
 	GtkButton *poligono_Btn_Add, *poligono_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de um poligono.*/
 	GtkListBox *poligono_Listbox; /*!< Referência para a listbox com as coordenadas do poligono.*/
@@ -76,6 +78,10 @@ private:
 	GtkListBox *Objeto3D_Coord_Listbox; /*!< Referência para a listbox com as coordenadas do objeto3D.*/
 	GtkListBox *Objeto3D_Aresta_Listbox; /*!< Referência para a listbox com as arestas do objeto3D.*/
 	GtkEntry *textoObjeto3DA, *textoObjeto3DB;
+
+	GtkButton *superf_Btn_Add, *superf_Btn_Del; /*!< Referência para os botões de adicionar e deletar coordenadas na criação de uma superfície.*/
+	GtkListBox *superf_Listbox; /*!< Referência para a listbox com as coordenadas da superfície.*/
+	GtkAdjustment *superf_Dim_Alt, *superf_Dim_Larg; /*!< Referência para os spinners de tamanho da matriz na criação de uma superfície.*/
 
 	GtkNotebook *novoElmnt_Notebook; /*!< Referência para o notebook na criação de elemento.*/
 
@@ -207,6 +213,15 @@ public:
 		Objeto3D_Aresta_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Obj_Aresta_Del"));
 		gtk_widget_set_sensitive ((GtkWidget*) Objeto3D_Aresta_Btn_Del, FALSE); // Esse botão começa desativado.
 
+		superf_Dim_Alt = GTK_ADJUSTMENT(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Superf_Alt"));
+		superf_Dim_Larg = GTK_ADJUSTMENT(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Superf_Larg"));
+		textoSuperfX = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Superf_X"));
+		textoSuperfY = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Superf_Y"));
+		textoSuperfZ = GTK_ENTRY(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Superf_Z"));
+		superf_Listbox = GTK_LIST_BOX(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Listbox_Superf"));
+		superf_Btn_Del = GTK_BUTTON(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Superf_Del"));
+		gtk_widget_set_sensitive ((GtkWidget*) superf_Btn_Del, FALSE); // Esse botão começa desativado.
+
 		novoElmnt_Notebook = GTK_NOTEBOOK(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "NovoElmnt_Notebook"));
 		consoleWidget = GTK_TEXT_VIEW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Console_Text"));
 
@@ -218,7 +233,7 @@ public:
 		projecao_DistFocal_Ajuste = GTK_ADJUSTMENT(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Projecao_DistFocal_Ajuste"));
 		projecao_Scale_COP = GTK_SCALE(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Projecao_Scale_COP"));
 		setProjecao_Scale_COPSensitive(FALSE);
-		
+
 		window_EditElemento = GTK_WINDOW(gtk_builder_get_object(GTK_BUILDER(gtkBuilder), "Window_EditElmnt"));
 		g_signal_connect (window_EditElemento, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 
@@ -341,6 +356,25 @@ public:
 		while (row != NULL) {
 			gtk_container_remove((GtkContainer*) curva_Listbox, (GtkWidget*) row);
 			row = gtk_list_box_get_row_at_index (curva_Listbox, 0);
+		}
+	}
+
+	//! Método que limpa as caixa de texto da coordenada de um novo poligono.
+	void limparTextoCoordSuperficie() {
+		gtk_entry_set_text(textoSuperfX, "0");
+		gtk_entry_set_text(textoSuperfY, "0");
+		gtk_entry_set_text(textoSuperfZ, "0");
+	}
+
+	//! Método que limpa as caixas de texto de curva da janela de novo objeto.
+	void limparTextoNovaSuperficie() {
+		limparTextoNomeNovoElmnt();
+		limparTextoCoordSuperficie();
+		// Limpa a listBox
+		GtkListBoxRow* row = gtk_list_box_get_row_at_index (superf_Listbox, 0);
+		while (row != NULL) {
+			gtk_container_remove((GtkContainer*) superf_Listbox, (GtkWidget*) row);
+			row = gtk_list_box_get_row_at_index (superf_Listbox, 0);
 		}
 	}
 
@@ -578,6 +612,41 @@ public:
 		}
 	}
 
+	//! Método que insere em uma lista as coordenadas do polígono a ser criado.
+	void inserirCoordListaEncSuperficie() {
+		// Pega coordenadas
+		string polX = gtk_entry_get_text(textoSuperfX);
+		string polY = gtk_entry_get_text(textoSuperfY);
+		string polZ = gtk_entry_get_text(textoSuperfZ);
+
+		/// Se os campos de coordenada não estão em branco
+		if ( !(polX.empty()) && !(polY.empty()) && !(polZ.empty()) ) {
+			// Cria novo objeto
+			Coordenada3D* c = new Coordenada3D();
+			// Verifica se os campos são números
+			try {
+				// stod = string to double
+				c->setX(stod(polX));
+				c->setY(stod(polY));
+				c->setZ(stod(polZ));
+			} catch (const invalid_argument& e) {
+				console->inserirTexto("ERRO: coordenadas devem ser valores numéricos.");
+				throw -1;
+			}
+
+			if (listaCoordsSuperficie->getSize() < (getAlturaSuperficie() * getLarguraSuperficie())) {
+				listaCoordsSuperficie->adiciona(c);
+				atualizaListBoxSuperficie();
+			} else {
+				console->inserirTexto("ERRO: não é possível inserir coordenadas além das dimensões da matriz de pontos");
+			}
+
+		} else {
+			console->inserirTexto("ERRO: não é possível inserir coordenada sem valor X, Y ou Z.");
+			throw -2;
+		}
+	}
+
 	//! Método que fecha o programa.
 	void fecharPrograma() {
 		gtk_main_quit();
@@ -611,6 +680,7 @@ public:
 	void elmnt_Btn_Novo_Clicado() {
 		listaCoordsPoligono = new ListaEnc<Coordenada3D*>();
 		listaCoordsCurva = new ListaEnc<Coordenada3D*>();
+		listaCoordsSuperficie = new ListaEnc<Coordenada3D*>();
 		listaCoordsObjeto3D = new ListaEnc<Coordenada3D*>();
 		listaArestas = new ListaEnc<ParCoord*>();
 		gtk_widget_show((GtkWidget*) window_NovoElemento);
@@ -729,7 +799,7 @@ public:
 			return 1;
 		}
 	}
-	
+
 	//! Metodo que retorna o tipo de projeção.
 	/*!
 		/return inteiro correspondendo à um dos dois tipos de projeção.
@@ -741,7 +811,7 @@ public:
 			return 1;
 		}
 	}
-	
+
 	//! Metodo que retorna a distância do COP.
 	/*!
 		/return a distância definida pelo usuário para COP.
@@ -749,7 +819,7 @@ public:
 	double getDistFocal() {
 		return gtk_adjustment_get_value(projecao_DistFocal_Ajuste);
 	}
-	
+
 	//! Metodo que desativa a barra de alteração de COP.
 	/*!
 		/param valor é o novo valor da sensibilidade da barra (TRUE ou FALSE).
@@ -883,6 +953,14 @@ public:
 		return listaCoordsCurva;
 	}
 
+	//! Metodo que retorna a lista de coordenadas na criação de uma nova superfície.
+	/*!
+		/return a lista de coordenadas da nova superfície.
+	*/
+	ListaEnc<Coordenada3D*>* getListaCoordsSuperficie() {
+		return listaCoordsSuperficie;
+	}
+
 	//! Metodo que retorna a lista de coordenadas na criação de um Objeto3D.
 	/*!
 		/return a lista de coordenadas do novo Objeto3D.
@@ -922,6 +1000,14 @@ public:
 	*/
 	void setCurva_Btn_DelSensitive(gboolean valor) {
 		gtk_widget_set_sensitive((GtkWidget*) curva_Btn_Del, valor);
+	}
+
+	//! Método que altera a sensibilidade do botao de deletar na criação de superficies.
+	/*!
+		/param valor é o novo valor da sensibilidade do botao (TRUE ou FALSE).
+	*/
+	void setSuperf_Btn_DelSensitive(gboolean valor) {
+		gtk_widget_set_sensitive((GtkWidget*) superf_Btn_Del, valor);
 	}
 
 	//! Método que altera a sensibilidade do botao de deletar coordenada na criação de Objetos3D.
@@ -967,6 +1053,11 @@ public:
 		gtk_widget_grab_focus((GtkWidget*) textoCurvaX);
 	}
 
+	//! Método que passa o foco do cursor para a caixa de Coordenada X na janela de criação de superficie.
+	void focusCoordSuperf() {
+		gtk_widget_grab_focus((GtkWidget*) textoSuperfX);
+	}
+
 	//! Método que passa o foco do cursor para a caixa de Coordenada X na janela de criação de Objeto3D.
 	void focusCoordObjeto3D() {
 		gtk_widget_grab_focus((GtkWidget*) textoObjeto3DX);
@@ -987,6 +1078,13 @@ public:
 	void deletarCoordCurva() {
 		listaCoordsCurva->retiraDaPosicao(getIndexElementoDeletado(curva_Listbox));
 		setCurva_Btn_DelSensitive(FALSE);
+	}
+
+	//! Método que deleta a coordenada selecionada na janela de criação de superfície.
+	void deletarCoordSuperficie() {
+		listaCoordsSuperficie->retiraDaPosicao(getIndexElementoDeletado(superf_Listbox));
+		setSuperf_Btn_DelSensitive(FALSE);
+		atualizaListBoxSuperficie();
 	}
 
 	//! Método que deleta a coordenada selecionada na janela de criação de um Objeto3D.
@@ -1021,8 +1119,6 @@ public:
 			count++;
 			elementoLista = elementoLista->getProximo();
 		}
-
-
 	}
 
 	//! Método que deleta a aresta selecionada na janela de criação de poligono.
@@ -1039,6 +1135,64 @@ public:
 		return gtk_toggle_button_get_active((GtkToggleButton*) poligono_Preenchido);
 	}
 
+	//! Metodo que obtem o valor atribuído para a altura da matriz da superficie.
+	/*!
+		/return A altura da matriz.
+	*/
+	int getAlturaSuperficie () {
+		return gtk_adjustment_get_value(superf_Dim_Alt);
+	}
+
+	//! Metodo que obtem o valor atribuído para a largura da matriz da superficie.
+	/*!
+		/return A largura da matriz.
+	*/
+	int getLarguraSuperficie () {
+		return gtk_adjustment_get_value(superf_Dim_Larg);
+	}
+
+	//! Metodo que atualiza a listbox das coordenadas na criação de uma superfície.
+	void atualizaListBoxSuperficie() {
+		GtkListBoxRow* row = gtk_list_box_get_row_at_index (superf_Listbox, 0);
+		while (row != NULL) {
+			gtk_container_remove((GtkContainer*) superf_Listbox, (GtkWidget*) row);
+			row = gtk_list_box_get_row_at_index (superf_Listbox, 0);
+		}
+
+		int i = 0; int alt = getAlturaSuperficie();
+		int j = 0; int larg = getLarguraSuperficie();
+
+		while (listaCoordsSuperficie->getSize() > (alt * larg)) {
+			free(listaCoordsSuperficie->retiraDaPosicao(listaCoordsSuperficie->getSize() - 1));
+		}
+
+		Elemento<Coordenada3D*>* elementoLista = listaCoordsSuperficie->getHead();
+		while (elementoLista != NULL) {
+			Coordenada3D* coord = elementoLista->getInfo();
+
+			string polX = to_string(coord->getX());
+			polX.erase( polX.find_last_not_of('0') + 1, std::string::npos);
+			if (polX.back() == ',') { polX.erase(polX.end()-1); }
+
+			string polY = to_string(coord->getY());
+			polY.erase( polY.find_last_not_of('0') + 1, std::string::npos);
+			if (polY.back() == ',') { polY.erase(polY.end()-1); }
+
+			string polZ = to_string(coord->getZ());
+			polZ.erase( polZ.find_last_not_of('0') + 1, std::string::npos);
+			if (polZ.back() == ',') { polZ.erase(polZ.end()-1); }
+
+			string nomeNaLista = "[" + to_string(i) + ", " + to_string(j) + "]:   (" + polX + "," + polY + "," + polZ + ")";
+			j++;
+			if (j >= larg) {
+				j = 0;
+				i++;
+			}
+			addToListBox(superf_Listbox, nomeNaLista);
+			elementoLista = elementoLista->getProximo();
+		}
+	}
+
 	//! Método que reinicia todos os valores da janela de novo elemento para seus valores iniciais.
 	void resetarJanelaNovoElemento() {
 		limparTextoNomeNovoElmnt();
@@ -1046,15 +1200,18 @@ public:
 		limparTextoNovaReta();
 		limparTextoNovoPoligono();
 		limparTextoNovaCurva();
+		limparTextoNovaSuperficie();
 		limparTextoNovoObjeto3D();
 		setPoligono_Btn_DelSensitive(FALSE);
 		setCurva_Btn_DelSensitive(FALSE);
+		setSuperf_Btn_DelSensitive(FALSE);
 		setObjeto3D_Coord_Btn_DelSensitive(FALSE);
 		setObjeto3D_Aresta_Btn_DelSensitive(FALSE);
 		gtk_toggle_button_set_active((GtkToggleButton*) poligono_Preenchido, FALSE);
 		gtk_notebook_set_current_page(novoElmnt_Notebook, 0);
 		free(listaCoordsPoligono);
 		free(listaCoordsCurva);
+		free(listaCoordsSuperficie);
 		free(listaCoordsObjeto3D);
 		free(listaArestas);
 	}
@@ -1067,6 +1224,11 @@ public:
 	//! Método que reinicia a lista de coordenadas na janela de criação de curvas.
 	void resetarListaCoordenadasCurva() {
 		listaCoordsCurva = new ListaEnc<Coordenada3D*>();
+	}
+
+	//! Método que reinicia a lista de coordenadas na janela de criação de curvas.
+	void resetarListaCoordenadasSuperficie() {
+		listaCoordsSuperficie = new ListaEnc<Coordenada3D*>();
 	}
 
 	//! Método que reinicia a lista de coordenadas na janela de criação de Objetos3D.

@@ -1036,7 +1036,7 @@ public:
 		view->deletarCoordObjeto3D();
 	}
 
-	//! Método que adiciona uma coordenada à curva sendo criado.
+	//! Método que adiciona uma coordenada à curva sendo criada.
 	void addNovaArestaObjeto3D() {
 		try {
 			view->inserirArestaListaEncObjeto3D();
@@ -1060,6 +1060,32 @@ public:
 	//! Método que é chamado ao selecionar um elemento na list box de elementos.
 	void selecionaListBoxObjeto3DAresta() {
 		view->setObjeto3D_Aresta_Btn_DelSensitive(TRUE);
+	}
+
+	//! Método que adiciona uma coordenada à superficie sendo criada.
+	void addNovaCoordenadaSuperficie() {
+		try {
+			view->inserirCoordListaEncSuperficie();
+			view->limparTextoCoordSuperficie();
+			view->focusCoordSuperf();
+		} catch (...){
+			return;
+		}
+	}
+
+	//! Método que remove a coordenada selecionada na criação de curva.
+	void delCoordenadaSuperficie() {
+		view->deletarCoordSuperficie();
+	}
+
+	//! Método que é chamado ao selecionar um elemento na list box de elementos.
+	void selecionaListBoxSuperficie() {
+		view->setSuperf_Btn_DelSensitive(TRUE);
+	}
+	
+	//! Método que é chamado ao alterar a altura ou largura da matriz de uma superfície.
+	void alteraDimensaoSuperficie() {
+		view->atualizaListBoxSuperficie();
 	}
 
 	//! Método que é chamado ao fechar a janela de novo elemento.

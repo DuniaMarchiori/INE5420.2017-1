@@ -169,7 +169,7 @@ extern "C" G_MODULE_EXPORT void Projecao_Radio_0_clicked_cb(){
 extern "C" G_MODULE_EXPORT void Projecao_Radio_1_clicked_cb(){
 	controller->projecaoAlteradaPerspectiva();
 }
-	
+
 //! Método que é chamado ao atualizar o valor da distância focal.
 /*!
 	Redesenha todos os elementos, utilizando a nova distância focal.
@@ -319,6 +319,46 @@ extern "C" G_MODULE_EXPORT void NovoElmnt_Obj_Coord_Listbox_row_selected_cb (Gtk
 */
 extern "C" G_MODULE_EXPORT void NovoElmnt_Obj_Aresta_Listbox_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
 	controller->selecionaListBoxObjeto3DAresta();
+}
+
+//! Método que é chamado ao a altura da matriz na criação de uma superficie.
+/*!
+	Conserta a listbox mostrando as coordenadas e suas posições na matriz.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Superf_Alt_value_changed_cb() {
+	controller->alteraDimensaoSuperficie();
+}
+
+//! Método que é chamado ao pressionar o botão de nova coordenada na criação de uma superficie.
+/*!
+	Adiciona uma nova coordenada à lista de coordenadas e à list box.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Superf_Larg_value_changed_cb() {
+	controller->alteraDimensaoSuperficie();
+}
+
+//! Método que é chamado ao pressionar o botão de nova coordenada na criação de uma superficie.
+/*!
+	Adiciona uma nova coordenada à lista de coordenadas e à list box.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Superf_Add_clicked_cb() {
+	controller->addNovaCoordenadaSuperficie();
+}
+
+//! Método que é chamado ao pressionar o botão de deletar coordenada na criação de uma superficie.
+/*!
+	Remove a coordenada selecionada na list box de coordenadas da nova superficie.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Superf_Del_clicked_cb(){
+	controller->delCoordenadaSuperficie();
+}
+
+//! Método que é chamado ao selecionar uma coordenada da list box de criação de superficie.
+/*!
+	Ativa o botão de deletar coordenada.
+*/
+extern "C" G_MODULE_EXPORT void NovoElmnt_Listbox_Superf_row_selected_cb (GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
+	controller->selecionaListBoxSuperficie();
 }
 
 //! Método que é ativado ao fechar a janela de novo elemento.
