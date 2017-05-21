@@ -152,11 +152,6 @@ public:
 		return distMedia;
 	}
 
-
-
-
-
-
 	//! Método que retorna os pontos da curva.
 	/*!
 		/param segmentos em quantos segmentos a curva sera dividida.

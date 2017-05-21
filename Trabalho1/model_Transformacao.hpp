@@ -19,75 +19,80 @@ private:
 		Tipo t = elem->getTipo();
 
 		switch (t) {
-			case PONTO:
-				{
-					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada3D* nova = transformaCoordenada(p->getCoordenadaMundo(), matrizResultado);
-					p->setCoordenadaMundo(nova);
-					break;
+			case PONTO: {
+				Ponto* p = static_cast<Ponto*> (elem);
+				Coordenada3D* nova = transformaCoordenada(p->getCoordenadaMundo(), matrizResultado);
+				p->setCoordenadaMundo(nova);
+				break;
+			} case RETA: {
+				Reta* r = static_cast<Reta*> (elem);
+				Coordenada3D* novaInicial = transformaCoordenada(r->getCoordenadaMundoInicial(), matrizResultado);
+				Coordenada3D* novaFinal = transformaCoordenada(r->getCoordenadaMundoFinal(), matrizResultado);
+				r->setCoordenadaMundoInicial(novaInicial);
+				r->setCoordenadaMundoFinal(novaFinal);
+				break;
+			} case POLIGONO: {
+				Poligono* p = static_cast<Poligono*> (elem);
+				ListaEnc<Coordenada3D*>* listaCoord = p->getListaMundo();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+				while (proxCoord != NULL) {
+					Coordenada3D* coordPol = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = transformaCoordenada(coordPol, matrizResultado);
+					listaNovasCoord->adiciona(coordTransformada);
+					proxCoord = proxCoord->getProximo();
 				}
-			case RETA:
-				{
-					Reta* r = static_cast<Reta*> (elem);
-					Coordenada3D* novaInicial = transformaCoordenada(r->getCoordenadaMundoInicial(), matrizResultado);
-					Coordenada3D* novaFinal = transformaCoordenada(r->getCoordenadaMundoFinal(), matrizResultado);
-					r->setCoordenadaMundoInicial(novaInicial);
-					r->setCoordenadaMundoFinal(novaFinal);
-					break;
+
+				p->setListaMundo(listaNovasCoord);
+
+				free(listaCoord);
+				break;
+			} case CURVA: {
+				Curva* c = static_cast<Curva*> (elem);
+
+				ListaEnc<Coordenada3D*>* listaCoord = c->getListaMundo();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+
+				while (proxCoord != NULL) {
+					Coordenada3D* coordCurva = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = transformaCoordenada(coordCurva, matrizResultado);
+					listaNovasCoord->adiciona(coordTransformada);
+					proxCoord = proxCoord->getProximo();
 				}
-			case POLIGONO:
-				{
-					Poligono* p = static_cast<Poligono*> (elem);
-					ListaEnc<Coordenada3D*>* listaCoord = p->getListaMundo();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
-					while (proxCoord != NULL) {
-						Coordenada3D* coordPol = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = transformaCoordenada(coordPol, matrizResultado);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
+				c->setListaMundo(listaNovasCoord);
+				free(listaCoord);
+				break;
+			} case OBJETO3D: {
+				Objeto3D* obj = static_cast<Objeto3D*> (elem);
+
+				ListaEnc<Coordenada3D*>* listaCoord = obj->getListaCoordMundo();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				while (proxCoord != NULL) {
+					Coordenada3D* coordObj = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = transformaCoordenada(coordObj, matrizResultado);
+					coordObj->setX(coordTransformada->getX());
+					coordObj->setY(coordTransformada->getY());
+					coordObj->setZ(coordTransformada->getZ());
+					proxCoord = proxCoord->getProximo();
+				}
+				break;
+			} case SUPERFICIE: {
+				Superficie* s = static_cast<Superficie*> (elem);
+
+				Matriz<Coordenada3D*>* matrizPontos = s->getPontosMundo();
+				int altura = matrizPontos->getNumLinhas();
+				int largura = matrizPontos->getNumColunas();
+				for (int i = 0; i < altura; i++) {
+					for (int j = 0; j < largura; j++) {
+						Coordenada3D* coordSup = matrizPontos->getValor(i, j);
+						Coordenada3D* coordTransformada = transformaCoordenada(coordSup, matrizResultado);
+						matrizPontos->setValor(i, j, coordTransformada);
 					}
-
-					p->setListaMundo(listaNovasCoord);
-
-					free(listaCoord);
-					break;
 				}
 
-			case CURVA:
-				{
-					Curva* c = static_cast<Curva*> (elem);
-
-					ListaEnc<Coordenada3D*>* listaCoord = c->getListaMundo();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
-
-					while (proxCoord != NULL) {
-						Coordenada3D* coordCurva = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = transformaCoordenada(coordCurva, matrizResultado);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
-					}
-					c->setListaMundo(listaNovasCoord);
-					free(listaCoord);
-					break;
-				}
-			case OBJETO3D:
-				{
-					Objeto3D* obj = static_cast<Objeto3D*> (elem);
-
-					ListaEnc<Coordenada3D*>* listaCoord = obj->getListaCoordMundo();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					while (proxCoord != NULL) {
-						Coordenada3D* coordObj = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = transformaCoordenada(coordObj, matrizResultado);
-						coordObj->setX(coordTransformada->getX());
-						coordObj->setY(coordTransformada->getY());
-						coordObj->setZ(coordTransformada->getZ());
-						proxCoord = proxCoord->getProximo();
-					}
-					break;
-				}
+				break;
+			}
 		}
 	}
 
@@ -497,73 +502,79 @@ public:
 		Tipo t = elem->getTipo();
 
 		switch (t) {
-			case PONTO:
-				{
-					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada3D* nova = transformaCoordenada(p->getCoordenadaNormal(), matrizResultado);
-					p->setCoordenadaNormal(nova);
-					break;
-				}
-			case RETA:
-				{
-					Reta* r = static_cast<Reta*> (elem);
-					Coordenada3D* novaInicial = transformaCoordenada(r->getCoordenadaNormalInicial(), matrizResultado);
-					Coordenada3D* novaFinal = transformaCoordenada(r->getCoordenadaNormalFinal(), matrizResultado);
-					r->setCoordenadaNormalInicial(novaInicial);
-					r->setCoordenadaNormalFinal(novaFinal);
-					break;
-				}
-			case POLIGONO:
-				{
-					Poligono* p = static_cast<Poligono*> (elem);
+			case PONTO: {
+				Ponto* p = static_cast<Ponto*> (elem);
+				Coordenada3D* nova = transformaCoordenada(p->getCoordenadaNormal(), matrizResultado);
+				p->setCoordenadaNormal(nova);
+				break;
+			} case RETA: {
+				Reta* r = static_cast<Reta*> (elem);
+				Coordenada3D* novaInicial = transformaCoordenada(r->getCoordenadaNormalInicial(), matrizResultado);
+				Coordenada3D* novaFinal = transformaCoordenada(r->getCoordenadaNormalFinal(), matrizResultado);
+				r->setCoordenadaNormalInicial(novaInicial);
+				r->setCoordenadaNormalFinal(novaFinal);
+				break;
+			} case POLIGONO: {
+				Poligono* p = static_cast<Poligono*> (elem);
 
-					ListaEnc<Coordenada3D*>* listaCoord = p->getListaNormal();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+				ListaEnc<Coordenada3D*>* listaCoord = p->getListaNormal();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
 
-					while (proxCoord != NULL) {
-						Coordenada3D* coordPol = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = transformaCoordenada(coordPol, matrizResultado);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
+				while (proxCoord != NULL) {
+					Coordenada3D* coordPol = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = transformaCoordenada(coordPol, matrizResultado);
+					listaNovasCoord->adiciona(coordTransformada);
+					proxCoord = proxCoord->getProximo();
+				}
+				p->setListaNormal(listaNovasCoord);
+				//free(listaCoord);
+				break;
+			} case CURVA: {
+				Curva* c = static_cast<Curva*> (elem);
+
+				ListaEnc<Coordenada3D*>* listaCoord = c->getListaNormal();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+
+				while (proxCoord != NULL) {
+					Coordenada3D* coordCurva = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = transformaCoordenada(coordCurva, matrizResultado);
+					listaNovasCoord->adiciona(coordTransformada);
+					proxCoord = proxCoord->getProximo();
+				}
+				c->setListaNormal(listaNovasCoord);
+				break;
+			} case OBJETO3D: {
+				Objeto3D* obj = static_cast<Objeto3D*> (elem);
+
+				ListaEnc<Coordenada3D*>* listaCoord = obj->getListaCoordNormal();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				while (proxCoord != NULL) {
+					Coordenada3D* coordObj = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = transformaCoordenada(coordObj, matrizResultado);
+					coordObj->setX(coordTransformada->getX());
+					coordObj->setY(coordTransformada->getY());
+					coordObj->setZ(coordTransformada->getZ());
+					proxCoord = proxCoord->getProximo();
+				}
+				break;
+			} case SUPERFICIE: {
+				Superficie* s = static_cast<Superficie*> (elem);
+
+				Matriz<Coordenada3D*>* matrizPontos = s->getPontosNormais();
+				int altura = matrizPontos->getNumLinhas();
+				int largura = matrizPontos->getNumColunas();
+				for (int i = 0; i < altura; i++) {
+					for (int j = 0; j < largura; j++) {
+						Coordenada3D* coordSup = matrizPontos->getValor(i, j);
+						Coordenada3D* coordTransformada = transformaCoordenada(coordSup, matrizResultado);
+						matrizPontos->setValor(i, j, coordTransformada);
 					}
-					p->setListaNormal(listaNovasCoord);
-					//free(listaCoord);
-					break;
 				}
-			case CURVA:
-				{
-					Curva* c = static_cast<Curva*> (elem);
 
-					ListaEnc<Coordenada3D*>* listaCoord = c->getListaNormal();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
-
-					while (proxCoord != NULL) {
-						Coordenada3D* coordCurva = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = transformaCoordenada(coordCurva, matrizResultado);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
-					}
-					c->setListaNormal(listaNovasCoord);
-					break;
-				}
-			case OBJETO3D:
-				{
-					Objeto3D* obj = static_cast<Objeto3D*> (elem);
-
-					ListaEnc<Coordenada3D*>* listaCoord = obj->getListaCoordNormal();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					while (proxCoord != NULL) {
-						Coordenada3D* coordObj = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = transformaCoordenada(coordObj, matrizResultado);
-						coordObj->setX(coordTransformada->getX());
-						coordObj->setY(coordTransformada->getY());
-						coordObj->setZ(coordTransformada->getZ());
-						proxCoord = proxCoord->getProximo();
-					}
-					break;
-				}
+				break;
+			}
 		}
 	}
 
@@ -623,91 +634,99 @@ public:
 		Tipo t = elem->getTipo();
 
 		switch (t) {
-			case PONTO:
-				{
-					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada3D* nova = transformaCoordenada(p->getCoordenadaMundo(), matrizResultado);
-					p->setCoordenadaNormal(nova);
-					break;
-				}
-			case RETA:
-				{
-					Reta* r = static_cast<Reta*> (elem);
-					Coordenada3D* novaInicial = transformaCoordenada(r->getCoordenadaMundoInicial(), matrizResultado);
-					Coordenada3D* novaFinal = transformaCoordenada(r->getCoordenadaMundoFinal(), matrizResultado);
-					r->setCoordenadaNormalInicial(novaInicial);
-					r->setCoordenadaNormalFinal(novaFinal);
-					break;
-				}
-			case POLIGONO:
-				{
-					Poligono* p = static_cast<Poligono*> (elem);
+			case PONTO: {
+				Ponto* p = static_cast<Ponto*> (elem);
+				Coordenada3D* nova = transformaCoordenada(p->getCoordenadaMundo(), matrizResultado);
+				p->setCoordenadaNormal(nova);
+				break;
+			} case RETA: {
+				Reta* r = static_cast<Reta*> (elem);
+				Coordenada3D* novaInicial = transformaCoordenada(r->getCoordenadaMundoInicial(), matrizResultado);
+				Coordenada3D* novaFinal = transformaCoordenada(r->getCoordenadaMundoFinal(), matrizResultado);
+				r->setCoordenadaNormalInicial(novaInicial);
+				r->setCoordenadaNormalFinal(novaFinal);
+				break;
+			} case POLIGONO: {
+				Poligono* p = static_cast<Poligono*> (elem);
 
-					ListaEnc<Coordenada3D*>* listaCoord = p->getListaMundo();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+				ListaEnc<Coordenada3D*>* listaCoord = p->getListaMundo();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
 
-					while (proxCoord != NULL) {
-						Coordenada3D* coordPol = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = transformaCoordenada(coordPol, matrizResultado);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
+				while (proxCoord != NULL) {
+					Coordenada3D* coordPol = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = transformaCoordenada(coordPol, matrizResultado);
+					listaNovasCoord->adiciona(coordTransformada);
+					proxCoord = proxCoord->getProximo();
+				}
+				p->setListaNormal(listaNovasCoord);
+				//free(listaCoord);
+				break;
+			} case CURVA: {
+				Curva* c = static_cast<Curva*> (elem);
+
+				ListaEnc<Coordenada3D*>* listaCoord = c->getListaMundo();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+
+				while (proxCoord != NULL) {
+					Coordenada3D* coordCurva = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = transformaCoordenada(coordCurva, matrizResultado);
+					listaNovasCoord->adiciona(coordTransformada);
+					proxCoord = proxCoord->getProximo();
+				}
+				c->setListaNormal(listaNovasCoord);
+				break;
+			} case OBJETO3D: {
+				Objeto3D* obj = static_cast<Objeto3D*> (elem);
+
+				ListaEnc<Coordenada3D*>* listaCoord = obj->getListaCoordMundo();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				ListaEnc<Coordenada3D*>* listaNovasCoords = new ListaEnc<Coordenada3D*>();
+				while (proxCoord != NULL) {
+					Coordenada3D* coordObj = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = transformaCoordenada(coordObj, matrizResultado);
+					listaNovasCoords->adiciona(coordTransformada);
+					proxCoord = proxCoord->getProximo();
+				}
+				obj->setListaCoordNormal(listaNovasCoords);
+				ListaEnc<Aresta*>* listaAresta = obj->getListaArestaMundo();
+				Elemento<Aresta*>* proxAresta = listaAresta->getHead();
+				ListaEnc<Aresta*>* listaNovasArestas = new ListaEnc<Aresta*>();
+				while (proxAresta != NULL) {
+					Aresta* arestaAtual = proxAresta->getInfo();
+					Coordenada3D *CoordMundoA, *CoordMundoB, *CoordNormalA, *CoordNormalB;
+					CoordMundoA = arestaAtual->getCoordA();
+					CoordMundoB = arestaAtual->getCoordB();
+					int indiceCoordA = obj->getListaCoordMundo()->posicao(CoordMundoA);
+					int indiceCoordB = obj->getListaCoordMundo()->posicao(CoordMundoB);
+					CoordNormalA = obj->getListaCoordNormal()->elementoNoIndice(indiceCoordA);
+					CoordNormalB = obj->getListaCoordNormal()->elementoNoIndice(indiceCoordB);
+					Aresta* novaAresta = new Aresta(CoordNormalA, CoordNormalB);
+					listaNovasArestas->adiciona(novaAresta);
+					proxAresta = proxAresta->getProximo();
+				}
+				obj->setListaArestaNormal(listaNovasArestas);
+
+				break;
+			} case SUPERFICIE: {
+				Superficie* s = static_cast<Superficie*> (elem);
+
+				Matriz<Coordenada3D*>* matrizPontos = s->getPontosMundo();
+				Matriz<Coordenada3D*>* novaMatrizPontos = s->getPontosNormais();
+
+				int altura = matrizPontos->getNumLinhas();
+				int largura = matrizPontos->getNumColunas();
+				for (int i = 0; i < altura; i++) {
+					for (int j = 0; j < largura; j++) {
+						Coordenada3D* coordSup = matrizPontos->getValor(i, j);
+						Coordenada3D* coordTransformada = transformaCoordenada(coordSup, matrizResultado);
+						novaMatrizPontos->setValor(i, j, coordTransformada);
 					}
-					p->setListaNormal(listaNovasCoord);
-					//free(listaCoord);
-					break;
 				}
-			case CURVA:
-				{
-					Curva* c = static_cast<Curva*> (elem);
 
-					ListaEnc<Coordenada3D*>* listaCoord = c->getListaMundo();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
-
-					while (proxCoord != NULL) {
-						Coordenada3D* coordCurva = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = transformaCoordenada(coordCurva, matrizResultado);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
-					}
-					c->setListaNormal(listaNovasCoord);
-					break;
-				}
-			case OBJETO3D:
-				{
-					Objeto3D* obj = static_cast<Objeto3D*> (elem);
-
-					ListaEnc<Coordenada3D*>* listaCoord = obj->getListaCoordMundo();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada3D*>* listaNovasCoords = new ListaEnc<Coordenada3D*>();
-					while (proxCoord != NULL) {
-						Coordenada3D* coordObj = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = transformaCoordenada(coordObj, matrizResultado);
-						listaNovasCoords->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
-					}
-					obj->setListaCoordNormal(listaNovasCoords);
-					ListaEnc<Aresta*>* listaAresta = obj->getListaArestaMundo();
-					Elemento<Aresta*>* proxAresta = listaAresta->getHead();
-					ListaEnc<Aresta*>* listaNovasArestas = new ListaEnc<Aresta*>();
-					while (proxAresta != NULL) {
-						Aresta* arestaAtual = proxAresta->getInfo();
-						Coordenada3D *CoordMundoA, *CoordMundoB, *CoordNormalA, *CoordNormalB;
-						CoordMundoA = arestaAtual->getCoordA();
-						CoordMundoB = arestaAtual->getCoordB();
-						int indiceCoordA = obj->getListaCoordMundo()->posicao(CoordMundoA);
-						int indiceCoordB = obj->getListaCoordMundo()->posicao(CoordMundoB);
-						CoordNormalA = obj->getListaCoordNormal()->elementoNoIndice(indiceCoordA);
-						CoordNormalB = obj->getListaCoordNormal()->elementoNoIndice(indiceCoordB);
-						Aresta* novaAresta = new Aresta(CoordNormalA, CoordNormalB);
-						listaNovasArestas->adiciona(novaAresta);
-						proxAresta = proxAresta->getProximo();
-					}
-					obj->setListaArestaNormal(listaNovasArestas);
-
-					break;
-				}
+				break;
+			}
 		}
 	}
 
@@ -715,76 +734,83 @@ public:
 		Tipo t = elem->getTipo();
 
 		switch (t) {
-			case PONTO:
-				{
-					Ponto* p = static_cast<Ponto*> (elem);
-					Coordenada3D* coord = p->getCoordenadaNormal();
-					Coordenada3D* nova = new Coordenada3D( (coord->getX()/ (coord->getZ()/distanciaCOP)) , (coord->getY()/ (coord->getZ()/distanciaCOP)) , distanciaCOP);
-					p->setCoordenadaNormal(nova);
-					break;
-				}
-			case RETA:
-				{
-					Reta* r = static_cast<Reta*> (elem);
-					Coordenada3D* coordIni = r->getCoordenadaNormalInicial();
-					Coordenada3D* coordFin = r->getCoordenadaNormalFinal();
-					Coordenada3D* novaInicial = new Coordenada3D( (coordIni->getX()/ (coordIni->getZ()/distanciaCOP)) , (coordIni->getY()/ (coordIni->getZ()/distanciaCOP)) , distanciaCOP);
-					Coordenada3D* novaFinal = new Coordenada3D( (coordFin->getX()/ (coordFin->getZ()/distanciaCOP)) , (coordFin->getY()/ (coordFin->getZ()/distanciaCOP)) , distanciaCOP);
-					r->setCoordenadaNormalInicial(novaInicial);
-					r->setCoordenadaNormalFinal(novaFinal);
-					break;
-				}
-			case POLIGONO:
-				{
-					Poligono* p = static_cast<Poligono*> (elem);
+			case PONTO: {
+				Ponto* p = static_cast<Ponto*> (elem);
+				Coordenada3D* coord = p->getCoordenadaNormal();
+				Coordenada3D* nova = new Coordenada3D( (coord->getX()/ (coord->getZ()/distanciaCOP)) , (coord->getY()/ (coord->getZ()/distanciaCOP)) , distanciaCOP);
+				p->setCoordenadaNormal(nova);
+				break;
+			} case RETA: {
+				Reta* r = static_cast<Reta*> (elem);
+				Coordenada3D* coordIni = r->getCoordenadaNormalInicial();
+				Coordenada3D* coordFin = r->getCoordenadaNormalFinal();
+				Coordenada3D* novaInicial = new Coordenada3D( (coordIni->getX()/ (coordIni->getZ()/distanciaCOP)) , (coordIni->getY()/ (coordIni->getZ()/distanciaCOP)) , distanciaCOP);
+				Coordenada3D* novaFinal = new Coordenada3D( (coordFin->getX()/ (coordFin->getZ()/distanciaCOP)) , (coordFin->getY()/ (coordFin->getZ()/distanciaCOP)) , distanciaCOP);
+				r->setCoordenadaNormalInicial(novaInicial);
+				r->setCoordenadaNormalFinal(novaFinal);
+				break;
+			} case POLIGONO: {
+				Poligono* p = static_cast<Poligono*> (elem);
 
-					ListaEnc<Coordenada3D*>* listaCoord = p->getListaNormal();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+				ListaEnc<Coordenada3D*>* listaCoord = p->getListaNormal();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
 
-					while (proxCoord != NULL) {
-						Coordenada3D* coordPol = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = new Coordenada3D( (coordPol->getX()/ (coordPol->getZ()/distanciaCOP)) , (coordPol->getY()/ (coordPol->getZ()/distanciaCOP)) , distanciaCOP);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
+				while (proxCoord != NULL) {
+					Coordenada3D* coordPol = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = new Coordenada3D( (coordPol->getX()/ (coordPol->getZ()/distanciaCOP)) , (coordPol->getY()/ (coordPol->getZ()/distanciaCOP)) , distanciaCOP);
+					listaNovasCoord->adiciona(coordTransformada);
+					proxCoord = proxCoord->getProximo();
+				}
+				p->setListaNormal(listaNovasCoord);
+				//free(listaCoord);
+				break;
+			} case CURVA: {
+				Curva* c = static_cast<Curva*> (elem);
+
+				ListaEnc<Coordenada3D*>* listaCoord = c->getListaNormal();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
+
+				while (proxCoord != NULL) {
+					Coordenada3D* coordCurva = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = new Coordenada3D( (coordCurva->getX()/ (coordCurva->getZ()/distanciaCOP)) , (coordCurva->getY()/ (coordCurva->getZ()/distanciaCOP)) , distanciaCOP);
+					listaNovasCoord->adiciona(coordTransformada);
+					proxCoord = proxCoord->getProximo();
+				}
+				c->setListaNormal(listaNovasCoord);
+				break;
+			} case OBJETO3D: {
+				Objeto3D* obj = static_cast<Objeto3D*> (elem);
+
+				ListaEnc<Coordenada3D*>* listaCoord = obj->getListaCoordNormal();
+				Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
+				while (proxCoord != NULL) {
+					Coordenada3D* coordObj = proxCoord->getInfo();
+					Coordenada3D* coordTransformada = new Coordenada3D( (coordObj->getX()/ (coordObj->getZ()/distanciaCOP)), (coordObj->getY()/ (coordObj->getZ()/distanciaCOP)) , distanciaCOP);
+					coordObj->setX(coordTransformada->getX());
+					coordObj->setY(coordTransformada->getY());
+					coordObj->setZ(coordTransformada->getZ());
+					proxCoord = proxCoord->getProximo();
+				}
+				break;
+			} case SUPERFICIE: {
+				Superficie* s = static_cast<Superficie*> (elem);
+
+				Matriz<Coordenada3D*>* matrizPontos = s->getPontosNormais();
+				int altura = matrizPontos->getNumLinhas();
+				int largura = matrizPontos->getNumColunas();
+
+				for (int i = 0; i < altura; i++) {
+					for (int j = 0; j < largura; j++) {
+						Coordenada3D* coordSup = matrizPontos->getValor(i, j);
+						Coordenada3D* coordTransformada = new Coordenada3D( (coordSup->getX()/ (coordSup->getZ()/distanciaCOP)), (coordSup->getY()/ (coordSup->getZ()/distanciaCOP)) , distanciaCOP);
+						matrizPontos->setValor(i, j, coordTransformada);
 					}
-					p->setListaNormal(listaNovasCoord);
-					//free(listaCoord);
-					break;
 				}
-			case CURVA:
-				{
-					Curva* c = static_cast<Curva*> (elem);
 
-					ListaEnc<Coordenada3D*>* listaCoord = c->getListaNormal();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					ListaEnc<Coordenada3D*>* listaNovasCoord = new ListaEnc<Coordenada3D*>();
-
-					while (proxCoord != NULL) {
-						Coordenada3D* coordCurva = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = new Coordenada3D( (coordCurva->getX()/ (coordCurva->getZ()/distanciaCOP)) , (coordCurva->getY()/ (coordCurva->getZ()/distanciaCOP)) , distanciaCOP);
-						listaNovasCoord->adiciona(coordTransformada);
-						proxCoord = proxCoord->getProximo();
-					}
-					c->setListaNormal(listaNovasCoord);
-					break;
-				}
-			case OBJETO3D:
-				{
-					Objeto3D* obj = static_cast<Objeto3D*> (elem);
-
-					ListaEnc<Coordenada3D*>* listaCoord = obj->getListaCoordNormal();
-					Elemento<Coordenada3D*>* proxCoord = listaCoord->getHead();
-					while (proxCoord != NULL) {
-						Coordenada3D* coordObj = proxCoord->getInfo();
-						Coordenada3D* coordTransformada = new Coordenada3D( (coordObj->getX()/ (coordObj->getZ()/distanciaCOP)), (coordObj->getY()/ (coordObj->getZ()/distanciaCOP)) , distanciaCOP);
-						coordObj->setX(coordTransformada->getX());
-						coordObj->setY(coordTransformada->getY());
-						coordObj->setZ(coordTransformada->getZ());
-						proxCoord = proxCoord->getProximo();
-					}
-					break;
-				}
+				break;
+			}
 		}
 	}
 

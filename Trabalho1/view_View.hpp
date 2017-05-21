@@ -638,7 +638,7 @@ public:
 				listaCoordsSuperficie->adiciona(c);
 				atualizaListBoxSuperficie();
 			} else {
-				console->inserirTexto("ERRO: não é possível inserir coordenadas além das dimensões da matriz de pontos");
+				console->inserirTexto("ERRO: não é possível inserir coordenadas além das dimensões da matriz de coordenadas");
 			}
 
 		} else {

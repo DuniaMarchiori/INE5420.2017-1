@@ -1851,7 +1851,7 @@
                       <object class="GtkLabel" id="label71">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Tamanho da Matriz de Pontos</property>
+                        <property name="label" translatable="yes">Tamanho da Matriz de Coordenadas</property>
                       </object>
                     </child>
                   </object>

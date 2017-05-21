@@ -74,7 +74,7 @@ public:
 				for (int j = 0; j < matrizResultado->getNumColunas(); j++) {
 					T resultado = 0;
 					for (int k = 0; k < this->getNumColunas(); k++) {
-						
+
 						resultado += this->getValor(i, k) * matriz2->getValor(k, j);
 					}
 

@@ -113,8 +113,8 @@ public:
 					int numSegmentos = (distMedia/maiorProporcao)*100;
 					numSegmentos = fmax(2, fmin(numSegmentos, 2000)); // Mantém o numero no intervalo [2, 2000].
 
-					ListaEnc<Coordenada3D*>* pontosCurva = curva->getCurvaFinal(numSegmentos); // Quantos segmentos baseado no zoom;
-					ListaEnc<Reta*>* listaRetas;
+					ListaEnc<Coordenada3D*>* pontosCurva = curva->getCurvaFinal(numSegmentos); // Quantos segmentos baseado no zoom
+					ListaEnc<Reta*>* listaRetas = NULL;
 
 					switch (view->getTipoClippingReta()) {
 						case 0: {
@@ -180,6 +180,24 @@ public:
 						free(retaDaAresta);
 						elementoLista = elementoLista->getProximo();
 					}
+					break;
+				} case SUPERFICIE: {
+
+					Superficie* superficie = (static_cast<Superficie*> (elemento));
+
+					Coordenada* proporcoesWindow = model->getProporcoesWindow();
+					double maiorProporcao = fmax(proporcoesWindow->getX(), proporcoesWindow->getY());
+					free(proporcoesWindow);
+
+					double distMedia = superficie->distanciaMediaDoCentro();
+					int numSegmentos = (distMedia/maiorProporcao)*100;
+					numSegmentos = fmax(2, fmin(numSegmentos, 2000)); // Mantém o numero no intervalo [2, 2000].
+
+					ListaEnc<ListaEnc<Coordenada3D*>*>* listaListaPontos = superficie->getListaCoords(numSegmentos, numSegmentos); // Quantos segmentos baseado no zoom
+
+					// O resto depende de como funciona o método da superficie.
+					// Pra ver como desenhar as curvas da pra ver o "case CURVA:" alí em cima.
+
 					break;
 				}
 			}
@@ -263,7 +281,7 @@ public:
 		Coordenada3D* c;
 
 		switch (view->getTipoTransformacao()) {
-			case 0: // Aba da translação
+			case 0: { // Aba da translação
 				try {
 					c = new Coordenada3D(view->getTransX(), view->getTransY(), view->getTransZ());
 					fazTranslacao(elemento, c);
@@ -280,7 +298,7 @@ public:
 				}
 				break;
 
-			case 1: // Aba do escalonamento
+			} case 1: { // Aba do escalonamento
 				try {
 					c = new Coordenada3D(view->getEscalFatorX(), view->getEscalFatorY(), view->getEscalFatorZ());
 					fazEscalonamento(elemento, c);
@@ -299,7 +317,8 @@ public:
 				}
 				break;
 
-			case 2: // Aba da rotação
+			} case 2: { // Aba da rotação
+				bool erro = false;
 				double angulo;
 				try {
 					angulo = view->getRotAngulo();
@@ -311,58 +330,14 @@ public:
 						view->inserirTextoConsole("ERRO: Você deve inserir um valor diferente de 0 como ângulo de rotação.");
 						break;
 					}
+					erro = true;
 				}
-				int eixo = view->getEixoDeRotacao();
-				switch (view->getRelatividadeRotacao()) {
-					case 0: // Opção de rotação em relação à origem
-						c = new Coordenada3D(0, 0, 0);
-						switch (eixo) {
-							case 0: {
-								model->fazRotacaoX(elemento, c, angulo);
-								break;
-							} case 1: {
-								model->fazRotacaoY(elemento, c, angulo);
-								break;
-							} case 2: {
-								model->fazRotacaoZ(elemento, c, angulo);
-								break;
-							}
-						}
-						// fazRotacao(elemento, c, angulo);
-						projetar3D(elemento);
-						descricaoSCN(elemento);
-						view->inserirTextoConsole("Elemento rotacionado ao redor da origem.");
-						view->focusRotAngulo();
-						free(c);
-						//view->limparTextoRotacao();
-						break;
 
-					case 1: // Opção de rotação em relação ao centro do elemento
-						c = new Coordenada3D(elemento->getCentroGeometrico());
-						switch (eixo) {
-							case 0: {
-								model->fazRotacaoX(elemento, c, angulo);
-								break;
-							} case 1: {
-								model->fazRotacaoY(elemento, c, angulo);
-								break;
-							} case 2: {
-								model->fazRotacaoZ(elemento, c, angulo);
-								break;
-							}
-						}
-						// fazRotacao(elemento, c, angulo);
-						projetar3D(elemento);
-						descricaoSCN(elemento);
-						view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");
-						view->focusRotAngulo();
-						free(c);
-						//view->limparTextoRotacao();
-						break;
-
-					case 2: // Opção de rotação em relação a um ponto qualquer
-						try {
-							c = new Coordenada3D(view->getRotRelativoAX(), view->getRotRelativoAY(), view->getRotRelativoAZ());
+				if (!erro) {
+					int eixo = view->getEixoDeRotacao();
+					switch (view->getRelatividadeRotacao()) {
+						case 0: { // Opção de rotação em relação à origem
+							c = new Coordenada3D(0, 0, 0);
 							switch (eixo) {
 								case 0: {
 									model->fazRotacaoX(elemento, c, angulo);
@@ -378,19 +353,69 @@ public:
 							// fazRotacao(elemento, c, angulo);
 							projetar3D(elemento);
 							descricaoSCN(elemento);
-							view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
+							view->inserirTextoConsole("Elemento rotacionado ao redor da origem.");
 							view->focusRotAngulo();
 							free(c);
 							//view->limparTextoRotacao();
 							break;
-						} catch (int erro) {
-							if (erro == -1) {
-								view->inserirTextoConsole("ERRO: Você deve inserir um valor numérico como ponto de referência para a rotação.");
+
+						} case 1: { // Opção de rotação em relação ao centro do elemento
+							c = new Coordenada3D(elemento->getCentroGeometrico());
+							switch (eixo) {
+								case 0: {
+									model->fazRotacaoX(elemento, c, angulo);
+									break;
+								} case 1: {
+									model->fazRotacaoY(elemento, c, angulo);
+									break;
+								} case 2: {
+									model->fazRotacaoZ(elemento, c, angulo);
+									break;
+								}
+							}
+							// fazRotacao(elemento, c, angulo);
+							projetar3D(elemento);
+							descricaoSCN(elemento);
+							view->inserirTextoConsole("Elemento rotacionado ao redor de si mesmo.");
+							view->focusRotAngulo();
+							free(c);
+							//view->limparTextoRotacao();
+							break;
+
+						} case 2: { // Opção de rotação em relação a um ponto qualquer
+							try {
+								c = new Coordenada3D(view->getRotRelativoAX(), view->getRotRelativoAY(), view->getRotRelativoAZ());
+								switch (eixo) {
+									case 0: {
+										model->fazRotacaoX(elemento, c, angulo);
+										break;
+									} case 1: {
+										model->fazRotacaoY(elemento, c, angulo);
+										break;
+									} case 2: {
+										model->fazRotacaoZ(elemento, c, angulo);
+										break;
+									}
+								}
+								// fazRotacao(elemento, c, angulo);
+								projetar3D(elemento);
+								descricaoSCN(elemento);
+								view->inserirTextoConsole("Elemento rotacionado em relação a um ponto.");
+								view->focusRotAngulo();
+								free(c);
+								//view->limparTextoRotacao();
 								break;
+							} catch (int erro) {
+								if (erro == -1) {
+									view->inserirTextoConsole("ERRO: Você deve inserir um valor numérico como ponto de referência para a rotação.");
+									break;
+								}
 							}
 						}
+					}
 				}
 				break;
+			}
 		}
 
 		//descricaoSCN();
@@ -770,21 +795,25 @@ public:
 				while (elementoLista != NULL) {
 					model->insereElementoGrafico(elementoLista->getInfo());
 					switch (elementoLista->getInfo()->getTipo()) {
-						case PONTO:
+						case PONTO: {
 							tipoElementoParaListBox = "Ponto";
 							break;
-						case RETA:
+						} case RETA: {
 							tipoElementoParaListBox = "Reta";
 							break;
-						case POLIGONO:
+						} case POLIGONO: {
 							tipoElementoParaListBox = "Polígono";
 							break;
-						case CURVA:
+						} case CURVA: {
 							tipoElementoParaListBox = "Curva";
 							break;
-						case OBJETO3D:
+						} case OBJETO3D: {
 							tipoElementoParaListBox = "Objeto3D";
 							break;
+						} case SUPERFICIE: {
+							tipoElementoParaListBox = "Superfície";
+							break;
+						}
 					}
 
 					view->adicionaElementoListbox(elementoLista->getInfo()->getNome(), tipoElementoParaListBox);
@@ -970,6 +999,27 @@ public:
 				}
 
 				break;
+			} case 5: { // A page 5 corresponde à aba de Superfície
+				ListaEnc<Coordenada3D*>* lista = view->getListaCoordsSuperficie();
+
+				try {
+					Superficie* sup = model->inserirNovaSuperficie(nome, lista, view->getAlturaSuperficie(), view->getLarguraSuperficie());
+					view->resetarListaCoordenadasSuperficie();
+					view->limparTextoNovaSuperficie();
+					view->adicionaElementoListbox(nome, "Superfície");
+					view->setSuperf_Btn_DelSensitive(FALSE);
+					projetar3D(sup);
+					descricaoSCN(sup);
+					view->inserirTextoConsole("Nova suprefície adicionada.");
+				} catch (int erro) {
+					if (erro == -1) {
+						view->inserirTextoConsole("ERRO: não é possível inserir elemento sem nome.");
+					} else if (erro == -3) {
+						view->inserirTextoConsole("ERRO: coordenadas insuficientes para a dimensão escolhida da matriz de coordenadas.");
+					}
+				}
+
+				break;
 			}
 		}
 
@@ -1082,7 +1132,7 @@ public:
 	void selecionaListBoxSuperficie() {
 		view->setSuperf_Btn_DelSensitive(TRUE);
 	}
-	
+
 	//! Método que é chamado ao alterar a altura ou largura da matriz de uma superfície.
 	void alteraDimensaoSuperficie() {
 		view->atualizaListBoxSuperficie();

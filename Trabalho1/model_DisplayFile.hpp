@@ -10,17 +10,17 @@
 #include "model_Objeto3D.hpp"
 
 class DisplayFile {
-	
+
 private:
 	ListaEnc<ElementoGrafico*> *displayFile; /*!< Lista encadeada de Elementos Graficos representando a display file.*/
-	
+
 public:
-	
+
 	//! Construtor
 	DisplayFile () {
 		displayFile = new ListaEnc<ElementoGrafico*>();
 	}
-	
+
 	//! Método que retorna o primeiro elemento do display file.
     /*!
         /return O primeiro elemento da lista encadeada do display file.
@@ -36,7 +36,7 @@ public:
 	void insereElementoGrafico(ElementoGrafico* elemento) {
 		displayFile->adiciona(elemento);
 	}
-	
+
 	//! Método que insere um ponto no display file.
     /*!
         /param p o ponto a ser adicionado à display file.
@@ -68,7 +68,15 @@ public:
 	void inserirNovaCurva(Curva* c) {
 		displayFile->adiciona(c);
 	}
-	
+
+	//! Método que insere uma superficie na display file.
+    /*!
+        /param c é a superficie a ser adicionada à display file.
+    */
+	void inserirNovaSuperficie(Superficie* s) {
+		displayFile->adiciona(s);
+	}
+
 	//! Método que insere um Objeto3D na display file.
     /*!
         /param obj é o Objeto3D a ser adicionada à display file.
@@ -76,7 +84,7 @@ public:
 	void inserirNovoObjeto3D(Objeto3D* obj) {
 		displayFile->adiciona(obj);
 	}
-	
+
 	//! Método que deleta um elemento da display file.
     /*!
 		/param index é o indice onde o elemento que sera deletado se encontra.
@@ -93,7 +101,7 @@ public:
 	ElementoGrafico* getElementoNoIndice(int index) {
 		displayFile->elementoNoIndice(index);
 	}
-	
+
 };
 
 #endif

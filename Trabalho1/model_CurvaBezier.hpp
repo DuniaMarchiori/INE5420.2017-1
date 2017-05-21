@@ -36,7 +36,7 @@ public:
 		/return uma lista de coordenadas
 	*/
 	ListaEnc<Coordenada3D*>* getCurvaFinal(int segmentos) override{
-		
+
 		double d = 1.0/(double)segmentos;
 		ListaEnc<Coordenada3D*>* curvaB = new ListaEnc<Coordenada3D*>();
 		double x, y, z, p1x, p2x, p3x, p4x, p1y, p2y, p3y, p4y, p1z, p2z, p3z, p4z, quantidadePontos;
@@ -77,7 +77,7 @@ public:
 			indice += 3;
 		}
 		return curvaB;
-		
+
 		return NULL;
 	}
 

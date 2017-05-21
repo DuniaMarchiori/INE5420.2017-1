@@ -21,6 +21,7 @@
 #include "model_CurvaBezier.hpp"
 #include "model_CurvaBSpline.hpp"
 #include "model_Objeto3D.hpp"
+#include "model_Superficie.hpp"
 
 #include "model_Window.hpp"
 #include "model_DisplayFile.hpp"
@@ -377,6 +378,39 @@ public:
 			return obj;
 		} else {
 			throw -2;
+		}
+	}
+
+	//! Método que insere uma superfície na display file.
+    /*!
+		Verifica se o nome e as coordenadas são válidas e então cria uma superfície tanto na display file quanto uma referência para ela na list box.
+        /param nome O nome da nova Superfície.
+		/param listaCoordsSuperficie Uma lista de coordenadas que contém todos os pontos da superficie.
+		/param altura A altura da matriz de coordenadas da superficie.
+		/param largura A largura da matriz de coordenadas da superficie.
+		/return retorna a superficie que foi inserida.
+    */
+	Superficie* inserirNovaSuperficie(string nome, ListaEnc<Coordenada3D*>* listaCoordsSuperficie, int altura, int largura) {
+		if (!nomeValido(nome)) {
+			throw -1;
+		}
+
+		if ( listaCoordsSuperficie->getSize() != (altura*largura) ) {
+			Matriz<Coordenada3D*>* matrizPontos = new Matriz<Coordenada3D*>(altura, largura);
+
+			Elemento<Coordenada3D*>* elemAtual = listaCoordsSuperficie->getHead();
+			for (int i = 0; i < altura; i++) {
+				for (int j = 0; j < largura; j++) {
+					matrizPontos->setValor(i, j, new Coordenada3D(elemAtual->getInfo()));
+					elemAtual = elemAtual->getProximo();
+				}
+			}
+
+			Superficie *sup = new Superficie(nome, matrizPontos);
+			displayFile->inserirNovaSuperficie(sup);
+			return sup;
+		} else {
+			throw -3;
 		}
 	}
 
