@@ -23,7 +23,7 @@ public:
 
 		//Seria apenas um pixel, mas é feito um círculo ao redor do ponto para ficar visível.
 		cairo_move_to(c, coord->getX(), coord->getY());
-		cairo_arc(c,coord->getX(), coord->getY(), 1.5, 0.0, 2*M_PI);
+		cairo_arc(c,coord->getX(), coord->getY(), 1.0, 0.0, 2*M_PI);
 		cairo_fill(c);
 
 		cairo_stroke(c);
@@ -39,6 +39,7 @@ public:
 			desenhaPonto(coordInicial);
 		} else {
 			cairo_t *c = cairo_create (surface);
+			cairo_set_line_width(c, 0.5);
 
 			cairo_move_to(c, coordInicial->getX(), coordInicial->getY());
 			cairo_line_to(c, coordFinal->getX(), coordFinal->getY());
@@ -54,6 +55,7 @@ public:
 	*/
 	void desenhaPoligono(ListaEnc<Coordenada*>* lista, bool preenchido) {
 		cairo_t *c = cairo_create (surface);
+		cairo_set_line_width(c, 0.5);
 
 		Elemento<Coordenada*> *elementoCoord = lista->getHead();
 		Coordenada* coord = elementoCoord->getInfo();
