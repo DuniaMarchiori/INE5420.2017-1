@@ -88,6 +88,22 @@ public:
 		}
 	}
 
+	//! Método que transpõe a matriz
+	/*!
+		/return a matriz transposta.
+	*/
+	Matriz* transposta() {
+		Matriz<T>* matrizResultado = new Matriz<T>(this->getNumColunas(), this->getNumLinhas());
+
+		for (int i = 0; i < this->getNumLinhas(); ++i) {
+			for (int j = 0; j < this->getNumColunas(); ++j) {
+				matrizResultado->setValor(j, i, this->getValor(i, j));
+			}
+		}
+		
+		return matrizResultado;	
+	}
+
 };
 
 #endif

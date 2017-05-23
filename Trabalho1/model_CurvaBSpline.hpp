@@ -185,8 +185,6 @@ public:
 			return NULL;
 		}
 		return listaFinal;
-		
-		return NULL;
 	}
 
 };

@@ -395,7 +395,7 @@ public:
 			throw -1;
 		}
 
-		if ( listaCoordsSuperficie->getSize() != (altura*largura) ) {
+		if ( listaCoordsSuperficie->getSize() == (altura*largura) ) {
 			Matriz<Coordenada3D*>* matrizPontos = new Matriz<Coordenada3D*>(altura, largura);
 
 			Elemento<Coordenada3D*>* elemAtual = listaCoordsSuperficie->getHead();

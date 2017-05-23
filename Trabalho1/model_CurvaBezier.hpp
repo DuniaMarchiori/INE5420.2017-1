@@ -77,8 +77,6 @@ public:
 			indice += 3;
 		}
 		return curvaB;
-
-		return NULL;
 	}
 
 private:

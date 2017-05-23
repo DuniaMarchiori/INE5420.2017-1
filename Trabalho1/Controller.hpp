@@ -16,6 +16,37 @@ private:
 	View* view; /*!< É a fachada da camada view.*/
 	Fachada* model; /*!< É a fachada da camada model*/
 
+	void desenhaCurva (ListaEnc<Coordenada3D*>* pontosCurva, Coordenada* viewportMax) {
+		ListaEnc<Reta*>* listaRetas = NULL;
+
+		switch (view->getTipoClippingReta()) {
+			case 0: {
+				listaRetas = model->clippingDeCurvaCS(pontosCurva);
+				break;
+			} case 1: {
+				listaRetas = model->clippingDeCurvaLB(pontosCurva);
+				break;
+			}
+		}
+
+		if (listaRetas != NULL) {
+
+			Elemento<Reta*>* elementoLista = listaRetas->getHead();
+			while (elementoLista != NULL) {
+				Reta* retaAtual = elementoLista->getInfo();
+
+				retaAtual->setCoordenadaNormalInicial(new Coordenada3D(model->transformaViewport(retaAtual->getCoordenadaNormalInicial(), viewportMax)));
+				retaAtual->setCoordenadaNormalFinal(new Coordenada3D(model->transformaViewport(retaAtual->getCoordenadaNormalFinal(), viewportMax)));
+
+				elementoLista = elementoLista->getProximo();
+			}
+
+			view->desenhaCurva(listaRetas);
+
+			free(listaRetas);
+		}
+	}
+
 public:
 
 	//! Construtor
@@ -114,34 +145,7 @@ public:
 					numSegmentos = fmax(2, fmin(numSegmentos, 2000)); // Mantém o numero no intervalo [2, 2000].
 
 					ListaEnc<Coordenada3D*>* pontosCurva = curva->getCurvaFinal(numSegmentos); // Quantos segmentos baseado no zoom
-					ListaEnc<Reta*>* listaRetas = NULL;
-
-					switch (view->getTipoClippingReta()) {
-						case 0: {
-							listaRetas = model->clippingDeCurvaCS(pontosCurva);
-							break;
-						} case 1: {
-							listaRetas = model->clippingDeCurvaLB(pontosCurva);
-							break;
-						}
-					}
-
-					if (listaRetas != NULL) {
-
-						Elemento<Reta*>* elementoLista = listaRetas->getHead();
-						while (elementoLista != NULL) {
-							Reta* retaAtual = elementoLista->getInfo();
-
-							retaAtual->setCoordenadaNormalInicial(new Coordenada3D(model->transformaViewport(retaAtual->getCoordenadaNormalInicial(), viewportMax)));
-							retaAtual->setCoordenadaNormalFinal(new Coordenada3D(model->transformaViewport(retaAtual->getCoordenadaNormalFinal(), viewportMax)));
-
-							elementoLista = elementoLista->getProximo();
-						}
-
-						view->desenhaCurva(listaRetas);
-
-						free(listaRetas);
-					}
+					desenhaCurva(pontosCurva, viewportMax);
 
 					free(pontosCurva);
 					break;
@@ -193,11 +197,19 @@ public:
 					int numSegmentos = (distMedia/maiorProporcao)*100;
 					numSegmentos = fmax(2, fmin(numSegmentos, 2000)); // Mantém o numero no intervalo [2, 2000].
 
-					ListaEnc<ListaEnc<Coordenada3D*>*>* listaListaPontos = superficie->getListaCoords(numSegmentos, numSegmentos); // Quantos segmentos baseado no zoom
-
+					ListaEnc<ListaEnc<Coordenada3D*>*>* listaListaPontos = superficie->getSuperficieFinal(numSegmentos, numSegmentos); // Quantos segmentos baseado no zoom
+					ListaEnc<Coordenada3D*>* pontosCurva;
 					// O resto depende de como funciona o método da superficie.
 					// Pra ver como desenhar as curvas da pra ver o "case CURVA:" alí em cima.
+					Elemento<ListaEnc<Coordenada3D*>*>* listaPontosCurva = listaListaPontos->getHead();
+					while(listaPontosCurva != NULL) {
+						pontosCurva = listaPontosCurva->getInfo();
+						desenhaCurva(pontosCurva, viewportMax);
+						listaPontosCurva = listaPontosCurva->getProximo();
+					}
 
+					free(listaListaPontos);
+					free(pontosCurva);
 					break;
 				}
 			}
