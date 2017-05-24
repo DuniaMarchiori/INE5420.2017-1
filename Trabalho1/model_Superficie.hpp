@@ -138,7 +138,6 @@ public:
 		pontosNormais = new Matriz<Coordenada3D*>(4, 4);
 		setNome("");
 		setTipo(SUPERFICIE);
-		inicializaMatrizMbs();
 	}
 
 	//! Construtor
@@ -150,7 +149,6 @@ public:
 		pontosNormais = new Matriz<Coordenada3D*>(4, 4);
 		setNome(nome);
 		setTipo(SUPERFICIE);
-		inicializaMatrizMbs();
 	}
 
 	//! Construtor
@@ -163,7 +161,6 @@ public:
 		pontosNormais = new Matriz<Coordenada3D*>(pontosSuperficie->getNumLinhas(), pontosSuperficie->getNumColunas());
 		setNome(nome);
 		setTipo(SUPERFICIE);
-		inicializaMatrizMbs();
 	}
 
 	// Coordenadas no Mundo.
@@ -278,7 +275,7 @@ public:
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
 				Coordenada3D* coordIJRetalho = pontosNormais->getValor((linhaInicial + i), (colunaInicial + j));
-				retalho->setValor(i, j, coordIJRetalho);
+				retalho->setValor(i, j, new Coordenada3D(coordIJRetalho));
 			}
 		}
 
@@ -298,6 +295,8 @@ public:
 		ListaEnc<Coordenada3D*>* novaLista = new ListaEnc<Coordenada3D*>();
 		double x, y, z;
 
+		inicializaMatrizMbs();
+
 		for (int i = 0; i < getNumRetalhos(); ++i) {
 			Matriz<Coordenada3D*>* retalhoAtual = getRetalhoN(i);
 
@@ -316,6 +315,8 @@ public:
 					novaLista->adiciona(coord);
 
 					passoTAcumulado += passoT;
+					free(matrizS);
+					free(matrizT);
 				}
 
 				listaFinal->adiciona(novaLista);
@@ -339,6 +340,8 @@ public:
 					novaLista->adiciona(coord);
 
 					passoSAcumulado += passoS;
+					free(matrizS);
+					free(matrizT);
 				}
 
 				listaFinal->adiciona(novaLista);
@@ -346,7 +349,11 @@ public:
 				passoTAcumulado += passoT;
 				passoSAcumulado = 0;
 			}
+
+			free(retalhoAtual);
 		}
+
+		free(mbs);
 		return listaFinal;
 	}
 };
