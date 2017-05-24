@@ -46,7 +46,6 @@ private:
 		matrizT->setValor(0, 1, pow(t, 2));
 		matrizT->setValor(0, 2, t);
 		matrizT->setValor(0, 3, 1);
-
 	}
 
 	double multiplicacaoMatrizesSuperficie(Matriz<double>* matrizG) {
@@ -87,7 +86,7 @@ private:
 			teste += "\n";
 		}
 		std::cout << teste << std::endl;*/
-		
+
 
 		return multiplicacaoMatrizesSuperficie(matrizX);
 	}
@@ -298,12 +297,6 @@ public:
 		ListaEnc<ListaEnc<Coordenada3D*>*>* listaFinal = new ListaEnc<ListaEnc<Coordenada3D*>*>();
 		ListaEnc<Coordenada3D*>* novaLista = new ListaEnc<Coordenada3D*>();
 		double x, y, z;
-
-		// Imagino que o que a gente obtenha seja:
-		// Uma lista (A) de listas (B) de coordenadas. No caso, cada lista "B" de coordenadas são os pontos que devem ser ligados em retas de cada curva e a lista "A" são diversas listas pois existem diversas curvas.
-
-		// Tu vai precisar iterar por cada retalho eu acho, aí ja fiz um método que conta quantos retalhos tem, e outro que te devolve o retalho N, aí da pra fazer um "for" e ir percorrendo cada retalho. (getNumRetalhos() e getRetalhoN())
-		// Um detalhe: O método que retorna o retalho N retorna o retalho N da matriz normalizada, não sei se é esse que precisa, se precisar do outro só mudar. a linha 155
 
 		for (int i = 0; i < getNumRetalhos(); ++i) {
 			Matriz<Coordenada3D*>* retalhoAtual = getRetalhoN(i);

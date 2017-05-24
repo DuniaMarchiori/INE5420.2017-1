@@ -194,13 +194,12 @@ public:
 					free(proporcoesWindow);
 
 					double distMedia = superficie->distanciaMediaDoCentro();
-					int numSegmentos = (distMedia/maiorProporcao)*100;
-					numSegmentos = fmax(2, fmin(numSegmentos, 2000)); // Mantém o numero no intervalo [2, 2000].
+					int numSegmentos = (distMedia/maiorProporcao)*75;
+					numSegmentos = fmax(2, fmin(numSegmentos, 500)); // Mantém o numero no intervalo [2, 500].
 
 					ListaEnc<ListaEnc<Coordenada3D*>*>* listaListaPontos = superficie->getSuperficieFinal(numSegmentos, numSegmentos); // Quantos segmentos baseado no zoom
 					ListaEnc<Coordenada3D*>* pontosCurva;
-					// O resto depende de como funciona o método da superficie.
-					// Pra ver como desenhar as curvas da pra ver o "case CURVA:" alí em cima.
+
 					Elemento<ListaEnc<Coordenada3D*>*>* listaPontosCurva = listaListaPontos->getHead();
 					while(listaPontosCurva != NULL) {
 						pontosCurva = listaPontosCurva->getInfo();
