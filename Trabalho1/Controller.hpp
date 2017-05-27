@@ -197,7 +197,7 @@ public:
 					int numSegmentos = (distMedia/maiorProporcao)*75;
 					numSegmentos = fmax(2, fmin(numSegmentos, 500)); // Mantém o numero no intervalo [2, 500].
 
-					ListaEnc<ListaEnc<Coordenada3D*>*>* listaListaPontos = superficie->getSuperficieFinal(numSegmentos, numSegmentos); // Quantos segmentos baseado no zoom
+					ListaEnc<ListaEnc<Coordenada3D*>*>* listaListaPontos = superficie->getSuperficieFinalForwardDifferences(numSegmentos, numSegmentos); // Quantos segmentos baseado no zoom
 					ListaEnc<Coordenada3D*>* pontosCurva;
 
 					Elemento<ListaEnc<Coordenada3D*>*>* listaPontosCurva = listaListaPontos->getHead();

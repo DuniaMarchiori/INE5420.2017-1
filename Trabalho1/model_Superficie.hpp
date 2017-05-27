@@ -4,6 +4,7 @@
 #include "model_ElementoGrafico.hpp"
 #include "model_Coordenada.hpp"
 #include "model_Matriz.hpp"
+#include "model_ForwardDifferences.hpp"
 
 class Superficie: public ElementoGrafico {
 
@@ -13,9 +14,13 @@ private:
 	Matriz<double>* mbs; /*! Matriz do método B-Spline*/
 	Matriz<double>* matrizS; /*! Matriz S para criação da superfície.*/
 	Matriz<double>* matrizT; /*! Matriz T para criação da superfície.*/
+	ForwardDifferences* fwdDiff;
+	Matriz<double>* DDx;
+	Matriz<double>* DDy;
+	Matriz<double>* DDz;
 
 
-	void inicializaMatrizMbs() {
+	/*void inicializaMatrizMbs() {
 		mbs = new Matriz<double>(4, 4);
 		mbs->setValor(0, 0, (double)-1/6);
 		mbs->setValor(0, 1, (double)1/2);
@@ -32,7 +37,7 @@ private:
 		mbs->setValor(3, 0, (double)1/6);
 		mbs->setValor(3, 1, (double)2/3);
 		mbs->setValor(3, 2, (double)1/6);
-	}
+	}*/
 
 	void inicializaMatrizesST(double s, double t) {
 		matrizS = new Matriz<double>(4, 4);
@@ -59,7 +64,7 @@ private:
 		auxiliar = auxiliar->multiplica(matrizG);
 		auxiliar = auxiliar->multiplica(mbsTransposta);
 		auxiliar = auxiliar->multiplica(tTransposta);
-		retorno = auxiliar->getValor(0, 0);;
+		retorno = auxiliar->getValor(0, 0);
 
 		free(mbsTransposta);
 		free(tTransposta);
@@ -76,7 +81,6 @@ private:
 				matrizX->setValor(i, j, matrizRetalho->getValor(i, j)->getX());
 			}
 		}
-
 
 		/*string teste = "matrizX: ";
 		for (int i = 0; i < 4; i++) {
@@ -99,15 +103,6 @@ private:
 			}
 		}
 
-		/*string teste = "matrizY: ";
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-			teste += to_string(matrizY->getValor(i,j)) + " | ";
-			}
-			teste += "\n";
-		}
-		std::cout << teste << std::endl;*/
-
 		return multiplicacaoMatrizesSuperficie(matrizY);
 	}
 
@@ -119,16 +114,84 @@ private:
 			}
 		}
 
-		/*string teste = "matrizZ: ";
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-			teste += to_string(matrizZ->getValor(i,j)) + " | ";
-			}
-			teste += "\n";
-		}
-		std::cout << teste << std::endl;*/
-
 		return multiplicacaoMatrizesSuperficie(matrizZ);
+	}
+
+	Matriz<double>* multiplicacaoCoeficientes(Matriz<double>* matrizG) {
+		Matriz<double> *auxiliar, *mbsTransposta, *retorno;
+		mbsTransposta = mbs->transposta();
+
+		// mbs * g * msbTransposta
+		auxiliar = mbs->multiplica(matrizG);
+		retorno = auxiliar->multiplica(mbsTransposta);
+
+		free(mbsTransposta);
+		free(auxiliar);
+		free(matrizG);
+
+		return retorno;
+	}
+
+	Matriz<double>* coeficientesX(Matriz<Coordenada3D*>* matrizRetalho) {
+		Matriz<double>* matrizX = new Matriz<double>(4,4);
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				matrizX->setValor(i, j, matrizRetalho->getValor(i, j)->getX());
+			}
+		}
+
+		return multiplicacaoCoeficientes(matrizX);
+	}
+
+	Matriz<double>* coeficientesY(Matriz<Coordenada3D*>* matrizRetalho) {
+		Matriz<double>* matrizY = new Matriz<double>(4,4);
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				matrizY->setValor(i, j, matrizRetalho->getValor(i, j)->getY());
+			}
+		}
+
+		return multiplicacaoCoeficientes(matrizY);
+	}
+
+	Matriz<double>* coeficientesZ(Matriz<Coordenada3D*>* matrizRetalho) {
+		Matriz<double>* matrizZ = new Matriz<double>(4,4);
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				matrizZ->setValor(i, j, matrizRetalho->getValor(i, j)->getZ());
+			}
+		}
+
+		return multiplicacaoCoeficientes(matrizZ);
+	}
+
+	Matriz<double>* criaMatrizDD(Matriz<double>* eDeltaS, Matriz<double>* c, Matriz<double>* eDeltaT) {
+		Matriz<double> *retorno, *auxiliar, *eDeltaTTransposta;
+		eDeltaTTransposta = eDeltaT->transposta();
+
+		auxiliar = eDeltaS->multiplica(c);
+		retorno = auxiliar->multiplica(eDeltaTTransposta);
+
+		free(auxiliar);
+		free(eDeltaTTransposta);
+
+		return retorno;
+	}
+
+	void atualizaMatrizesDD() {
+		double valorDDx = 0, valorDDy = 0, valorDDz = 0;
+
+		for (int i = 0; i < (DDx->getNumLinhas() - 1); ++i) { // "número de linhas - 1"  porque a última linha não é modificada
+			for (int j = 0; j < DDx->getNumColunas(); ++j) {
+				valorDDx = DDx->getValor(i, j) + DDx->getValor(i+1, j);
+				valorDDy = DDy->getValor(i, j) + DDy->getValor(i+1, j);
+				valorDDz = DDz->getValor(i, j) + DDz->getValor(i+1, j);
+
+				DDx->setValor(i, j, valorDDx);
+				DDy->setValor(i, j, valorDDy);
+				DDz->setValor(i, j, valorDDz);
+			}
+		}
 	}
 
 public:
@@ -138,6 +201,7 @@ public:
 		pontosNormais = new Matriz<Coordenada3D*>(4, 4);
 		setNome("");
 		setTipo(SUPERFICIE);
+		fwdDiff = new ForwardDifferences();
 	}
 
 	//! Construtor
@@ -149,6 +213,7 @@ public:
 		pontosNormais = new Matriz<Coordenada3D*>(4, 4);
 		setNome(nome);
 		setTipo(SUPERFICIE);
+		fwdDiff = new ForwardDifferences();
 	}
 
 	//! Construtor
@@ -161,6 +226,7 @@ public:
 		pontosNormais = new Matriz<Coordenada3D*>(pontosSuperficie->getNumLinhas(), pontosSuperficie->getNumColunas());
 		setNome(nome);
 		setTipo(SUPERFICIE);
+		fwdDiff = new ForwardDifferences();
 	}
 
 	// Coordenadas no Mundo.
@@ -295,7 +361,7 @@ public:
 		ListaEnc<Coordenada3D*>* novaLista = new ListaEnc<Coordenada3D*>();
 		double x, y, z;
 
-		inicializaMatrizMbs();
+		mbs = fwdDiff-> inicializaMatrizMbs();
 
 		for (int i = 0; i < getNumRetalhos(); ++i) {
 			Matriz<Coordenada3D*>* retalhoAtual = getRetalhoN(i);
@@ -349,6 +415,119 @@ public:
 				passoTAcumulado += passoT;
 				passoSAcumulado = 0;
 			}
+
+			free(retalhoAtual);
+		}
+
+		free(mbs);
+		return listaFinal;
+	}
+
+	//! Método que retorna uma lista de listas de coordenadas.
+	/*!
+		/param numSegmentosT O número de segmentos em t
+		/param numSegmentosS O número de segmentos em s
+		/return uma lista de listas das coordenadas de cada curva.
+	*/
+	ListaEnc<ListaEnc<Coordenada3D*>*>* getSuperficieFinalForwardDifferences(int numSegmentosT, int numSegmentosS) {
+		double passoT = 1.0/(double)numSegmentosT;
+		double passoS = 1.0/(double)numSegmentosS;
+
+		ListaEnc<ListaEnc<Coordenada3D*>*>* listaFinal = new ListaEnc<ListaEnc<Coordenada3D*>*>();
+		ListaEnc<Coordenada3D*>* novaLista = new ListaEnc<Coordenada3D*>();
+
+		Matriz<double>* eDeltaS;
+		Matriz<double>* eDeltaT;
+		
+		mbs = fwdDiff-> inicializaMatrizMbs();
+
+		for (int i = 0; i < getNumRetalhos(); ++i) {
+			Matriz<Coordenada3D*>* retalhoAtual = getRetalhoN(i);
+
+			eDeltaS = fwdDiff->criaMatrizE(passoS);
+			eDeltaT = fwdDiff->criaMatrizE(passoT);
+
+			Matriz<double>* cx = coeficientesX(retalhoAtual);
+			Matriz<double>* cy = coeficientesY(retalhoAtual);
+			Matriz<double>* cz = coeficientesZ(retalhoAtual);
+
+			DDx = criaMatrizDD(eDeltaS, cx, eDeltaT);
+			DDy = criaMatrizDD(eDeltaS, cy, eDeltaT);
+			DDz = criaMatrizDD(eDeltaS, cz, eDeltaT);
+
+			double x, dx,d2x, d3x, y, dy, d2y, d3y, z, dz, d2z, d3z;
+
+			for (double t = 0; t < numSegmentosT; t++) {
+
+				x   = DDx->getValor(0, 0);
+				dx  = DDx->getValor(0, 1);
+				d2x = DDx->getValor(0, 2);
+				d3x = DDx->getValor(0, 3);
+
+				y   = DDy->getValor(0, 0);
+				dy  = DDy->getValor(0, 1);
+				d2y = DDy->getValor(0, 2);
+				d3y = DDy->getValor(0, 3);
+
+				z   = DDz->getValor(0, 0);
+				dz  = DDz->getValor(0, 1);
+				d2z = DDz->getValor(0, 2);
+				d3z = DDz->getValor(0, 3);
+
+				fwdDiff->desenhaCurvaFwdDiff(numSegmentosS, x, dx, d2x, d3x, y, dy, d2y, d3y, z, dz, d2z, d3z, novaLista);
+				listaFinal->adiciona(novaLista);
+				novaLista = new ListaEnc<Coordenada3D*>();
+
+				atualizaMatrizesDD();
+			}
+
+			free(DDx);
+			free(DDy);
+			free(DDz);
+			Matriz<double>* DDxAux = criaMatrizDD(eDeltaS, cx, eDeltaT);
+			Matriz<double>* DDyAux = criaMatrizDD(eDeltaS, cy, eDeltaT);
+			Matriz<double>* DDzAux = criaMatrizDD(eDeltaS, cz, eDeltaT);
+			DDx = DDxAux->transposta();
+			DDy = DDyAux->transposta();
+			DDz = DDzAux->transposta();
+
+			//novaLista = new ListaEnc<Coordenada3D*>();
+			for (double s = 0; s < numSegmentosS; s++) {
+
+				x   = DDx->getValor(0, 0);
+				dx  = DDx->getValor(0, 1);
+				d2x = DDx->getValor(0, 2);
+				d3x = DDx->getValor(0, 3);
+
+				y   = DDy->getValor(0, 0);
+				dy  = DDy->getValor(0, 1);
+				d2y = DDy->getValor(0, 2);
+				d3y = DDy->getValor(0, 3);
+
+				z   = DDz->getValor(0, 0);
+				dz  = DDz->getValor(0, 1);
+				d2z = DDz->getValor(0, 2);
+				d3z = DDz->getValor(0, 3);
+
+				fwdDiff->desenhaCurvaFwdDiff(numSegmentosT, x, dx, d2x, d3x, y, dy, d2y, d3y, z, dz, d2z, d3z, novaLista);
+
+				listaFinal->adiciona(novaLista);
+				novaLista = new ListaEnc<Coordenada3D*>();
+
+				atualizaMatrizesDD();
+			}
+
+			free(eDeltaS);
+			free(eDeltaT);
+			free(cx);
+			free(cy);
+			free(cz);
+			free(DDx);
+			free(DDy);
+			free(DDz);
+			free(DDxAux);
+			free(DDyAux);
+			free(DDzAux);
 
 			free(retalhoAtual);
 		}

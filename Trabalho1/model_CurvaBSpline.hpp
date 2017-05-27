@@ -6,11 +6,12 @@
 #include "model_Curva.hpp"
 #include "model_Coordenada3D.hpp"
 #include "ListaEnc.hpp"
+#include "model_ForwardDifferences.hpp"
 
 class CurvaBSpline : public Curva {
 private:
 
-	void desenhaCurvaFwdDiff(int n, double x, double deltaX, double delta2X, double delta3X, double y, double deltaY,  double delta2Y, double delta3Y, double z, double deltaZ,  double delta2Z, double delta3Z, ListaEnc<Coordenada3D*>* lista) {
+	/*void desenhaCurvaFwdDiff(int n, double x, double deltaX, double delta2X, double delta3X, double y, double deltaY,  double delta2Y, double delta3Y, double z, double deltaZ,  double delta2Z, double delta3Z, ListaEnc<Coordenada3D*>* lista) {
 		int i = 1;
 		double xVelho, yVelho, zVelho;
 		xVelho = x;
@@ -43,7 +44,8 @@ private:
 
 			i++;
 		}
-	}
+	}*/
+	ForwardDifferences* fwdDiff;
 
 public:
 
@@ -75,13 +77,15 @@ public:
 	ListaEnc<Coordenada3D*>* getCurvaFinal(int segmentos) override{
 		
 		ListaEnc<Coordenada3D*>* listaFinal = new ListaEnc<Coordenada3D*>();
+		fwdDiff = new ForwardDifferences();
 
 		double d = 1.0/(double)segmentos; // deltinha
 
-		double dQuad = pow(d, 2);
-		double dCubo = pow(d, 3);
+		//double dQuad = pow(d, 2);
+		//double dCubo = pow(d, 3);
 
-		Matriz<double>* mbs = new Matriz<double>(4, 4);
+		Matriz<double>* mbs = fwdDiff->inicializaMatrizMbs();
+		/*new Matriz<double>(4, 4);
 		mbs->setValor(0, 0, (double)-1/6);
 		mbs->setValor(0, 1, (double)1/2);
 		mbs->setValor(0, 2, (double)-1/2);
@@ -96,9 +100,9 @@ public:
 
 		mbs->setValor(3, 0, (double)1/6);
 		mbs->setValor(3, 1, (double)2/3);
-		mbs->setValor(3, 2, (double)1/6);
+		mbs->setValor(3, 2, (double)1/6);*/
 
-		Matriz<double>* eDelta = new Matriz<double>(4, 4);
+		/*Matriz<double>* eDelta = new Matriz<double>(4, 4);
 		eDelta->setValor(0, 3, 1.0);
 
 		eDelta->setValor(1, 0, dCubo);
@@ -108,7 +112,8 @@ public:
 		eDelta->setValor(2, 0, 6*dCubo);
 		eDelta->setValor(2, 1, 2*dQuad);
 
-		eDelta->setValor(3, 0, 6*dCubo);
+		eDelta->setValor(3, 0, 6*dCubo);*/
+		Matriz<double>* eDelta = fwdDiff->criaMatrizE(d);
 
 		Elemento<Coordenada3D*>* elementoLista = getListaNormal()->getHead();
 		Coordenada3D *C1, *C2, *C3, *C4;
@@ -172,7 +177,7 @@ public:
 			d2z = colunaDeFz->getValor(2, 0);
 			d3z = colunaDeFz->getValor(3, 0);
 			
-			desenhaCurvaFwdDiff(n, x, dx, d2x, d3x, y, dy, d2y, d3y, z, dz, d2z, d3z, listaFinal);
+			fwdDiff->desenhaCurvaFwdDiff(n, x, dx, d2x, d3x, y, dy, d2y, d3y, z, dz, d2z, d3z, listaFinal);
 
 			C1 = C2;
 			C2 = C3;
@@ -184,6 +189,7 @@ public:
 			free(listaFinal);
 			return NULL;
 		}
+		free(fwdDiff);
 		return listaFinal;
 	}
 
