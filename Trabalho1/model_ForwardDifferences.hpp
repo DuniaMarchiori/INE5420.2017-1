@@ -84,6 +84,25 @@ public:
 		return mbs;
 	}
 
+	Matriz<double>* inicializaMatrizMbezier() {
+		Matriz<double>* mb = new Matriz<double>(4, 4);
+		mb->setValor(0, 0, (double)-1);
+		mb->setValor(0, 1, (double)3);
+		mb->setValor(0, 2, (double)-3);
+		mb->setValor(0, 3, (double)1);
+
+		mb->setValor(1, 0, (double)3);
+		mb->setValor(1, 1, (double)-6);
+		mb->setValor(1, 2, (double)3);
+
+		mb->setValor(2, 0, (double)-3);
+		mb->setValor(2, 1, (double)3);
+
+		mb->setValor(3, 0, (double)1);
+
+		return mb;
+	}
+
 	
 
 };

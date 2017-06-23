@@ -19,26 +19,6 @@ private:
 	Matriz<double>* DDy;
 	Matriz<double>* DDz;
 
-
-	/*void inicializaMatrizMbs() {
-		mbs = new Matriz<double>(4, 4);
-		mbs->setValor(0, 0, (double)-1/6);
-		mbs->setValor(0, 1, (double)1/2);
-		mbs->setValor(0, 2, (double)-1/2);
-		mbs->setValor(0, 3, (double)1/6);
-
-		mbs->setValor(1, 0, (double)1/2);
-		mbs->setValor(1, 1, -1.0);
-		mbs->setValor(1, 2, (double)1/2);
-
-		mbs->setValor(2, 0, (double)-1/2);
-		mbs->setValor(2, 2, (double)1/2);
-
-		mbs->setValor(3, 0, (double)1/6);
-		mbs->setValor(3, 1, (double)2/3);
-		mbs->setValor(3, 2, (double)1/6);
-	}*/
-
 	void inicializaMatrizesST(double s, double t) {
 		matrizS = new Matriz<double>(4, 4);
 		matrizS->setValor(0, 0, pow(s, 3));
@@ -54,19 +34,21 @@ private:
 	}
 
 	double multiplicacaoMatrizesSuperficie(Matriz<double>* matrizG) {
-		Matriz<double> *auxiliar, *mbsTransposta, *tTransposta;
-		mbsTransposta = mbs->transposta();
+		Matriz<double> *auxiliar, *mbTransposta, *tTransposta, *mb;
+		mb = fwdDiff->inicializaMatrizMbezier();
+		mbTransposta = mb->transposta();
 		tTransposta = matrizT->transposta();
 		double retorno;
 
 		//s* m * pontos * m transposta * t transposta
-		auxiliar = matrizS->multiplica(mbs);
+		auxiliar = matrizS->multiplica(mb);
 		auxiliar = auxiliar->multiplica(matrizG);
-		auxiliar = auxiliar->multiplica(mbsTransposta);
+		auxiliar = auxiliar->multiplica(mbTransposta);
 		auxiliar = auxiliar->multiplica(tTransposta);
 		retorno = auxiliar->getValor(0, 0);
 
-		free(mbsTransposta);
+		free(mb);
+		free(mbTransposta);
 		free(tTransposta);
 		free(auxiliar);
 		free(matrizG);
